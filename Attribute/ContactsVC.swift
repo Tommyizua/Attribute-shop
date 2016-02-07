@@ -33,12 +33,12 @@ class ContactsVC: UIViewController {
         super.viewDidLoad()
         title = "Контакты"
         mapView.delegate = self
-        let artwork = Office(title: "ул. Стадионная 5, оф. 9",
+        let annotation = Office(title: "ул. Стадионная 5, оф. 9",
             locationName: "Интернет магазин \"Attribute\"",
             discipline: "Attribute",
             coordinate: CLLocationCoordinate2D(latitude: 50.435578, longitude: 30.48238))
         
-        mapView.addAnnotation(artwork)
+        mapView.addAnnotation(annotation)
         
         let initialLocation = CLLocation(latitude: 50.435578, longitude: 30.48238)
         let regionRadius: CLLocationDistance = 1000

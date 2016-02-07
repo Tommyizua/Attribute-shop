@@ -10,11 +10,39 @@ import UIKit
 
 class Product: NSObject {
     
-    static var image: UIImageView!
-    static var title: UILabel!
-    static var article: UILabel!
-    static var availability: UILabel!
-    static var price: UILabel!
-    static var features = [[String:String]]()
+    var image: UIImage?
+    var imageUrlString: String
+    var title: String
+    var article: String
+    var availability: String
+    var priceFormatted: String
+    var priceValue: Int
     
+    var detailLink: String
+    
+    lazy var features = [[String:String]]()
+    
+    override init() {
+        self.title = ""
+        self.article = ""
+        self.availability = ""
+        
+        self.priceFormatted = ""
+        self.priceValue = 0
+        
+        self.detailLink = ""
+        self.imageUrlString = ""
+    }
+
+//    init(cell: CatalogCell, productLink: String) {
+//        
+//        self.title = cell.titleProduct.text!
+//        self.article = cell.articleProduct.text!
+//        self.availability = cell.availabilityProduct.text!
+//        self.price = cell.priceProduct.text!
+//        self.image = cell.imageProduct.image
+//        self.detailLink =
+//        self.imageUrlString = ""
+//    }
+//    
 }

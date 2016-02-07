@@ -15,6 +15,13 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
     
     var animateDistance = CGFloat()
     
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateCellWithNewQuantity:", name: cartItemDidChangeNotification, object: nil)
+    }
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         shoppingTableView.dataSource = self
@@ -27,18 +34,16 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
         formattedPrice.appendContentsOf(" грн.")
         totalPrice.text! = formattedPrice
     }
-    
+
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+        
         dispatch_async(dispatch_get_main_queue(), { () -> () in
             self.shoppingTableView.reloadData()
         })
     }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateCellWithNewQuantity:", name: cartItemDidChangeNotification, object: nil)
-    }
+
+    // MARK: - Help Methods
     
     func updateCellWithNewQuantity(notification: NSNotification) {
         var formattedPrice = " Общая цена: " + Shopping.sharedInstance.fullPrice.description
@@ -66,6 +71,8 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
         })
     }
     
+    // MARK: - UITableViewDataSource
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return Shopping.sharedInstance.name.count
     }
@@ -80,6 +87,20 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
         }
         return cell
     }
+    
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+        if editingStyle == .Delete {
+            Shopping.sharedInstance.changeFullPriceAndQuantity(-1, id: indexPath.row, priceAtId: Shopping.sharedInstance.price[indexPath.row])
+            Shopping.sharedInstance.price.removeAtIndex(indexPath.row)
+            Shopping.sharedInstance.quantity.removeAtIndex(indexPath.row)
+            Shopping.sharedInstance.name.removeAtIndex(indexPath.row)
+            
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+        }
+    }
+    
+    // MARK: - Actions
     
     @IBAction func plusOne(sender: UIButton) {
         changeQuantityViaButton(sender)
@@ -110,18 +131,6 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
         return true
     }
     
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        
-        if editingStyle == .Delete {
-            Shopping.sharedInstance.changeFullPriceAndQuantity(-1, id: indexPath.row, priceAtId: Shopping.sharedInstance.price[indexPath.row])
-            Shopping.sharedInstance.price.removeAtIndex(indexPath.row)
-            Shopping.sharedInstance.quantity.removeAtIndex(indexPath.row)
-            Shopping.sharedInstance.name.removeAtIndex(indexPath.row)
-            
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-        }
-    }
-    
     @IBAction func AcceptOrder(sender: UIButton) {
         let alert = UIAlertController(title: "Отчет", message: "Заказ успешно отправлен!", preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Готово", style:.Default, handler: nil))
@@ -132,6 +141,8 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
         view.endEditing(true)
     }
     
+    // MARK: - Help struct
+    
     struct MoveKeyboard {
         static let KEYBOARD_ANIMATION_DURATION : CGFloat = 0.3
         static let MINIMUM_SCROLL_FRACTION : CGFloat = 0.2
@@ -139,6 +150,8 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
         static let PORTRAIT_KEYBOARD_HEIGHT : CGFloat = 160
         static let LANDSCAPE_KEYBOARD_HEIGHT : CGFloat = 120
     }
+    
+    // MARK: - UITextFieldDelegate
     
     func textFieldDidBeginEditing(textField: UITextField) {
         let textFieldRect : CGRect = view.window!.convertRect(textField.bounds, fromView: textField)
@@ -189,10 +202,6 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
             let recevedQuantity = Int(textField.text!) ?? Int(Shopping.sharedInstance.quantity[cellId])
             Shopping.sharedInstance.changeFullPriceAndQuantity(recevedQuantity, id: cellId, priceAtId: Shopping.sharedInstance.price[cellId])
         }
-    }
-    
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        return true
     }
     
 }

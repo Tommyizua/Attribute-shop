@@ -9,11 +9,9 @@
 import UIKit
 
 class MainTVC: UITableViewController {
-    private var catalogName = ""
-    private var link = ""
-    private var pagesLinks = [String:String]()
+    
+    private var productSectionArray = [ProductSection]()
     private var contacts: UIBarButtonItem!
-    private let catalogs = ["Ручки", "Кожгалантерея", "Часы", "Аксессуары", "Запонки,зажимы", "Подарочные наборы","Доставка и оплата", "Сеть бутиков", "Корпоративным клиентам"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,67 +21,127 @@ class MainTVC: UITableViewController {
         navigationController?.navigationBar.backgroundColor = UIColor.blackColor()
         navigationController?.navigationBar.tintColor = UIColor.orangeColor()
         tabBarController?.tabBar.tintColor = UIColor.blackColor()
+        
         contacts = UIBarButtonItem(title: "Контакты", style: .Plain, target: self, action: "openContacts:")
+        
         navigationItem.rightBarButtonItem = contacts
+        
         if let font = UIFont(name: "Helvetica", size: 14) {
             contacts.setTitleTextAttributes([NSFontAttributeName: font], forState: UIControlState.Normal)
             navigationController?.navigationBar.titleTextAttributes = [NSFontAttributeName: font]
             UIBarButtonItem.appearance().setTitleTextAttributes([NSFontAttributeName: font], forState: UIControlState.Normal)
         }
-        //        complitePagesLinks()
+        
+        fillingProductSectionArray()
     }
+    
+    // MARK: - Help Methods
+    
+    func fillingProductSectionArray() {
+        
+        var pagesLinks = [String: String]()
+        
+        pagesLinks["Ручки"] = "http://attribute.ua/3-pen/"
+        pagesLinks["Кожгалантерея"] = "http://attribute.ua/12-leather/"
+        pagesLinks["Часы"] = "http://attribute.ua/29-watch/"
+        pagesLinks["Аксессуары"] = "http://attribute.ua/35-accesories/"
+        pagesLinks["Запонки,зажимы"] = "http://attribute.ua/134-zaponki/"
+        pagesLinks["Подарочные наборы"] = "http://attribute.ua/140-podarochnie-nabori/"
+        
+        let sectionNameArray = ["Ручки", "Кожгалантерея", "Часы", "Аксессуары", "Запонки,зажимы", "Подарочные наборы", "Сеть бутиков", "Доставка и оплата", "Корпоративным клиентам"]
+        
+        for i in 0..<sectionNameArray.count {
+            
+            let productSection = ProductSection()
+            
+            productSection.name = sectionNameArray[i]
+            productSection.link = pagesLinks[productSection.name] ?? ""
+            productSection.imageName = UIImage(named: productSection.name)
+            
+            self.productSectionArray.append(productSection)
+        }
+        
+    }
+    
+    // MARK: - Actions
     
     func openContacts(sender: UIBarButtonItem) {
         performSegueWithIdentifier("toContacts", sender: sender)
     }
     
+    // MARK: - UITableViewDataSource
+    
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return catalogs.count
+        
+        return self.productSectionArray.count
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCellWithIdentifier("mainCell")! as UITableViewCell
-        cell.textLabel?.text = catalogs[indexPath.row]
-        let imageName = UIImage(named: catalogs[indexPath.row])
-        cell.imageView?.image = imageName
+        
+        let productSection = self.productSectionArray[indexPath.row]
+        
+        cell.textLabel?.text = productSection.name
+        cell.imageView?.image = productSection.imageName
         
         return cell
     }
     
+    // MARK: - UITableViewDelegate
+    
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        pagesLinks["Ручки"] = "http://attribute.ua/3-pen/"
-        pagesLinks["Кожгалантерея"] = "http://attribute.ua/12-leather/"
-        pagesLinks["Часы"] = "http://attribute.ua/29-watch/"
-        pagesLinks["Аксессуары"] = "http://attribute.ua/35-accesories/"
-        pagesLinks["Запонки,зажимы"] = "http://attribute.ua/134-zaponki/"
-        pagesLinks["Подарочные наборы"] = "http://attribute.ua/140-podarochnie-nabori/"
         
-        //        catalogName = sender.currentTitle ?? "Каталог"
-        //        link = pagesLinks[catalogName] ?? "http://attribute.ua/"
-        //        performSegueWithIdentifier("showCatalog", sender: sender)
+        tableView.deselectRowAtIndexPath(indexPath, animated: true);
+        
+        /*
+        switch (indexPath.row) {
+            
+        case 0...5:
+            
+            let catalogTVC = CatalogTVC()
+            
+            catalogTVC.contacts = self.contacts
+            
+            catalogTVC.productSection = self.productSectionArray[indexPath.row]
+            
+            let storyboardSegue = UIStoryboardSegue(identifier: "showProduct", source: self, destination: catalogTVC)
+            
+            prepareForSegue(storyboardSegue, sender: UITableViewCell())
+            
+            //            navigationController?.pushViewController(catalogTVC, animated: true)
+            //
+            //            performSegueWithIdentifier("showProduct", sender: nil)
+            
+        case 6:
+            
+            performSegueWithIdentifier("showShops", sender: nil)
+            
+        case 7:
+            performSegueWithIdentifier("showRuls", sender: nil)
+            
+        case 8:
+            performSegueWithIdentifier("toBusiness", sender: nil)
+            
+        default:
+            break
+        }
+        */
     }
     
-    func complitePagesLinks(sender: UITableViewCell) {
-        pagesLinks["Ручки"] = "http://attribute.ua/3-pen/"
-        pagesLinks["Кожгалантерея"] = "http://attribute.ua/12-leather/"
-        pagesLinks["Часы"] = "http://attribute.ua/29-watch/"
-        pagesLinks["Аксессуары"] = "http://attribute.ua/35-accesories/"
-        pagesLinks["Запонки,зажимы"] = "http://attribute.ua/134-zaponki/"
-        pagesLinks["Подарочные наборы"] = "http://attribute.ua/140-podarochnie-nabori/"
-        
-        catalogName = sender.textLabel?.text ?? "Каталог"
-        link = pagesLinks[catalogName] ?? "http://attribute.ua/"
-        //        performSegueWithIdentifier("showCatalog", sender: sender)
-    }
+    // MARK: - Segue
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
         if let cell = sender as? UITableViewCell {
+            
             if let catalogTVC = segue.destinationViewController as? CatalogTVC {
-                complitePagesLinks(cell)
-                catalogTVC.catalogName = self.catalogName
-                catalogTVC.link = self.link
+                
                 catalogTVC.contacts = self.contacts
-                catalogTVC.pagesNames = [String](pagesLinks.keys)
+                
+                let indexPath = tableView.indexPathForCell(cell);
+                
+                catalogTVC.productSection = self.productSectionArray[(indexPath?.row)!];
             }
         }
     }

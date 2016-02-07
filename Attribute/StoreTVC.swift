@@ -10,56 +10,71 @@ import UIKit
 
 class StoreTVC:  UITableViewController {
     
-    private let parser = Parser()
-    lazy private var stores = [[[String:String]]]()
-    lazy private var cities = [String]()
+    private var storesInfo = [StoresInCityArea]()
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        title = "Сеть бутиков Attribute"
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        title = "Сеть бутиков"
         let storeLink = "http://attribute.ua/stores"
-        if CachedDataManager.sharedInstance.cachedStores.storeInfo.isEmpty {
+        
+        if CachedDataManager.sharedInstance.cachedStores.isEmpty {
+            
+            let parser = Parser()
             CachedDataManager.sharedInstance.cachedStores = parser.getStoresInfo(storeLink)
         }
-        cities = CachedDataManager.sharedInstance.cachedStores.cities
-        stores = CachedDataManager.sharedInstance.cachedStores.storeInfo
         
+        self.storesInfo = CachedDataManager.sharedInstance.cachedStores
+    }
+    
+    // MARK: - UITableViewDataSource
+    
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        
+        return self.storesInfo.count
+    }
+    
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        
+        return self.storesInfo[section].cityName
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return stores[section].count
+        
+        let storesInCityArea = self.storesInfo[section]
+        
+        return storesInCityArea.storeObjectArray.count
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        if let storeCell = tableView.dequeueReusableCellWithIdentifier("storeCell", forIndexPath: indexPath) as? StoreCell {
-            let shop = stores[indexPath.section]
-            CachedDataManager.sharedInstance.getStoreImage((shop[indexPath.row])["image"]!, toImageView: storeCell.storeImage)
-            CachedDataManager.sharedInstance.getData((shop[indexPath.row])["name"]!, toDataView: storeCell.storeName)
-            CachedDataManager.sharedInstance.getData((shop[indexPath.row])["address"]!, toDataView: storeCell.address)
+        if let cell = tableView.dequeueReusableCellWithIdentifier("storeCell", forIndexPath: indexPath) as? StoreCell {
             
-            return storeCell
+            let storesInCityArea = self.storesInfo[indexPath.section]
+            
+            let store = storesInCityArea.storeObjectArray[indexPath.row]
+            
+            CachedDataManager.sharedInstance.getStoreImage(store.image, toImageView: cell.storeImage)
+            CachedDataManager.sharedInstance.getData(store.name, toDataView: cell.storeName)
+            CachedDataManager.sharedInstance.getData(store.address, toDataView: cell.address)
+            
+            return cell
         }
+        
         return UITableViewCell()
     }
     
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return cities[section]
-    }
-    
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return cities.count
-    }
+    // MARK: - UITableViewDelegate
     
     override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         
         if let header: UITableViewHeaderFooterView = view as? UITableViewHeaderFooterView {
-            header.contentView.backgroundColor = UIColor.blackColor()//(red: 10/255, green: 10/255, blue: 10/255, alpha: 1.0)
+            header.contentView.backgroundColor = UIColor.blackColor()
             header.textLabel!.textColor = UIColor.orangeColor()
             header.alpha = 0.9
             header.textLabel?.textAlignment = NSTextAlignment.Center
         }
     }
-    
     
 }
