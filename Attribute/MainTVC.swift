@@ -94,56 +94,34 @@ class MainTVC: UITableViewController {
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true);
         
-        /*
         switch (indexPath.row) {
             
         case 0...5:
             
-            let catalogTVC = CatalogTVC()
+            let catalogTVC = storyboard?.instantiateViewControllerWithIdentifier("CatalogTVC") as! CatalogTVC
             
             catalogTVC.contacts = self.contacts
             
             catalogTVC.productSection = self.productSectionArray[indexPath.row]
             
-            let storyboardSegue = UIStoryboardSegue(identifier: "showProduct", source: self, destination: catalogTVC)
-            
-            prepareForSegue(storyboardSegue, sender: UITableViewCell())
-            
-            //            navigationController?.pushViewController(catalogTVC, animated: true)
-            //
-            //            performSegueWithIdentifier("showProduct", sender: nil)
+            showViewController(catalogTVC, sender: nil)
             
         case 6:
             
             performSegueWithIdentifier("showShops", sender: nil)
             
         case 7:
+            
             performSegueWithIdentifier("showRuls", sender: nil)
             
         case 8:
+            
             performSegueWithIdentifier("toBusiness", sender: nil)
             
         default:
             break
         }
-        */
-    }
-    
-    // MARK: - Segue
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        
-        if let cell = sender as? UITableViewCell {
-            
-            if let catalogTVC = segue.destinationViewController as? CatalogTVC {
-                
-                catalogTVC.contacts = self.contacts
-                
-                let indexPath = tableView.indexPathForCell(cell);
-                
-                catalogTVC.productSection = self.productSectionArray[(indexPath?.row)!];
-            }
-        }
+
     }
     
 }

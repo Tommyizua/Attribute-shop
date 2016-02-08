@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ProductVC: UIViewController, UITableViewDataSource {
+class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     @IBOutlet weak var titleProduct: UILabel!
     @IBOutlet weak var imageProduct: UIImageView!
@@ -17,20 +17,18 @@ class ProductVC: UIViewController, UITableViewDataSource {
     @IBOutlet weak var priceProduct: UILabel!
     @IBOutlet weak var featureTable: UITableView!
     
-    var product = Product()
     var contacts: UIBarButtonItem!
-    
-    private var featureKey = [String]()
-    private var featureValue = [String]()
-    
+    var product = Product()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
         featureTable.dataSource = self
+        featureTable.delegate = self
         navigationItem.rightBarButtonItem = contacts
         
         let parser = Parser()
-
+        
         self.product.features = parser.getFeature(self.product.detailLink)
         
         fillingLabels()
@@ -50,42 +48,51 @@ class ProductVC: UIViewController, UITableViewDataSource {
             
             availabilityProduct.textColor = UIColor.redColor()
         }
-
-    }
-    
-    func fillingKeyAndValue() {
         
-        for i in 0..<self.product.features.count {
-            
-            featureKey += [String](self.product.features[i].keys)
-            
-            featureValue += [String](self.product.features[i].values)
-        }
     }
     
     // MARK: - UITableViewDataSource
-
+    
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        
+        return "Характеристики"
+    }
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-      
+        
         return self.product.features.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-      
-        fillingKeyAndValue()
-      
-        let cell = tableView.dequeueReusableCellWithIdentifier("featureCell",forIndexPath: indexPath)
         
-        if let productVC = cell as? ProductCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("featureCell", forIndexPath: indexPath)
+        
+        if !self.product.features.isEmpty {
             
-            if !self.product.features.isEmpty {
-                
-                productVC.nameLabel.text = "\(featureKey[indexPath.row]):"
-                productVC.valueLabel.text = featureValue[indexPath.row]
-            }
+            let feature = self.product.features[indexPath.row]
+            
+            cell.textLabel?.text = "\(feature.name):"
+            cell.detailTextLabel?.text = feature.value
+            cell.backgroundColor = UIColor(colorLiteralRed: 255/255, green: 204/255, blue: 102/255, alpha: 0.02)
         }
         
         return cell
+    }
+    
+    // MARK: - UITableViewDelegate
+    
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        
+        return 20
+    }
+    
+    func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        
+        if let header = view as? UITableViewHeaderFooterView {
+            
+            header.textLabel?.font = UIFont.boldSystemFontOfSize(15)
+        }
+        
     }
     
     // MARK: - Actions
@@ -122,12 +129,16 @@ class ProductVC: UIViewController, UITableViewDataSource {
         
         Shopping.sharedInstance.price.append(self.product.priceValue)
         Shopping.sharedInstance.quantity.append(1)
-        Shopping.sharedInstance.name.append(self.product.title ?? "")
+        Shopping.sharedInstance.name.append(self.product.title)
         
         let number = Shopping.sharedInstance.quantity.count
+        
         let tabArray = tabBarController?.tabBar.items as NSArray!
-        let shoppingCartTab = tabArray.objectAtIndex(1) as! UITabBarItem
-        shoppingCartTab.badgeValue = number.description
+        
+        if let shoppingCartTab = tabArray.objectAtIndex(1) as? UITabBarItem {
+        
+            shoppingCartTab.badgeValue = number.description
+        }
     }
     
 }

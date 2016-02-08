@@ -20,7 +20,7 @@ class Product: NSObject {
     
     var detailLink: String
     
-    lazy var features = [[String:String]]()
+    lazy var features = [Feature]()
     
     override init() {
         self.title = ""
@@ -34,15 +34,4 @@ class Product: NSObject {
         self.imageUrlString = ""
     }
 
-//    init(cell: CatalogCell, productLink: String) {
-//        
-//        self.title = cell.titleProduct.text!
-//        self.article = cell.articleProduct.text!
-//        self.availability = cell.availabilityProduct.text!
-//        self.price = cell.priceProduct.text!
-//        self.image = cell.imageProduct.image
-//        self.detailLink =
-//        self.imageUrlString = ""
-//    }
-//    
 }

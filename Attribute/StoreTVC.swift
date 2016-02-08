@@ -69,7 +69,7 @@ class StoreTVC:  UITableViewController {
     
     override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         
-        if let header: UITableViewHeaderFooterView = view as? UITableViewHeaderFooterView {
+        if let header = view as? UITableViewHeaderFooterView {
             header.contentView.backgroundColor = UIColor.blackColor()
             header.textLabel!.textColor = UIColor.orangeColor()
             header.alpha = 0.9

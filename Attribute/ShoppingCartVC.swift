@@ -73,18 +73,28 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
     
     // MARK: - UITableViewDataSource
     
+    
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        
+        return "Список выбранных товаров"
+    }
+
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+      
         return Shopping.sharedInstance.name.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+       
         let cell = tableView.dequeueReusableCellWithIdentifier("shopCell", forIndexPath: indexPath)
+        
         if let buyCell = cell as? BuyCell {
             buyCell.quantityField.text = Shopping.sharedInstance.quantity[indexPath.row].description
             buyCell.nameLabel.text = Shopping.sharedInstance.name[indexPath.row]
             buyCell.quantityField.delegate = self
             
         }
+        
         return cell
     }
     
@@ -147,8 +157,8 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
         static let KEYBOARD_ANIMATION_DURATION : CGFloat = 0.3
         static let MINIMUM_SCROLL_FRACTION : CGFloat = 0.2
         static let MAXIMUM_SCROLL_FRACTION : CGFloat = 0.8
-        static let PORTRAIT_KEYBOARD_HEIGHT : CGFloat = 160
-        static let LANDSCAPE_KEYBOARD_HEIGHT : CGFloat = 120
+        static let PORTRAIT_KEYBOARD_HEIGHT : CGFloat = 216
+        static let LANDSCAPE_KEYBOARD_HEIGHT : CGFloat = 162
     }
     
     // MARK: - UITextFieldDelegate
@@ -169,8 +179,11 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
         let orientation : UIInterfaceOrientation = UIApplication.sharedApplication().statusBarOrientation
       
         if orientation == UIInterfaceOrientation.Portrait || orientation == UIInterfaceOrientation.PortraitUpsideDown {
+         
             animateDistance = floor(MoveKeyboard.PORTRAIT_KEYBOARD_HEIGHT * heightFraction)
+      
         } else {
+            
             animateDistance = floor(MoveKeyboard.LANDSCAPE_KEYBOARD_HEIGHT * heightFraction)
         }
         

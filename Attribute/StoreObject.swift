@@ -19,6 +19,5 @@ class StoreObject: NSObject {
         self.name = ""
         self.address = ""
     }
-
     
 }
