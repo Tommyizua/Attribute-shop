@@ -30,7 +30,7 @@ class Parser: NSObject {
         return String()
     }
     
-    func searchUnicode(inout text: String)  {
+    func searchForUnicode(inout text: String)  {
         
         while text.rangeOfString("&#039;") != nil {
             
@@ -79,7 +79,7 @@ class Parser: NSObject {
                 product.detailLink = searchInfo(code, start: "product-name\" href=\"", end: "\" title=")
                 
                 product.title = searchInfo(code, start: "\" itemprop=\"url\" > ", end: " </a>")
-                searchUnicode(&product.title)
+                searchForUnicode(&product.title)
                 
                 product.imageUrlString = searchInfo(code, start: "src=\"", end: "\" alt=\"")
                 product.article = "Артикул: " + searchInfo(code, start: "</span> <span>", end: "</sapn>")
@@ -132,7 +132,7 @@ class Parser: NSObject {
                 
                 feature.value = searchInfo(code, start: "</td><td>", end: "</td></tr>")
                 
-                searchUnicode(&feature.value)
+                searchForUnicode(&feature.value)
                 
                 let startRange = code.rangeOfString("</td></tr>")!
                 code = code.substringFromIndex(startRange.endIndex)
@@ -173,7 +173,7 @@ class Parser: NSObject {
                     storeObject.image = searchInfo(codeBlock, start: "\" src=\"", end: "\" alt=\"\" /></div>")
                     
                     storeObject.name = searchInfo(codeBlock, start: "store_name\">", end: "</div><div class=\"store_address")
-                    searchUnicode(&storeObject.name)
+                    searchForUnicode(&storeObject.name)
                     
                     storeObject.address = searchInfo(codeBlock, start: "store_address\">", end: "</div><div class=\"clear")
                     
