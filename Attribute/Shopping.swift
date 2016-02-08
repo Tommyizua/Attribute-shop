@@ -39,7 +39,10 @@ class Shopping: NSObject {
             break
         }
         
-        NSNotificationCenter.defaultCenter().postNotificationName(cartItemDidChangeNotification, object: self, userInfo: ["index":id, "newValue":receivedQuantity])
+        NSNotificationCenter.defaultCenter().postNotificationName(
+            cartItemDidChangeNotification,
+            object: self,
+            userInfo: ["index": id, "newValue": receivedQuantity])
     }
     
 }
