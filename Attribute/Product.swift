@@ -15,10 +15,14 @@ class Product: NSObject {
     var title: String
     var article: String
     var availability: String
+    var isAvailable: Bool
+    
     var priceFormatted: String
-    var priceValue: Int
+    var price: Int
     
     var detailLink: String
+    
+    var quantity: Int
     
     lazy var features = [Feature]()
     
@@ -27,11 +31,15 @@ class Product: NSObject {
         self.article = ""
         self.availability = ""
         
+        self.isAvailable = true
+        
         self.priceFormatted = ""
-        self.priceValue = 0
+        self.price = 0
         
         self.detailLink = ""
         self.imageUrlString = ""
+        
+        self.quantity = 0
     }
 
 }

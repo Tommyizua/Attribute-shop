@@ -33,15 +33,22 @@ class CachedDataManager: NSObject {
         } else {
             
             dispatch_async(qos, { () -> () in
+               
                 var img = UIImage(data: NSData(contentsOfURL: NSURL(string:link)!)!)
                 img = UIImage.imageScaled(img!, size:CGSizeMake(200, 200))
+             
                 dispatch_async(self.kMainQueue, { () -> () in
+                   
                     self.cachedImages[link] = img
+                   
                     toImageView.image = img
                     toImageView.setNeedsLayout()
+                    
                 })
             })
+            
         }
+        
         return nil
     }
     
@@ -62,17 +69,21 @@ class CachedDataManager: NSObject {
                 dispatch_async(self.kMainQueue, { () -> () in
                     
                     self.cachedData[data] = text
+                   
                     toDataView.text = text
                     toDataView.setNeedsLayout()
                 })
             })
+            
         }
+        
         return nil
     }
     
     func getStoreImage(link: String, toImageView: UIImageView) -> UIImage? {
       
         if let image = cachedImages[link] {
+          
             toImageView.image = image
             return image
             
@@ -84,12 +95,16 @@ class CachedDataManager: NSObject {
                 img = UIImage.imageScaled(img!, size:CGSizeMake(480, 320))
                 
                 dispatch_async(self.kMainQueue, { () -> () in
+                  
                     self.cachedImages[link] = img
+                  
                     toImageView.image = img
                     toImageView.setNeedsLayout()
                 })
             })
+            
         }
+        
         return nil
     }
     

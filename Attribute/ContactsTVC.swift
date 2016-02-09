@@ -29,15 +29,18 @@ class ContactsTVC: UITableViewController {
         
         mapView.delegate = self
         
+        let officeLatitude = 50.435578
+        let officeLongitude = 30.48238
+        
         let annotation = OfficeAnnotation(
             title: "ул. Стадионная 5, оф. 9",
             locationName: "Интернет магазин \"Attribute\"",
             discipline: "Attribute",
-            coordinate: CLLocationCoordinate2D(latitude: 50.435578, longitude: 30.48238))
+            coordinate: CLLocationCoordinate2D(latitude: officeLatitude, longitude: officeLongitude))
         
         mapView.addAnnotation(annotation)
         
-        let initialLocation = CLLocation(latitude: 50.435578, longitude: 30.48238)
+        let initialLocation = CLLocation(latitude: officeLatitude, longitude: officeLongitude)
         let regionRadius: CLLocationDistance = 1000
        
         centerMapOnLocation(initialLocation, regionRadius: regionRadius)

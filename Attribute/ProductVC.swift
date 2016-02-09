@@ -15,11 +15,15 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     @IBOutlet weak var articleProduct: UILabel!
     @IBOutlet weak var availabilityProduct: UILabel!
     @IBOutlet weak var priceProduct: UILabel!
+    @IBOutlet weak var buyButton: UIButton!
+    
     @IBOutlet weak var featureTable: UITableView!
+    
+    
     
     var contacts: UIBarButtonItem!
     var product = Product()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -44,9 +48,12 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         self.availabilityProduct.text = self.product.availability
         self.priceProduct.text = self.product.priceFormatted
         
-        if availabilityProduct.text!.lowercaseString.hasPrefix("нет") {
+        if !self.product.isAvailable {
             
-            availabilityProduct.textColor = UIColor.redColor()
+            self.availabilityProduct.textColor = UIColor.redColor()
+            self.buyButton.enabled = false;
+            self.buyButton.setTitle("Не доступен", forState: UIControlState.Normal)
+            self.buyButton.backgroundColor = UIColor.lightGrayColor()
         }
         
     }
@@ -99,44 +106,27 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     @IBAction func buyProduct(sender: UIButton) {
         
-        var counter = 0
-        let checker = 0
-        
-        if !Shopping.sharedInstance.name.isEmpty {
+        if !Shopping.sharedInstance.itemsArray.contains(self.product) {
             
-            for (id, name) in Shopping.sharedInstance.name.enumerate() {
-                
-                if titleProduct.text == name {
-                    Shopping.sharedInstance.quantity[id]++
-                    counter++
-                    break
-                }
-            }
-            
-            if counter == checker {
-                addNewProduct()
-            }
-            
-        } else {
-            
-            addNewProduct()
+            addNewProductWithItem(self.product)
         }
         
-        Shopping.sharedInstance.fullPrice += (self.product.priceValue)
+        self.product.quantity++
+        
+        Shopping.sharedInstance.changeFullPrice()
+        
     }
     
-    func addNewProduct() {
+    func addNewProductWithItem(item: Product) {
         
-        Shopping.sharedInstance.price.append(self.product.priceValue)
-        Shopping.sharedInstance.quantity.append(1)
-        Shopping.sharedInstance.name.append(self.product.title)
+        Shopping.sharedInstance.itemsArray.append(self.product)
         
-        let number = Shopping.sharedInstance.quantity.count
+        let number = Shopping.sharedInstance.itemsArray.count
         
         let tabArray = tabBarController?.tabBar.items as NSArray!
         
         if let shoppingCartTab = tabArray.objectAtIndex(1) as? UITabBarItem {
-        
+            
             shoppingCartTab.badgeValue = number.description
         }
     }

@@ -32,7 +32,7 @@ class CatalogTVC: UITableViewController {
     
     // MARK: - Help Methods
     
-    func formattingPrice(price: String, indexPath: NSIndexPath) -> String {
+    func formattingPrice(price: String) -> String {
         
         var formattedPrice = "Цена: " + price
         let index = formattedPrice.characters.endIndex.predecessor().predecessor()
@@ -63,12 +63,17 @@ class CatalogTVC: UITableViewController {
             CachedDataManager.sharedInstance.getData(currentProduct.article,  toDataView: catalogCell.articleProduct)
             CachedDataManager.sharedInstance.getData(currentProduct.availability, toDataView: catalogCell.availabilityProduct)
             
-            currentProduct.priceFormatted = formattingPrice(currentProduct.priceValue.description, indexPath: indexPath)
+            currentProduct.priceFormatted = formattingPrice(currentProduct.price.description)
           
             CachedDataManager.sharedInstance.getData(currentProduct.priceFormatted , toDataView: catalogCell.priceProduct)
             
-            if catalogCell.availabilityProduct.text!.lowercaseString.hasPrefix("нет") {
+            if !currentProduct.isAvailable {
+                
                 catalogCell.availabilityProduct.textColor = UIColor.redColor()
+           
+            } else {
+                
+                catalogCell.availabilityProduct.textColor = UIColor.greenColor()
             }
         }
         return cell

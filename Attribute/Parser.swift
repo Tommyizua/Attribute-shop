@@ -15,16 +15,16 @@ class Parser: NSObject {
     // MARK: - Help Methods
     
     func searchInfo (page: String, start: String, end: String) -> String {
-     
+        
         if let startRange = page.rangeOfString(start) {
-         
+            
             if let endRange = page.rangeOfString(end) {
-              
+                
                 let finalRange = (startRange.endIndex)..<(endRange.startIndex)
                 let info = page.substringWithRange(finalRange)
                 return info
             }
-       
+            
         }
         
         return String()
@@ -40,9 +40,9 @@ class Parser: NSObject {
         }
         
         while text.rangeOfString("&quot;") != nil {
-          
+            
             let range = text.rangeOfString("&quot;")!
-
+            
             text.removeRange(range)
         }
         
@@ -61,7 +61,7 @@ class Parser: NSObject {
             let sourceHtmlCode = String(data: dataMainPage, encoding: NSUTF8StringEncoding)!
             var startRange = sourceHtmlCode.rangeOfString("</div><h1> Каталог")!
             var code = sourceHtmlCode.substringFromIndex(startRange.endIndex)
-          
+            
             pageNumber = searchInfo(code, start: "</span> </span></li><li> <a href=\"/", end: "</span> </a></li><li id=")
             
             if pageNumber.characters.count > 40 {
@@ -89,17 +89,22 @@ class Parser: NSObject {
                 var priceValueString = ""
                 
                 for letter in stringPrice.characters {
-                
+                    
                     if "0"..."9" ~= letter {
-
+                        
                         priceValueString += String(letter)
                     }
                     
                 }
                 
-                product.priceValue = Int(priceValueString) ?? 0
+                product.price = Int(priceValueString) ?? 0
                 
                 product.availability = searchInfo(code, start: "Stock\" />", end: " </span> </span><div")
+                
+                if product.availability.lowercaseString.hasPrefix("нет") {
+                    
+                    product.isAvailable = false
+                }
                 
                 let startRange = code.rangeOfString("/div></div></li>")!
                 code = code.substringFromIndex(startRange.endIndex)
@@ -121,9 +126,9 @@ class Parser: NSObject {
         if let dataMainPage = dataMainPage {
             
             let sourceHtmlCode = String(data: dataMainPage, encoding: NSUTF8StringEncoding)!
-
+            
             var code = searchInfo(sourceHtmlCode, start: "class=\"table-data-sheet", end: "</table> </section>")
-         
+            
             while code.containsString("\"><td>") {
                 
                 let feature = Feature()
