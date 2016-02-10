@@ -97,7 +97,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Office Phone-48" translatesAutoresizingMaskIntoConstraints="NO" id="4Sy-Jg-XSe">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Office Phone" translatesAutoresizingMaskIntoConstraints="NO" id="4Sy-Jg-XSe">
                                                     <rect key="frame" x="8" y="0.0" width="50" height="50"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="1ux-0I-RMo"/>
@@ -136,7 +136,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Email-48" translatesAutoresizingMaskIntoConstraints="NO" id="AJJ-HU-lTj">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Email" translatesAutoresizingMaskIntoConstraints="NO" id="AJJ-HU-lTj">
                                                     <rect key="frame" x="8" y="0.0" width="50" height="50"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="50" id="fCQ-jc-saX"/>
@@ -173,7 +173,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="80"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Map Marker-48" translatesAutoresizingMaskIntoConstraints="NO" id="HzI-OO-ePI">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Map Marker" translatesAutoresizingMaskIntoConstraints="NO" id="HzI-OO-ePI">
                                                     <rect key="frame" x="8" y="15" width="50" height="50"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="50" id="I6g-bk-Goj"/>
@@ -858,9 +858,9 @@
     </scenes>
     <resources>
         <image name="Camera" width="64" height="64"/>
-        <image name="Email-48" width="48" height="48"/>
-        <image name="Map Marker-48" width="48" height="48"/>
-        <image name="Office Phone-48" width="48" height="48"/>
+        <image name="Email" width="50" height="50"/>
+        <image name="Map Marker" width="50" height="50"/>
+        <image name="Office Phone" width="50" height="50"/>
         <image name="Shopping bag" width="25" height="25"/>
         <image name="Shopping bag selected" width="25" height="25"/>
         <image name="View Details Filled-50" width="25" height="25"/>
