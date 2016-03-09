@@ -153,7 +153,7 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
         return true
     }
     
-    // MARK: - Actions
+    // MARK: - Action Methods
     
     @IBAction func plusOne(sender: UIButton) {
         
@@ -206,6 +206,7 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
                 
                 self.presentViewController(mailComposeViewController, animated: true, completion: nil)
                 
+                
             } else {
                 
                 self.showSendMailErrorAlert()
@@ -222,9 +223,9 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
         
         mailComposerVC.setToRecipients(["tommyizua@gmail.com"])
         
-        mailComposerVC.setSubject("Заказ через приложение")
+        mailComposerVC.setSubject("Заказ с помощью приложения iOS");
         
-        mailComposerVC.setMessageBody("Тело заказа", isHTML: false)
+        mailComposerVC.setMessageBody(self.formingOrderBody(), isHTML: false)
         
         return mailComposerVC
     }
@@ -236,9 +237,31 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
             message: "Your device could not send e-mail. Please check e-mail configuration and try again.",
             preferredStyle: UIAlertControllerStyle.Alert)
         
-        alert.addAction(UIAlertAction(title: "Ok", style:.Cancel, handler: nil))
+        let okAction = UIAlertAction(title: "OK", style:.Default, handler: nil)
+        
+        alert.addAction(okAction);
         
         self.presentViewController(alert, animated: true, completion: nil)
+        
+    }
+    
+    func formingOrderBody() -> String {
+        
+        var orderDiscription = ""
+        
+        for product in Shopping.sharedInstance.itemsArray {
+            
+            orderDiscription += " " +
+                product.article + " " +
+                product.title + " "  +
+                product.priceFormatted + " " +
+                product.quantity.description;
+            
+        }
+        
+        orderDiscription += formattingPrice(Shopping.sharedInstance.fullPrice.description)
+        
+        return orderDiscription;
         
     }
     
@@ -267,7 +290,7 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
         static let PORTRAIT_KEYBOARD_HEIGHT : CGFloat = 130
         static let LANDSCAPE_KEYBOARD_HEIGHT : CGFloat = 110
     }
-        
+    
     // MARK: - UITextFieldDelegate
     
     func textFieldDidBeginEditing(textField: UITextField) {
@@ -331,7 +354,7 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
             if textField.text?.characters.count > 2 {
                 
                 textField.text? = item.quantity.description
-
+                
             } else {
                 
                 item.quantity = Int(textField.text!) ?? item.quantity
@@ -339,7 +362,7 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
                 Shopping.sharedInstance.changeFullPrice()
                 
             }
-
+            
         }
         
     }
