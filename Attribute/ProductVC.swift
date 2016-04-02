@@ -111,7 +111,7 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
             addNewProductWithItem(self.product)
         }
         
-        self.product.quantity++
+        self.product.quantity += 1
         
         Shopping.sharedInstance.changeFullPrice()
         

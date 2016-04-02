@@ -22,7 +22,7 @@ class MainTVC: UITableViewController {
         navigationController?.navigationBar.tintColor = UIColor.orangeColor()
         tabBarController?.tabBar.tintColor = UIColor.blackColor()
         
-        contacts = UIBarButtonItem(title: "Контакты", style: .Plain, target: self, action: "openContacts:")
+        contacts = UIBarButtonItem(title: "Контакты", style: .Plain, target: self, action: #selector(MainTVC.openContacts(_:)))
         
         navigationItem.rightBarButtonItem = contacts
         

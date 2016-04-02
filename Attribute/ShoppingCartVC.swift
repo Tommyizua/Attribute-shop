@@ -22,7 +22,7 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: "updateCellWithNewQuantity:",
+            selector: #selector(ShoppingCartVC.updateCellWithNewQuantity(_:)),
             name: cartItemDidChangeNotification, object: nil)
     }
     
@@ -55,7 +55,9 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
     
     // MARK: - Help Methods
     
-    func formattingPrice(var price: String) -> String {
+    func formattingPrice(price: String) -> String {
+        
+        var price = price
         
         if price == "0" {
             
@@ -176,11 +178,11 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
             
             if sender.titleLabel?.text == "+" {
                 
-                item.quantity++
+                item.quantity += 1
                 
             } else if sender.titleLabel?.text == "-" && item.quantity > 1 {
                 
-                item.quantity--
+                item.quantity -= 1
             }
             
             Shopping.sharedInstance.changeFullPrice()
