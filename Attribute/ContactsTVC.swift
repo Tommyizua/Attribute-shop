@@ -9,12 +9,23 @@
 import UIKit
 import MapKit
 
+
 class ContactsTVC: UITableViewController {
+    
+    enum RowName: Int {
+        case Phone = 0
+        case Email = 1
+        case Address = 2
+        case Map = 3
+    }
+    
+    private let rowPhotoHeight: CGFloat = 50;
+    private let rowAddressHeight: CGFloat = 80;
     
     @IBOutlet weak var mapView: MKMapView!
     
     var locationManager = CLLocationManager()
- 
+    
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
@@ -42,7 +53,7 @@ class ContactsTVC: UITableViewController {
         
         let initialLocation = CLLocation(latitude: officeLatitude, longitude: officeLongitude)
         let regionRadius: CLLocationDistance = 1000
-       
+        
         centerMapOnLocation(initialLocation, regionRadius: regionRadius)
     }
     
@@ -60,13 +71,34 @@ class ContactsTVC: UITableViewController {
             
         }
     }
-
+    
     func centerMapOnLocation(location: CLLocation, regionRadius: CLLocationDistance) {
         
         let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate,
-            regionRadius * 2.0, regionRadius * 2.0)
-
+                                                                  regionRadius * 2.0, regionRadius * 2.0)
+        
         self.mapView.setRegion(coordinateRegion, animated: true)
     }
-
+    
+    // MARK: - UITableViewDelegate
+    
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        
+        switch indexPath.row {
+            
+        case RowName.Phone.rawValue, RowName.Email.rawValue:
+            return self.rowPhotoHeight
+            
+        case RowName.Address.rawValue:
+            return self.rowAddressHeight
+            
+        case RowName.Map.rawValue:
+            return CGRectGetHeight(self.view.bounds) - self.rowPhotoHeight * 2 - self.rowAddressHeight
+            
+        default:
+            return 50
+        }
+        
+    }
+    
 }

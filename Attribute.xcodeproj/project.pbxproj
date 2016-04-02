@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		4CB830241C0E12DF0064A445 /* CashedImagesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB830231C0E12DF0064A445 /* CashedImagesManager.swift */; };
 		4CB830261C0E138D0064A445 /* UIExtentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB830251C0E138D0064A445 /* UIExtentions.swift */; };
+		BAD9452B1CB0482800E300FB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8B2B471C0DCA6C00FE007A /* MapKit.framework */; };
 		CE19615E1C12DC8900BA1F70 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE19615D1C12DC8900BA1F70 /* Product.swift */; };
 		CE19618A1C14985500BA1F70 /* OfficeAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1961891C14985500BA1F70 /* OfficeAnnotation.swift */; };
 		CE19618C1C1498B400BA1F70 /* ExtensionContactsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE19618B1C1498B400BA1F70 /* ExtensionContactsVC.swift */; };
@@ -23,7 +24,6 @@
 		CE8B2B421C0CE65500FE007A /* ContactsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8B2B411C0CE65500FE007A /* ContactsTVC.swift */; };
 		CE8B2B441C0DAA8000FE007A /* ShoppingCartVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8B2B431C0DAA8000FE007A /* ShoppingCartVC.swift */; };
 		CE8B2B461C0DAB6500FE007A /* BuyTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8B2B451C0DAB6500FE007A /* BuyTVC.swift */; };
-		CE8B2B481C0DCA6C00FE007A /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8B2B471C0DCA6C00FE007A /* MapKit.framework */; };
 		CE8B2B4A1C0DD3DD00FE007A /* Shopping.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8B2B491C0DD3DD00FE007A /* Shopping.swift */; };
 		CE91DC911C04ADAC0026BEAA /* MainTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE91DC901C04ADAC0026BEAA /* MainTVC.swift */; };
 		CE91DC951C04AE960026BEAA /* ProductVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE91DC941C04AE960026BEAA /* ProductVC.swift */; };
@@ -69,7 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE8B2B481C0DCA6C00FE007A /* MapKit.framework in Frameworks */,
+				BAD9452B1CB0482800E300FB /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,7 +303,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -342,7 +342,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -355,9 +355,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Attribute/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = Chyzh.Attribute;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Chyzh.Attribute;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -367,9 +368,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Attribute/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = Chyzh.Attribute;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Chyzh.Attribute;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
