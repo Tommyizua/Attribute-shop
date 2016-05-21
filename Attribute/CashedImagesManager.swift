@@ -23,7 +23,9 @@ class CachedDataManager: NSObject {
     
     
     func getImageFromLink(link: String, toImageView: UIImageView) -> UIImage? {
-      
+    
+        toImageView.image = nil
+        
         if let image = cachedImages[link] {
             
             toImageView.image = image
@@ -82,6 +84,8 @@ class CachedDataManager: NSObject {
     
     func getStoreImage(link: String, toImageView: UIImageView) -> UIImage? {
       
+        toImageView.image = nil
+        
         if let image = cachedImages[link] {
           
             toImageView.image = image

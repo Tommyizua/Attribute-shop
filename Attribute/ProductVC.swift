@@ -19,10 +19,9 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     @IBOutlet weak var featureTable: UITableView!
     
-    
-    
     var contacts: UIBarButtonItem!
     var product = Product()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,11 +32,36 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         
         let parser = Parser()
         
-        self.product.features = parser.getFeature(self.product.detailLink)
-        
         fillingLabels()
+        
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        
+        let activityIdicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
+        activityIdicator.center = CGPointMake(CGRectGetMidX(self.view.frame), CGRectGetMinY(self.featureTable.frame))
+        
+        self.featureTable.addSubview(activityIdicator)
+       
+        activityIdicator.startAnimating()
+
+        parser.getFeature(self.product.detailLink, completionHandler:{(features: [Feature]) in
+            
+            self.product.features = features;
+            
+            self.featureTable.reloadData()
+            
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+            
+            activityIdicator.stopAnimating()
+        })
+        
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+    }
+
     // MARK: - Help Methods
     
     func fillingLabels() {

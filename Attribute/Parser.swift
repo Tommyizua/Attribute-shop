@@ -11,6 +11,8 @@ import UIKit
 class Parser: NSObject {
     
     private var pageNumber = ""
+    private let qos = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+    private let kMainQueue = dispatch_get_main_queue()
     
     // MARK: - Help Methods
     
@@ -50,155 +52,177 @@ class Parser: NSObject {
     
     // MARK: - Get Catalog products Method
     
-    func getInfoFromUrl(link: String) -> [Product] {
+    func getInfoFromUrl(link: String, completionHandler:(productArray: [Product]) -> ()) {
         
-        var productArray = [Product]()
-        
-        let dataMainPage = NSData(contentsOfURL: NSURL(string: link)!)
-        
-        if let dataMainPage = dataMainPage {
+        dispatch_async(qos, {
             
-            let sourceHtmlCode = String(data: dataMainPage, encoding: NSUTF8StringEncoding)!
-            var startRange = sourceHtmlCode.rangeOfString("</div><h1> Каталог")!
-            var code = sourceHtmlCode.substringFromIndex(startRange.endIndex)
+            var productArray = [Product]()
             
-            pageNumber = searchInfo(code, start: "</span> </span></li><li> <a href=\"/", end: "</span> </a></li><li id=")
+            let dataMainPage = NSData(contentsOfURL: NSURL(string: link)!)
             
-            if pageNumber.characters.count > 40 {
-                let startRange = pageNumber.rangeOfString("</span> </span></li><li> <a href=\"/")!
-                pageNumber = pageNumber.substringFromIndex(startRange.endIndex)
-            }
-            
-            startRange = pageNumber.rangeOfString("<span>")!
-            pageNumber = pageNumber.substringFromIndex(startRange.endIndex)
-            
-            while code.containsString("product-name\" href=\"") {
+            if let dataMainPage = dataMainPage {
                 
-                let product = Product()
+                let sourceHtmlCode = String(data: dataMainPage, encoding: NSUTF8StringEncoding)!
+                var startRange = sourceHtmlCode.rangeOfString("</div><h1> Каталог")!
+                var code = sourceHtmlCode.substringFromIndex(startRange.endIndex)
                 
-                product.detailLink = searchInfo(code, start: "product-name\" href=\"", end: "\" title=")
+                self.pageNumber = self.searchInfo(code, start: "</span> </span></li><li> <a href=\"/", end: "</span> </a></li><li id=")
                 
-                product.title = searchInfo(code, start: "\" itemprop=\"url\" > ", end: " </a>")
-                searchForUnicode(&product.title)
+                if self.pageNumber.characters.count > 40 {
+                    let startRange = self.pageNumber.rangeOfString("</span> </span></li><li> <a href=\"/")!
+                    self.pageNumber = self.pageNumber.substringFromIndex(startRange.endIndex)
+                }
                 
-                product.imageUrlString = searchInfo(code, start: "src=\"", end: "\" alt=\"")
-                product.article = "Артикул: " + searchInfo(code, start: "</span> <span>", end: "</sapn>")
+                startRange = self.pageNumber.rangeOfString("<span>")!
+                self.pageNumber = self.pageNumber.substringFromIndex(startRange.endIndex)
                 
-                let stringPrice = searchInfo(code, start: "price\"> ", end: " </span><meta")
-                
-                var priceValueString = ""
-                
-                for letter in stringPrice.characters {
+                while code.containsString("product-name\" href=\"") {
                     
-                    if "0"..."9" ~= letter {
+                    let product = Product()
+                    
+                    product.detailLink = self.searchInfo(code, start: "product-name\" href=\"", end: "\" title=")
+                    
+                    product.title = self.searchInfo(code, start: "\" itemprop=\"url\" > ", end: " </a>")
+                    self.searchForUnicode(&product.title)
+                    
+                    product.imageUrlString = self.searchInfo(code, start: "src=\"", end: "\" alt=\"")
+                    product.article = "Артикул: " + self.searchInfo(code, start: "</span> <span>", end: "</sapn>")
+                    
+                    let stringPrice = self.searchInfo(code, start: "price\"> ", end: " </span><meta")
+                    
+                    var priceValueString = ""
+                    
+                    for letter in stringPrice.characters {
                         
-                        priceValueString += String(letter)
+                        if "0"..."9" ~= letter {
+                            
+                            priceValueString += String(letter)
+                        }
+                        
                     }
                     
-                }
-                
-                product.price = Int(priceValueString) ?? 0
-                
-                product.availability = searchInfo(code, start: "Stock\" />", end: " </span> </span><div")
-                
-                if product.availability.lowercaseString.hasPrefix("нет") {
+                    product.price = Int(priceValueString) ?? 0
                     
-                    product.isAvailable = false
+                    product.availability = self.searchInfo(code, start: "Stock\" />", end: " </span> </span><div")
+                    
+                    if product.availability.lowercaseString.hasPrefix("нет") {
+                        
+                        product.isAvailable = false
+                    }
+                    
+                    let startRange = code.rangeOfString("/div></div></li>")!
+                    code = code.substringFromIndex(startRange.endIndex)
+                    
+                    productArray.append(product)
                 }
-                
-                let startRange = code.rangeOfString("/div></div></li>")!
-                code = code.substringFromIndex(startRange.endIndex)
-                
-                productArray.append(product)
             }
-        }
-        return productArray
+            
+            dispatch_async(self.kMainQueue, { () in
+                
+                completionHandler(productArray: productArray)
+            })
+            
+            return
+            
+        })
+        
     }
     
     // MARK: - Get Product's Features Method
     
-    func getFeature(link: String) -> [Feature] {
+    func getFeature(link: String, completionHandler:(features: [Feature]) -> ()) {
         
-        var featureArray = [Feature]()
-        
-        let dataMainPage = NSData(contentsOfURL: NSURL(string: link)!)
-        
-        if let dataMainPage = dataMainPage {
+        dispatch_async(qos, {
             
-            let sourceHtmlCode = String(data: dataMainPage, encoding: NSUTF8StringEncoding)!
+            var featureArray = [Feature]()
             
-            var code = searchInfo(sourceHtmlCode, start: "class=\"table-data-sheet", end: "</table> </section>")
+            let dataMainPage = NSData(contentsOfURL: NSURL(string: link)!)
             
-            while code.containsString("\"><td>") {
+            if let dataMainPage = dataMainPage {
                 
-                let feature = Feature()
+                let sourceHtmlCode = String(data: dataMainPage, encoding: NSUTF8StringEncoding)!
                 
-                feature.name = searchInfo(code, start: "\"><td>", end: "</td><td>")
+                var code = self.searchInfo(sourceHtmlCode, start: "class=\"table-data-sheet", end: "</table> </section>")
                 
-                feature.value = searchInfo(code, start: "</td><td>", end: "</td></tr>")
-                
-                searchForUnicode(&feature.value)
-                
-                let startRange = code.rangeOfString("</td></tr>")!
-                code = code.substringFromIndex(startRange.endIndex)
-                
-                featureArray.append(feature)
-                
+                while code.containsString("\"><td>") {
+                    
+                    let feature = Feature()
+                    
+                    feature.name = self.searchInfo(code, start: "\"><td>", end: "</td><td>")
+                    
+                    feature.value = self.searchInfo(code, start: "</td><td>", end: "</td></tr>")
+                    
+                    self.searchForUnicode(&feature.value)
+                    
+                    let startRange = code.rangeOfString("</td></tr>")!
+                    code = code.substringFromIndex(startRange.endIndex)
+                    
+                    featureArray.append(feature)
+                    
+                    dispatch_async(self.kMainQueue, { () in
+                        
+                        completionHandler(features: featureArray)
+                    })
+                    
+                }
             }
-        }
-        
-        return featureArray
+        })
     }
     
     // MARK: - Get Stores Info Method
     
-    func getStoresInfo(link: String) -> ([StoresInCityArea]) {
+    func getStoresInfo(link: String, completionHandler:(stores: [StoresInCityArea]) -> ()) {
         
-        let dataMainPage = NSData(contentsOfURL: NSURL(string: link)!)
-        
-        if let dataMainPage = dataMainPage {
+        dispatch_async(qos, {
             
-            let sourceHtmlCode = String(data: dataMainPage, encoding: NSUTF8StringEncoding)!
-            var code = searchInfo(sourceHtmlCode, start: "Сеть бутиков", end: "footer")
+            let dataMainPage = NSData(contentsOfURL: NSURL(string: link)!)
             
-            var storesInfoArray = [StoresInCityArea]()
-            
-            while code.containsString("city_name\">") {
+            if let dataMainPage = dataMainPage {
                 
-                let storesInCityArea = StoresInCityArea()
+                let sourceHtmlCode = String(data: dataMainPage, encoding: NSUTF8StringEncoding)!
+                var code = self.searchInfo(sourceHtmlCode, start: "Сеть бутиков", end: "footer")
                 
-                var codeBlock = searchInfo(code, start: "<div class=\"city\">", end: "\"></div></div></div>")
+                var storesInfoArray = [StoresInCityArea]()
                 
-                storesInCityArea.cityName = searchInfo(codeBlock, start: "city_name\">", end: "</div>")
-                
-                while codeBlock.containsString("\" src=\"") {
+                while code.containsString("city_name\">") {
                     
-                    let storeObject = StoreObject()
+                    let storesInCityArea = StoresInCityArea()
                     
-                    storeObject.image = searchInfo(codeBlock, start: "\" src=\"", end: "\" alt=\"\" /></div>")
+                    var codeBlock = self.searchInfo(code, start: "<div class=\"city\">", end: "\"></div></div></div>")
                     
-                    storeObject.name = searchInfo(codeBlock, start: "store_name\">", end: "</div><div class=\"store_address")
-                    searchForUnicode(&storeObject.name)
+                    storesInCityArea.cityName = self.searchInfo(codeBlock, start: "city_name\">", end: "</div>")
                     
-                    storeObject.address = searchInfo(codeBlock, start: "store_address\">", end: "</div><div class=\"clear")
+                    while codeBlock.containsString("\" src=\"") {
+                        
+                        let storeObject = StoreObject()
+                        
+                        storeObject.image = self.searchInfo(codeBlock, start: "\" src=\"", end: "\" alt=\"\" /></div>")
+                        
+                        storeObject.name = self.searchInfo(codeBlock, start: "store_name\">", end: "</div><div class=\"store_address")
+                        self.searchForUnicode(&storeObject.name)
+                        
+                        storeObject.address = self.searchInfo(codeBlock, start: "store_address\">", end: "</div><div class=\"clear")
+                        
+                        let startRange = codeBlock.rangeOfString("clear")!
+                        codeBlock = codeBlock.substringFromIndex(startRange.endIndex)
+                        
+                        storesInCityArea.storeObjectArray.append(storeObject)
+                    }
                     
-                    let startRange = codeBlock.rangeOfString("clear")!
-                    codeBlock = codeBlock.substringFromIndex(startRange.endIndex)
+                    storesInfoArray.append(storesInCityArea)
                     
-                    storesInCityArea.storeObjectArray.append(storeObject)
+                    let startRange = code.rangeOfString("clear\"></div></div></div>")!
+                    code = code.substringFromIndex(startRange.endIndex)
                 }
                 
-                storesInfoArray.append(storesInCityArea)
+                dispatch_async(self.kMainQueue, { () in
+                    
+                    completionHandler(stores: storesInfoArray)
+                })
                 
-                let startRange = code.rangeOfString("clear\"></div></div></div>")!
-                code = code.substringFromIndex(startRange.endIndex)
             }
             
-            return storesInfoArray
-            
-        }
-        
-        return [StoresInCityArea]()
+        })
     }
     
 }

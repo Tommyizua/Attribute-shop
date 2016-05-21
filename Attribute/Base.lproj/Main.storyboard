@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="EX6-54-4pC">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="EX6-54-4pC">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -76,7 +76,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Mab-wd-LDN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="389" y="1810"/>
+            <point key="canvasLocation" x="847" y="1810"/>
         </scene>
         <!--Контакты-->
         <scene sceneID="EHr-UQ-eZq">
@@ -236,7 +236,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fv4-si-RHn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1324" y="488"/>
+            <point key="canvasLocation" x="1324" y="468"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="hTt-dX-ClQ">
@@ -303,7 +303,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="G6X-C7-FA1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1324" y="1810"/>
+            <point key="canvasLocation" x="1792" y="1810"/>
         </scene>
         <!--CatalogTVC-->
         <scene sceneID="fBz-tC-nPL">
@@ -447,7 +447,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vqg-jH-gCf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="847" y="1810"/>
+            <point key="canvasLocation" x="1324" y="1810"/>
         </scene>
         <!--ProductVC-->
         <scene sceneID="1wk-F8-5iZ">
@@ -513,9 +513,6 @@
                                 <rect key="frame" x="0.0" y="225" width="320" height="211"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="178" id="7rk-5G-4Oj"/>
-                                </constraints>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="featureCell" textLabel="eFI-zy-AgE" detailTextLabel="41H-PP-FFh" style="IBUITableViewCellStyleValue1" id="gkn-47-OUy">
                                         <rect key="frame" x="0.0" y="28" width="320" height="30"/>
@@ -678,12 +675,12 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" rowHeight="70" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="6Ps-cf-rnQ">
-                                <rect key="frame" x="0.0" y="112" width="320" height="319"/>
+                                <rect key="frame" x="0.0" y="156" width="320" height="275"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="tintColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="checkmark" indentationWidth="10" reuseIdentifier="shopCell" id="vUh-RZ-zs5" customClass="BuyCell" customModule="Attribute" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="320" height="70"/>
+                                        <rect key="frame" x="0.0" y="92" width="320" height="70"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="vUh-RZ-zs5" id="Nff-Di-LW8">
                                             <rect key="frame" x="0.0" y="0.0" width="281" height="69"/>
@@ -766,7 +763,7 @@
                                 <sections/>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jv5-rN-E4h">
-                                <rect key="frame" x="180" y="66" width="120" height="30"/>
+                                <rect key="frame" x="180" y="110" width="120" height="30"/>
                                 <color key="backgroundColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="TqQ-nf-CUC"/>
@@ -788,7 +785,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" Общая цена: 0,00 грн." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xyf-oA-4yw">
-                                <rect key="frame" x="6" y="69" width="166" height="23"/>
+                                <rect key="frame" x="6" y="113" width="166" height="23"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -811,7 +808,6 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstAttribute="bottomMargin" secondItem="6Ps-cf-rnQ" secondAttribute="bottom" constant="49" id="BXK-Oh-Y1g"/>
                             <constraint firstAttribute="trailing" secondItem="6Ps-cf-rnQ" secondAttribute="trailing" id="FUv-vY-4a4"/>
                             <constraint firstItem="6Ps-cf-rnQ" firstAttribute="top" secondItem="Xyf-oA-4yw" secondAttribute="bottom" constant="20" id="LjN-TL-zvY"/>
                             <constraint firstItem="Xyf-oA-4yw" firstAttribute="top" secondItem="BUy-pn-dNj" secondAttribute="bottom" constant="49" id="QOT-NK-1vB"/>
@@ -820,9 +816,10 @@
                             <constraint firstItem="jv5-rN-E4h" firstAttribute="leading" secondItem="Xyf-oA-4yw" secondAttribute="trailing" constant="8" id="bTe-I9-uNI"/>
                             <constraint firstItem="6Ps-cf-rnQ" firstAttribute="leading" secondItem="I5i-co-ULe" secondAttribute="leading" id="m8A-dh-Cfy"/>
                             <constraint firstItem="jv5-rN-E4h" firstAttribute="centerY" secondItem="Xyf-oA-4yw" secondAttribute="centerY" id="mu3-Jg-tOu"/>
+                            <constraint firstItem="rZZ-98-YD5" firstAttribute="top" secondItem="6Ps-cf-rnQ" secondAttribute="bottom" id="xkj-qg-3be"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Корзина" image="Shopping bag" selectedImage="Shopping bag selected" id="Xl8-6l-HBR"/>
+                    <navigationItem key="navigationItem" title="Корзина" id="HGl-qC-giO"/>
                     <connections>
                         <outlet property="shoppingTableView" destination="6Ps-cf-rnQ" id="GcM-wL-aO5"/>
                         <outlet property="totalPrice" destination="Xyf-oA-4yw" id="3Rg-ny-vrL"/>
@@ -830,7 +827,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7XG-cC-9ma" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-31" y="1810"/>
+            <point key="canvasLocation" x="389" y="1810"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="SPj-KJ-WnL">
@@ -844,12 +841,31 @@
                     </tabBar>
                     <connections>
                         <segue destination="mmm-EB-kGh" kind="relationship" relationship="viewControllers" id="o4Z-Gh-9AI"/>
-                        <segue destination="zST-5z-E7C" kind="relationship" relationship="viewControllers" id="RyN-Yk-7PD"/>
+                        <segue destination="51w-Z4-6YX" kind="relationship" relationship="viewControllers" id="RyN-Yk-7PD"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cFR-iV-esX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-31" y="1103"/>
+        </scene>
+        <!--Корзина-->
+        <scene sceneID="daO-6V-9vj">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="51w-Z4-6YX" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Корзина" image="Shopping bag" selectedImage="Shopping bag selected" id="Xl8-6l-HBR"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Nr1-c4-Zpf">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="zST-5z-E7C" kind="relationship" relationship="rootViewController" id="64M-so-Qdn"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="O55-DP-wnw" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-31" y="1810"/>
         </scene>
     </scenes>
     <resources>

@@ -22,13 +22,19 @@ class MainTVC: UITableViewController {
         navigationController?.navigationBar.tintColor = UIColor.orangeColor()
         tabBarController?.tabBar.tintColor = UIColor.blackColor()
         
-        contacts = UIBarButtonItem(title: "Контакты", style: .Plain, target: self, action: #selector(MainTVC.openContacts(_:)))
+        contacts = UIBarButtonItem(title: "Контакты",
+                                   style: .Plain,
+                                   target: self,
+                                   action: #selector(MainTVC.openContacts(_:)))
         
         navigationItem.rightBarButtonItem = contacts
         
         if let font = UIFont(name: "Helvetica", size: 14) {
+            
             contacts.setTitleTextAttributes([NSFontAttributeName: font], forState: UIControlState.Normal)
+            
             navigationController?.navigationBar.titleTextAttributes = [NSFontAttributeName: font]
+            
             UIBarButtonItem.appearance().setTitleTextAttributes([NSFontAttributeName: font], forState: UIControlState.Normal)
         }
         
@@ -94,34 +100,53 @@ class MainTVC: UITableViewController {
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true);
         
+        var identifier = ""
+        
         switch (indexPath.row) {
             
         case 0...5:
             
-            let catalogTVC = storyboard?.instantiateViewControllerWithIdentifier("CatalogTVC") as! CatalogTVC
-            
-            catalogTVC.contacts = self.contacts
-            
-            catalogTVC.productSection = self.productSectionArray[indexPath.row]
-            
-            showViewController(catalogTVC, sender: nil)
+            identifier = "showCatalog"
             
         case 6:
             
-            performSegueWithIdentifier("showShops", sender: nil)
+            identifier = "showShops"
             
         case 7:
             
-            performSegueWithIdentifier("showRuls", sender: nil)
+            identifier = "showRuls"
             
         case 8:
             
-            performSegueWithIdentifier("toBusiness", sender: nil)
+            identifier = "toBusiness"
             
         default:
             break
         }
-
+        
+        self.performSegueWithIdentifier(identifier, sender: indexPath)
+        
+    }
+    
+    // MARK: - Segue
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        if segue.identifier == "showCatalog" {
+            
+            if let catalogTVC = segue.destinationViewController as? CatalogTVC {
+                
+                catalogTVC.contacts = self.contacts
+                
+                if let indexPath = sender as? NSIndexPath {
+                    
+                    catalogTVC.productSection = self.productSectionArray[indexPath.row]
+                    
+                }
+            }
+            
+        }
+        
     }
     
 }

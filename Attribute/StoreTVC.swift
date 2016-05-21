@@ -22,10 +22,39 @@ class StoreTVC:  UITableViewController {
         if CachedDataManager.sharedInstance.cachedStores.isEmpty {
             
             let parser = Parser()
-            CachedDataManager.sharedInstance.cachedStores = parser.getStoresInfo(storeLink)
+            
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+            
+            let activityIdicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
+            activityIdicator.center = self.view.center
+            
+            self.view.addSubview(activityIdicator)
+            
+            activityIdicator.startAnimating()
+
+            
+            parser.getStoresInfo(storeLink, completionHandler:{(stores: [StoresInCityArea]) in
+                
+                CachedDataManager.sharedInstance.cachedStores = stores;
+                
+                self.storesInfo = CachedDataManager.sharedInstance.cachedStores;
+                
+                self.tableView.reloadData()
+                
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+                
+                activityIdicator.stopAnimating()
+            })
+
         }
         
         self.storesInfo = CachedDataManager.sharedInstance.cachedStores
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
     }
     
     // MARK: - UITableViewDataSource

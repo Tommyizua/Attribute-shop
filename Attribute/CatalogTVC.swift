@@ -22,12 +22,36 @@ class CatalogTVC: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        
+        let activityIdicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
+        activityIdicator.center = self.view.center
+        self.view.addSubview(activityIdicator)
+        
+        activityIdicator.startAnimating()
+        
         navigationItem.rightBarButtonItem = contacts
         title = self.productSection.name
         
-        CachedDataManager.sharedInstance.cachedCatalog = parser.getInfoFromUrl(self.productSection.link)
+        parser.getInfoFromUrl(self.productSection.link, completionHandler:{(productArray: [Product]) in
+            
+            CachedDataManager.sharedInstance.cachedCatalog = productArray;
+            
+            self.catalog = CachedDataManager.sharedInstance.cachedCatalog
+            
+            self.tableView.reloadData()
+            
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+            
+            activityIdicator.stopAnimating()
+        })
         
-        catalog = CachedDataManager.sharedInstance.cachedCatalog
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
     }
     
     // MARK: - Help Methods
@@ -60,29 +84,30 @@ class CatalogTVC: UITableViewController {
             
             CachedDataManager.sharedInstance.getImageFromLink(currentProduct.imageUrlString, toImageView: catalogCell.imageProduct)
             CachedDataManager.sharedInstance.getData(currentProduct.title, toDataView: catalogCell.titleProduct)
-            CachedDataManager.sharedInstance.getData(currentProduct.article,  toDataView: catalogCell.articleProduct)
+            CachedDataManager.sharedInstance.getData(currentProduct.article, toDataView: catalogCell.articleProduct)
             CachedDataManager.sharedInstance.getData(currentProduct.availability, toDataView: catalogCell.availabilityProduct)
             
             currentProduct.priceFormatted = formattingPrice(currentProduct.price.description)
-          
-            CachedDataManager.sharedInstance.getData(currentProduct.priceFormatted , toDataView: catalogCell.priceProduct)
+            
+            CachedDataManager.sharedInstance.getData(currentProduct.priceFormatted, toDataView: catalogCell.priceProduct)
             
             if !currentProduct.isAvailable {
                 
                 catalogCell.availabilityProduct.textColor = UIColor.redColor()
-           
+                
             } else {
                 
                 catalogCell.availabilityProduct.textColor = UIColor.greenColor()
             }
         }
+        
         return cell
     }
     
     // MARK: - UITableViewDelegate
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-       
+        
         tableView.deselectRowAtIndexPath(indexPath, animated: true);
     }
     

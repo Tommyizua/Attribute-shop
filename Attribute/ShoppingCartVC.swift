@@ -20,10 +20,23 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationController?.navigationBar.barStyle = UIBarStyle.Black
+        navigationController?.navigationBar.backgroundColor = UIColor.blackColor()
+        navigationController?.navigationBar.tintColor = UIColor.orangeColor()
+        tabBarController?.tabBar.tintColor = UIColor.blackColor()
+        
+        if let font = UIFont(name: "Helvetica", size: 14) {
+            
+            navigationController?.navigationBar.titleTextAttributes = [NSFontAttributeName: font]
+            
+            UIBarButtonItem.appearance().setTitleTextAttributes([NSFontAttributeName: font], forState: UIControlState.Normal)
+        }
+
+        
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: #selector(ShoppingCartVC.updateCellWithNewQuantity(_:)),
-            name: cartItemDidChangeNotification, object: nil)
+            selector:#selector(ShoppingCartVC.updateCellWithNewQuantity(_:)),
+            name:cartItemDidChangeNotification, object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -131,23 +144,23 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
     }
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle,
-        forRowAtIndexPath indexPath: NSIndexPath) {
+                   forRowAtIndexPath indexPath: NSIndexPath) {
+        
+        if editingStyle == .Delete {
             
-            if editingStyle == .Delete {
-                
-                Shopping.sharedInstance.itemsArray.removeAtIndex(indexPath.row)
-                
-                Shopping.sharedInstance.changeFullPrice()
-                
-                
-                tableView.beginUpdates()
-                
-                tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
-                
-                tableView.endUpdates()
-                
-            }
+            Shopping.sharedInstance.itemsArray.removeAtIndex(indexPath.row)
             
+            Shopping.sharedInstance.changeFullPrice()
+            
+            
+            tableView.beginUpdates()
+            
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
+            
+            tableView.endUpdates()
+            
+        }
+        
     }
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -270,9 +283,9 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
     // MARK: MFMailComposeViewControllerDelegate
     
     func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult,
-        error: NSError?) {
-            
-            controller.dismissViewControllerAnimated(true, completion: nil)
+                               error: NSError?) {
+        
+        controller.dismissViewControllerAnimated(true, completion: nil)
     }
     
     
