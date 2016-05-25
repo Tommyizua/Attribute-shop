@@ -30,29 +30,33 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         featureTable.delegate = self
         navigationItem.rightBarButtonItem = contacts
         
-        let parser = Parser()
-        
         fillingLabels()
         
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        
-        let activityIdicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
-        activityIdicator.center = CGPointMake(CGRectGetMidX(self.view.frame), CGRectGetMinY(self.featureTable.frame))
-        
-        self.featureTable.addSubview(activityIdicator)
-       
-        activityIdicator.startAnimating()
-
-        parser.getFeature(self.product.detailLink, completionHandler:{(features: [Feature]) in
+        if self.product.features.count == 0 {
             
-            self.product.features = features;
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             
-            self.featureTable.reloadData()
+            let activityIdicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
+            activityIdicator.center = CGPointMake(CGRectGetMidX(self.view.frame), CGRectGetMinY(self.featureTable.frame) - 150)
             
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+            self.featureTable.addSubview(activityIdicator)
             
-            activityIdicator.stopAnimating()
-        })
+            activityIdicator.startAnimating()
+            
+            let parser = Parser()
+            
+            parser.getFeature(self.product.detailLink, completionHandler:{(features: [Feature]) in
+                
+                self.product.features = features;
+                
+                self.featureTable.reloadData()
+                
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+                
+                activityIdicator.stopAnimating()
+            })
+            
+        }
         
     }
     
@@ -61,7 +65,7 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         
         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
     }
-
+    
     // MARK: - Help Methods
     
     func fillingLabels() {

@@ -31,7 +31,8 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
             
             UIBarButtonItem.appearance().setTitleTextAttributes([NSFontAttributeName: font], forState: UIControlState.Normal)
         }
-
+        
+        shoppingTableView.dataSource = self
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
@@ -41,8 +42,6 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
-        shoppingTableView.dataSource = self
         
         if Shopping.sharedInstance.fullPrice != 0 {
             

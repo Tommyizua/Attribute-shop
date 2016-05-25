@@ -37,7 +37,7 @@ class CachedDataManager: NSObject {
             dispatch_async(qos, { () -> () in
                
                 var img = UIImage(data: NSData(contentsOfURL: NSURL(string:link)!)!)
-                img = UIImage.imageScaled(img!, size:CGSizeMake(200, 200))
+                img = UIImage.imageScaled(img!, size:CGSizeMake(130, 130))
              
                 dispatch_async(self.kMainQueue, { () -> () in
                    

@@ -13,10 +13,14 @@ class MainTVC: UITableViewController {
     private var productSectionArray = [ProductSection]()
     private var contacts: UIBarButtonItem!
     
+    @IBOutlet weak var searchBar: UISearchBar!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         title = "Каталоги"
+        
         navigationController?.navigationBar.barStyle = UIBarStyle.Black
         navigationController?.navigationBar.backgroundColor = UIColor.blackColor()
         navigationController?.navigationBar.tintColor = UIColor.orangeColor()
@@ -39,6 +43,11 @@ class MainTVC: UITableViewController {
         }
         
         fillingProductSectionArray()
+        
+        if self.tableView.contentOffset.y == 0 {
+            self.tableView.contentOffset = CGPoint(x: 0.0, y: CGRectGetHeight(self.searchBar.frame))
+        }
+
     }
     
     // MARK: - Help Methods

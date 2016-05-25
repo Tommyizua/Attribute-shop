@@ -50,17 +50,30 @@ class Parser: NSObject {
         
     }
     
+    func getDataFromUrl(url:NSURL, completion: ((data: NSData?, response: NSURLResponse?, error: NSError? ) -> Void)) {
+        
+        NSURLSession.sharedSession().dataTaskWithURL(url) { (data, response, error) in
+            completion(data: data, response: response, error: error)
+            
+            }.resume()
+    }
+    
     // MARK: - Get Catalog products Method
     
     func getInfoFromUrl(link: String, completionHandler:(productArray: [Product]) -> ()) {
         
-        dispatch_async(qos, {
+        var productArray = [Product]()
+        
+        let url = NSURL(string: link)!
+        
+        self.getDataFromUrl(url, completion: { (data, response, error) in
             
-            var productArray = [Product]()
+            if (error != nil) {
+                
+                print(error?.localizedDescription);
+            }
             
-            let dataMainPage = NSData(contentsOfURL: NSURL(string: link)!)
-            
-            if let dataMainPage = dataMainPage {
+            if let dataMainPage = data {
                 
                 let sourceHtmlCode = String(data: dataMainPage, encoding: NSUTF8StringEncoding)!
                 var startRange = sourceHtmlCode.rangeOfString("</div><h1> Каталог")!
@@ -115,14 +128,13 @@ class Parser: NSObject {
                     
                     productArray.append(product)
                 }
-            }
-            
-            dispatch_async(self.kMainQueue, { () in
                 
-                completionHandler(productArray: productArray)
-            })
-            
-            return
+                dispatch_async(self.kMainQueue, { () in
+                    
+                    completionHandler(productArray: productArray)
+                })
+                
+            }
             
         })
         
@@ -132,13 +144,18 @@ class Parser: NSObject {
     
     func getFeature(link: String, completionHandler:(features: [Feature]) -> ()) {
         
-        dispatch_async(qos, {
+        var featureArray = [Feature]()
+        
+        let url = NSURL(string: link)!
+        
+        self.getDataFromUrl(url, completion: { (data, response, error) in
             
-            var featureArray = [Feature]()
+            if (error != nil) {
+                
+                print(error?.localizedDescription);
+            }
             
-            let dataMainPage = NSData(contentsOfURL: NSURL(string: link)!)
-            
-            if let dataMainPage = dataMainPage {
+            if let dataMainPage = data {
                 
                 let sourceHtmlCode = String(data: dataMainPage, encoding: NSUTF8StringEncoding)!
                 
@@ -167,17 +184,23 @@ class Parser: NSObject {
                 }
             }
         })
+        
     }
     
     // MARK: - Get Stores Info Method
     
     func getStoresInfo(link: String, completionHandler:(stores: [StoresInCityArea]) -> ()) {
         
-        dispatch_async(qos, {
+        let url = NSURL(string: link)!
+        
+        self.getDataFromUrl(url, completion: { (data, response, error) in
             
-            let dataMainPage = NSData(contentsOfURL: NSURL(string: link)!)
+            if (error != nil) {
+                
+                print(error?.localizedDescription);
+            }
             
-            if let dataMainPage = dataMainPage {
+            if let dataMainPage = data {
                 
                 let sourceHtmlCode = String(data: dataMainPage, encoding: NSUTF8StringEncoding)!
                 var code = self.searchInfo(sourceHtmlCode, start: "Сеть бутиков", end: "footer")
