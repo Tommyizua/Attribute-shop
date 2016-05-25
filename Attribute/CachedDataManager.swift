@@ -1,5 +1,5 @@
 //
-//  CashedImagesManager.swift
+//  CachedDataManager.swift
 //  Attribute
 //
 //  Created by Yaroslav on 26/11/15.
@@ -22,32 +22,43 @@ class CachedDataManager: NSObject {
     lazy var cachedStores = [StoresInCityArea]()
     
     
-    func getImageFromLink(link: String, toImageView: UIImageView) -> UIImage? {
-    
+    func getImageFromLink(link: String?, toImageView: UIImageView) -> UIImage? {
+        
         toImageView.image = nil
         
-        if let image = cachedImages[link] {
+        if let link = link {
             
-            toImageView.image = image
-            
-            return image
-      
-        } else {
-            
-            dispatch_async(qos, { () -> () in
-               
-                var img = UIImage(data: NSData(contentsOfURL: NSURL(string:link)!)!)
-                img = UIImage.imageScaled(img!, size:CGSizeMake(130, 130))
-             
-                dispatch_async(self.kMainQueue, { () -> () in
-                   
-                    self.cachedImages[link] = img
-                   
-                    toImageView.image = img
-                    toImageView.setNeedsLayout()
+            if let image = cachedImages[link] {
+                
+                toImageView.image = image
+                
+                return image
+                
+            } else {
+                
+                dispatch_async(qos, { () -> () in
                     
+                    let url = NSURL(string:link)!
+                    
+                    if let data = NSData(contentsOfURL: url) {
+                        
+                        var img = UIImage(data: data)
+                        
+                        img = UIImage.imageScaled(img!, size:CGSizeMake(130, 130))
+                        
+                        dispatch_async(self.kMainQueue, { () -> () in
+                            
+                            self.cachedImages[link] = img
+                            
+                            toImageView.image = img
+                            toImageView.setNeedsLayout()
+                            
+                        })
+                        
+                    }
                 })
-            })
+                
+            }
             
         }
         
@@ -55,7 +66,7 @@ class CachedDataManager: NSObject {
     }
     
     func getData(data: String, toDataView: UILabel) -> String? {
-     
+        
         if let text = cachedData[data] {
             
             toDataView.text = text
@@ -71,7 +82,7 @@ class CachedDataManager: NSObject {
                 dispatch_async(self.kMainQueue, { () -> () in
                     
                     self.cachedData[data] = text
-                   
+                    
                     toDataView.text = text
                     toDataView.setNeedsLayout()
                 })
@@ -83,11 +94,11 @@ class CachedDataManager: NSObject {
     }
     
     func getStoreImage(link: String, toImageView: UIImageView) -> UIImage? {
-      
+        
         toImageView.image = nil
         
         if let image = cachedImages[link] {
-          
+            
             toImageView.image = image
             return image
             
@@ -99,9 +110,9 @@ class CachedDataManager: NSObject {
                 img = UIImage.imageScaled(img!, size:CGSizeMake(480, 320))
                 
                 dispatch_async(self.kMainQueue, { () -> () in
-                  
+                    
                     self.cachedImages[link] = img
-                  
+                    
                     toImageView.image = img
                     toImageView.setNeedsLayout()
                 })

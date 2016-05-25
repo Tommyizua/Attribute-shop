@@ -11,10 +11,16 @@ import UIKit
 extension UIImage {
     
     static func imageScaled(img:UIImage, size:CGSize) -> UIImage? {
-            UIGraphicsBeginImageContext(size)
-            img.drawInRect(CGRectMake(0, 0, size.width, size.height))
-            let newImage = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext();
-            return newImage;
+        
+        UIGraphicsBeginImageContext(size)
+        
+        img.drawInRect(CGRectMake(0, 0, size.width, size.height))
+        
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        
+        UIGraphicsEndImageContext();
+        
+        return newImage;
     }
+    
 }

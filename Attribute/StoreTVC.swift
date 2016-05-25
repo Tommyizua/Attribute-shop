@@ -23,8 +23,6 @@ class StoreTVC:  UITableViewController {
             
             let parser = Parser()
             
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-            
             let activityIdicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
             activityIdicator.center = self.view.center
             
@@ -40,8 +38,6 @@ class StoreTVC:  UITableViewController {
                 self.storesInfo = CachedDataManager.sharedInstance.cachedStores;
                 
                 self.tableView.reloadData()
-                
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
                 
                 activityIdicator.stopAnimating()
             })

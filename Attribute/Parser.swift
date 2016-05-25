@@ -10,7 +10,7 @@ import UIKit
 
 class Parser: NSObject {
     
-    private var pageNumber = ""
+    private var totalPageNumber = ""
     private let qos = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
     private let kMainQueue = dispatch_get_main_queue()
     
@@ -32,62 +32,51 @@ class Parser: NSObject {
         return String()
     }
     
-    func searchForUnicode(inout text: String)  {
+    func removeUnicodeFromString(inout text: String)  {
         
         while text.rangeOfString("&#039;") != nil {
             
-            let range = text.rangeOfString("&#039;")!
+            let range039 = text.rangeOfString("&#039;")
             
-            text.removeRange(range)
+            text.removeRange(range039!)
         }
         
-        while text.rangeOfString("&quot;") != nil {
+        while  text.rangeOfString("&quot;") != nil {
             
-            let range = text.rangeOfString("&quot;")!
+            let rangeQuot = text.rangeOfString("&quot;")
             
-            text.removeRange(range)
+            text.removeRange(rangeQuot!)
         }
         
-    }
-    
-    func getDataFromUrl(url:NSURL, completion: ((data: NSData?, response: NSURLResponse?, error: NSError? ) -> Void)) {
-        
-        NSURLSession.sharedSession().dataTaskWithURL(url) { (data, response, error) in
-            completion(data: data, response: response, error: error)
-            
-            }.resume()
     }
     
     // MARK: - Get Catalog products Method
     
-    func getInfoFromUrl(link: String, completionHandler:(productArray: [Product]) -> ()) {
+    func getProductsFromLink(link: String, completionHandler:(productArray: [Product]) -> ()) {
         
-        var productArray = [Product]()
-        
-        let url = NSURL(string: link)!
-        
-        self.getDataFromUrl(url, completion: { (data, response, error) in
+        dispatch_async(qos, {
             
-            if (error != nil) {
-                
-                print(error?.localizedDescription);
-            }
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = true;
             
-            if let dataMainPage = data {
+            var productArray = [Product]()
+            
+            let dataMainPage = NSData(contentsOfURL: NSURL(string: link)!)
+            
+            if let dataMainPage = dataMainPage {
                 
                 let sourceHtmlCode = String(data: dataMainPage, encoding: NSUTF8StringEncoding)!
                 var startRange = sourceHtmlCode.rangeOfString("</div><h1> Каталог")!
                 var code = sourceHtmlCode.substringFromIndex(startRange.endIndex)
                 
-                self.pageNumber = self.searchInfo(code, start: "</span> </span></li><li> <a href=\"/", end: "</span> </a></li><li id=")
+                var totalPageNumberDescription = self.searchInfo(code, start: "</span> </span></li><li> <a href=\"/", end: "</span> </a></li><li id=")
                 
-                if self.pageNumber.characters.count > 40 {
-                    let startRange = self.pageNumber.rangeOfString("</span> </span></li><li> <a href=\"/")!
-                    self.pageNumber = self.pageNumber.substringFromIndex(startRange.endIndex)
+                if totalPageNumberDescription.characters.count > 40 {
+                    let startRange = totalPageNumberDescription.rangeOfString("</span> </span></li><li> <a href=\"/")!
+                    totalPageNumberDescription = totalPageNumberDescription.substringFromIndex(startRange.endIndex)
                 }
                 
-                startRange = self.pageNumber.rangeOfString("<span>")!
-                self.pageNumber = self.pageNumber.substringFromIndex(startRange.endIndex)
+                startRange = totalPageNumberDescription.rangeOfString("<span>")!
+                self.totalPageNumber = totalPageNumberDescription.substringFromIndex(startRange.endIndex)
                 
                 while code.containsString("product-name\" href=\"") {
                     
@@ -96,7 +85,8 @@ class Parser: NSObject {
                     product.detailLink = self.searchInfo(code, start: "product-name\" href=\"", end: "\" title=")
                     
                     product.title = self.searchInfo(code, start: "\" itemprop=\"url\" > ", end: " </a>")
-                    self.searchForUnicode(&product.title)
+                    
+                    self.removeUnicodeFromString(&product.title)
                     
                     product.imageUrlString = self.searchInfo(code, start: "src=\"", end: "\" alt=\"")
                     product.article = "Артикул: " + self.searchInfo(code, start: "</span> <span>", end: "</sapn>")
@@ -128,13 +118,14 @@ class Parser: NSObject {
                     
                     productArray.append(product)
                 }
-                
-                dispatch_async(self.kMainQueue, { () in
-                    
-                    completionHandler(productArray: productArray)
-                })
-                
             }
+            
+            dispatch_async(self.kMainQueue, { () in
+                
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+                
+                completionHandler(productArray: productArray)
+            })
             
         })
         
@@ -144,18 +135,15 @@ class Parser: NSObject {
     
     func getFeature(link: String, completionHandler:(features: [Feature]) -> ()) {
         
-        var featureArray = [Feature]()
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true;
         
-        let url = NSURL(string: link)!
-        
-        self.getDataFromUrl(url, completion: { (data, response, error) in
+        dispatch_async(qos, {
             
-            if (error != nil) {
-                
-                print(error?.localizedDescription);
-            }
+            var featureArray = [Feature]()
             
-            if let dataMainPage = data {
+            let dataMainPage = NSData(contentsOfURL: NSURL(string: link)!)
+            
+            if let dataMainPage = dataMainPage {
                 
                 let sourceHtmlCode = String(data: dataMainPage, encoding: NSUTF8StringEncoding)!
                 
@@ -169,7 +157,7 @@ class Parser: NSObject {
                     
                     feature.value = self.searchInfo(code, start: "</td><td>", end: "</td></tr>")
                     
-                    self.searchForUnicode(&feature.value)
+                    self.removeUnicodeFromString(&feature.value)
                     
                     let startRange = code.rangeOfString("</td></tr>")!
                     code = code.substringFromIndex(startRange.endIndex)
@@ -178,34 +166,32 @@ class Parser: NSObject {
                     
                     dispatch_async(self.kMainQueue, { () in
                         
+                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+                        
                         completionHandler(features: featureArray)
                     })
                     
                 }
             }
         })
-        
     }
     
     // MARK: - Get Stores Info Method
     
     func getStoresInfo(link: String, completionHandler:(stores: [StoresInCityArea]) -> ()) {
         
-        let url = NSURL(string: link)!
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true;
         
-        self.getDataFromUrl(url, completion: { (data, response, error) in
+        dispatch_async(qos, {
             
-            if (error != nil) {
-                
-                print(error?.localizedDescription);
-            }
+            let dataMainPage = NSData(contentsOfURL: NSURL(string: link)!)
             
-            if let dataMainPage = data {
+            var storesInfoArray = [StoresInCityArea]()
+            
+            if let dataMainPage = dataMainPage {
                 
                 let sourceHtmlCode = String(data: dataMainPage, encoding: NSUTF8StringEncoding)!
                 var code = self.searchInfo(sourceHtmlCode, start: "Сеть бутиков", end: "footer")
-                
-                var storesInfoArray = [StoresInCityArea]()
                 
                 while code.containsString("city_name\">") {
                     
@@ -222,7 +208,7 @@ class Parser: NSObject {
                         storeObject.image = self.searchInfo(codeBlock, start: "\" src=\"", end: "\" alt=\"\" /></div>")
                         
                         storeObject.name = self.searchInfo(codeBlock, start: "store_name\">", end: "</div><div class=\"store_address")
-                        self.searchForUnicode(&storeObject.name)
+                        self.removeUnicodeFromString(&storeObject.name)
                         
                         storeObject.address = self.searchInfo(codeBlock, start: "store_address\">", end: "</div><div class=\"clear")
                         
@@ -238,12 +224,14 @@ class Parser: NSObject {
                     code = code.substringFromIndex(startRange.endIndex)
                 }
                 
-                dispatch_async(self.kMainQueue, { () in
-                    
-                    completionHandler(stores: storesInfoArray)
-                })
-                
             }
+            
+            dispatch_async(self.kMainQueue, { () in
+                
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+                
+                completionHandler(stores: storesInfoArray)
+            })
             
         })
     }

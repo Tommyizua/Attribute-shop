@@ -10,41 +10,33 @@ import UIKit
 
 class CatalogTVC: UITableViewController {
     
-    @IBOutlet var catalogTableView: UITableView!
-    
     private let parser = Parser()
-    private var catalog = [Product]()
     
-    var contacts: UIBarButtonItem!
-    var productSection = ProductSection()
+    var contactsButton: UIBarButtonItem!
+    var productSection: ProductSection!
+    var activityIndicator: UIActivityIndicatorView!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        let activityIndicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
+        activityIndicator.center = self.view.center
         
-        let activityIdicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
-        activityIdicator.center = self.view.center
-        self.view.addSubview(activityIdicator)
+        self.view.addSubview(activityIndicator)
         
-        activityIdicator.startAnimating()
+        self.activityIndicator = activityIndicator
         
-        navigationItem.rightBarButtonItem = contacts
+        self.refreshControl?.addTarget(self,
+                                       action: #selector(CatalogTVC.refreshProducts),
+                                       forControlEvents: UIControlEvents.ValueChanged)
+        
+        navigationItem.rightBarButtonItem = contactsButton
         title = self.productSection.name
         
-        parser.getInfoFromUrl(self.productSection.link, completionHandler:{(productArray: [Product]) in
-            
-            CachedDataManager.sharedInstance.cachedCatalog = productArray;
-            
-            self.catalog = CachedDataManager.sharedInstance.cachedCatalog
-            
-            self.tableView.reloadData()
-            
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
-            
-            activityIdicator.stopAnimating()
-        })
+        self.activityIndicator.startAnimating()
+        
+        self.getProductsFromLink(self.productSection.link)
         
     }
     
@@ -55,6 +47,36 @@ class CatalogTVC: UITableViewController {
     }
     
     // MARK: - Help Methods
+    
+    func refreshProducts() {
+        
+        CachedDataManager.sharedInstance.cachedCatalog.removeAll()
+        
+        self.getProductsFromLink(self.productSection.link)
+    }
+    
+    func getProductsFromLink(link: String) {
+        
+        parser.getProductsFromLink(link, completionHandler:{(productArray: [Product]) in
+            
+            CachedDataManager.sharedInstance.cachedCatalog = productArray;
+            
+            self.tableView.reloadData()
+            
+            if self.refreshControl?.refreshing == true {
+                
+                self.refreshControl?.endRefreshing()
+            }
+            
+            if self.activityIndicator.isAnimating() {
+                
+                self.activityIndicator.stopAnimating()
+                
+            }
+            
+        })
+        
+    }
     
     func formattingPrice(price: String) -> String {
         
@@ -71,7 +93,7 @@ class CatalogTVC: UITableViewController {
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return catalog.count
+        return CachedDataManager.sharedInstance.cachedCatalog.count
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -80,7 +102,7 @@ class CatalogTVC: UITableViewController {
         
         if let catalogCell = cell as? CatalogCell {
             
-            let currentProduct = catalog[indexPath.row]
+            let currentProduct = CachedDataManager.sharedInstance.cachedCatalog[indexPath.row]
             
             CachedDataManager.sharedInstance.getImageFromLink(currentProduct.imageUrlString, toImageView: catalogCell.imageProduct)
             CachedDataManager.sharedInstance.getData(currentProduct.title, toDataView: catalogCell.titleProduct)
@@ -111,6 +133,20 @@ class CatalogTVC: UITableViewController {
         tableView.deselectRowAtIndexPath(indexPath, animated: true);
     }
     
+    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+        var pageNumber = 1
+        
+        if indexPath.row >= CachedDataManager.sharedInstance.cachedCatalog.count/2 {
+            
+            pageNumber += 1
+            
+            self.getProductsFromLink(self.productSection.link.stringByAppendingString("/page\(pageNumber)"))
+            
+        }
+        
+    }
+    
     // MARK: - Segue
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -121,12 +157,12 @@ class CatalogTVC: UITableViewController {
                 
                 if let indexPath = tableView.indexPathForCell(cell) {
                     
-                    let selectedProduct = catalog[indexPath.row]
+                    let selectedProduct = CachedDataManager.sharedInstance.cachedCatalog[indexPath.row]
                     
                     selectedProduct.image = cell.imageProduct?.image
                     
                     productVC.product =  selectedProduct
-                    productVC.contacts = self.contacts
+                    productVC.contactsButton = self.contactsButton
                 }
             }
         }

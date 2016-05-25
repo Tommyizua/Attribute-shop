@@ -406,9 +406,6 @@
                             </fragment>
                         </attributedString>
                     </refreshControl>
-                    <connections>
-                        <outlet property="catalogTableView" destination="Bs4-X4-D5q" id="YRU-Uk-eG9"/>
-                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Up8-oj-cfG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

@@ -19,7 +19,7 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     @IBOutlet weak var featureTable: UITableView!
     
-    var contacts: UIBarButtonItem!
+    var contactsButton: UIBarButtonItem!
     var product = Product()
     
     
@@ -28,13 +28,11 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         
         featureTable.dataSource = self
         featureTable.delegate = self
-        navigationItem.rightBarButtonItem = contacts
+        navigationItem.rightBarButtonItem = contactsButton
         
         fillingLabels()
         
         if self.product.features.count == 0 {
-            
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             
             let activityIdicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
             activityIdicator.center = CGPointMake(CGRectGetMidX(self.view.frame), CGRectGetMinY(self.featureTable.frame) - 150)
@@ -50,8 +48,6 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
                 self.product.features = features;
                 
                 self.featureTable.reloadData()
-                
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
                 
                 activityIdicator.stopAnimating()
             })

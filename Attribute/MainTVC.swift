@@ -145,7 +145,7 @@ class MainTVC: UITableViewController {
             
             if let catalogTVC = segue.destinationViewController as? CatalogTVC {
                 
-                catalogTVC.contacts = self.contacts
+                catalogTVC.contactsButton = self.contacts
                 
                 if let indexPath = sender as? NSIndexPath {
                     
