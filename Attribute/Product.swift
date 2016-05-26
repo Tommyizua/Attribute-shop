@@ -2,44 +2,16 @@
 //  Product.swift
 //  Attribute
 //
-//  Created by Yaroslav on 05/12/15.
-//  Copyright © 2015 Yaroslav Chyzh. All rights reserved.
+//  Created by Yaroslav Chyzh on 5/26/16.
+//  Copyright © 2016 Yaroslav Chyzh. All rights reserved.
 //
 
-import UIKit
+import Foundation
+import CoreData
 
-class Product: NSObject {
-    
-    var image: UIImage?
-    var imageUrlString: String
-    var title: String
-    var article: String
-    var availability: String
-    var isAvailable: Bool
-    
-    var priceFormatted: String
-    var price: Int
-    
-    var detailLink: String
-    
-    var quantity: Int
-    
-    lazy var features = [Feature]()
-    
-    override init() {
-        self.title = ""
-        self.article = ""
-        self.availability = ""
-        
-        self.isAvailable = true
-        
-        self.priceFormatted = ""
-        self.price = 0
-        
-        self.detailLink = ""
-        self.imageUrlString = ""
-        
-        self.quantity = 0
-    }
+
+class Product: NSManagedObject {
+
+// Insert code here to add functionality to your managed object subclass
 
 }

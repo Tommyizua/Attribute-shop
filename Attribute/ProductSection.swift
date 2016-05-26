@@ -13,12 +13,14 @@ class ProductSection: NSObject {
     var name: String
     var link: String
     var imageName: UIImage?
+    var type: ProductType
     
     override init() {
         
         self.name = ""
         self.link = ""
         self.imageName = nil
+        self.type = ProductType.Pen
     }
     
 }

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class CatalogTVC: UITableViewController {
     
@@ -15,7 +16,7 @@ class CatalogTVC: UITableViewController {
     var contactsButton: UIBarButtonItem!
     var productSection: ProductSection!
     var activityIndicator: UIActivityIndicatorView!
-    
+    var products = [Product]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,9 +35,14 @@ class CatalogTVC: UITableViewController {
         navigationItem.rightBarButtonItem = contactsButton
         title = self.productSection.name
         
-        self.activityIndicator.startAnimating()
+        self.fetchDataFromDataBase()
         
-        self.getProductsFromLink(self.productSection.link)
+        if self.products.count == 0 {
+            
+            self.activityIndicator.startAnimating()
+            
+            self.getProductsFromLink(self.productSection.link)
+        }
         
     }
     
@@ -48,18 +54,33 @@ class CatalogTVC: UITableViewController {
     
     // MARK: - Help Methods
     
-    func refreshProducts() {
+    func fetchDataFromDataBase() {
         
-        CachedDataManager.sharedInstance.cachedCatalog.removeAll()
+        let fetchRequest = NSFetchRequest(entityName: String(Product))
+        
+       fetchRequest.predicate = NSPredicate(format: "type == %@", self.productSection.type.rawValue)
+        
+        do {
+            let results = try DataManager.sharedInstance.managedObjectContext.executeFetchRequest(fetchRequest)
+            
+            self.products = results as! [Product]
+            
+        } catch let error as NSError {
+            print("Could not fetch \(error), \(error.userInfo)")
+        }
+        
+    }
+    
+    func refreshProducts() {
         
         self.getProductsFromLink(self.productSection.link)
     }
     
     func getProductsFromLink(link: String) {
         
-        parser.getProductsFromLink(link, completionHandler:{(productArray: [Product]) in
+        parser.getProductsFromLink(link, type: self.productSection.type, completionHandler:{(productArray: [Product]) in
             
-            CachedDataManager.sharedInstance.cachedCatalog = productArray;
+            self.products = productArray;
             
             self.tableView.reloadData()
             
@@ -93,7 +114,7 @@ class CatalogTVC: UITableViewController {
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return CachedDataManager.sharedInstance.cachedCatalog.count
+        return products.count
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -102,24 +123,28 @@ class CatalogTVC: UITableViewController {
         
         if let catalogCell = cell as? CatalogCell {
             
-            let currentProduct = CachedDataManager.sharedInstance.cachedCatalog[indexPath.row]
+            let currentProduct = self.products[indexPath.row]
             
-            CachedDataManager.sharedInstance.getImageFromLink(currentProduct.imageUrlString, toImageView: catalogCell.imageProduct)
-            CachedDataManager.sharedInstance.getData(currentProduct.title, toDataView: catalogCell.titleProduct)
-            CachedDataManager.sharedInstance.getData(currentProduct.article, toDataView: catalogCell.articleProduct)
-            CachedDataManager.sharedInstance.getData(currentProduct.availability, toDataView: catalogCell.availabilityProduct)
+            catalogCell.titleProduct.text = currentProduct.title
+            catalogCell.articleProduct.text = currentProduct.article
+            catalogCell.availabilityProduct.text = currentProduct.availability
+            catalogCell.articleProduct.text = currentProduct.valueForKey("article") as? String
             
-            currentProduct.priceFormatted = formattingPrice(currentProduct.price.description)
+            CachedDataManager.sharedInstance.getImageForProduct(currentProduct, toImageView: catalogCell.imageProduct)
             
-            CachedDataManager.sharedInstance.getData(currentProduct.priceFormatted, toDataView: catalogCell.priceProduct)
+            let price = currentProduct.price as? Int
             
-            if !currentProduct.isAvailable {
+            catalogCell.priceProduct.text = self.formattingPrice(price!.description)
+            
+            let isAvailable = currentProduct.isAvailable?.boolValue
+            
+            if isAvailable! == IsAvailable.Available.rawValue {
                 
-                catalogCell.availabilityProduct.textColor = UIColor.redColor()
+                catalogCell.availabilityProduct.textColor = UIColor.greenColor()
                 
             } else {
                 
-                catalogCell.availabilityProduct.textColor = UIColor.greenColor()
+                catalogCell.availabilityProduct.textColor = UIColor.redColor()
             }
         }
         
@@ -137,7 +162,7 @@ class CatalogTVC: UITableViewController {
         
         var pageNumber = 1
         
-        if indexPath.row >= CachedDataManager.sharedInstance.cachedCatalog.count/2 {
+        if indexPath.row >= self.products.count/2 {
             
             pageNumber += 1
             
@@ -157,11 +182,14 @@ class CatalogTVC: UITableViewController {
                 
                 if let indexPath = tableView.indexPathForCell(cell) {
                     
-                    let selectedProduct = CachedDataManager.sharedInstance.cachedCatalog[indexPath.row]
+                    let selectedProduct = self.products[indexPath.row]
                     
-                    selectedProduct.image = cell.imageProduct?.image
+                    if let image = cell.imageProduct?.image {
+                        
+                        productVC.image = image
+                    }
                     
-                    productVC.product =  selectedProduct
+                    productVC.product = selectedProduct
                     productVC.contactsButton = self.contactsButton
                 }
             }

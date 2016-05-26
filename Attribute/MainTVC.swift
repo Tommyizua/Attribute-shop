@@ -65,6 +65,8 @@ class MainTVC: UITableViewController {
         
         let sectionNameArray = ["Ручки", "Кожгалантерея", "Часы", "Аксессуары", "Запонки,зажимы", "Подарочные наборы", "Сеть бутиков", "Доставка и оплата", "Корпоративным клиентам"]
         
+        let sectionTypeArray = [ProductType.Pen, ProductType.Leather, ProductType.Watch, ProductType.Accessories, ProductType.Cufflinks, ProductType.Gifts]
+        
         for i in 0..<sectionNameArray.count {
             
             let productSection = ProductSection()
@@ -72,6 +74,11 @@ class MainTVC: UITableViewController {
             productSection.name = sectionNameArray[i]
             productSection.link = pagesLinks[productSection.name] ?? ""
             productSection.imageName = UIImage(named: productSection.name)
+            
+            if  0..<sectionTypeArray.count ~= i {
+               
+                productSection.type = sectionTypeArray[i]
+            }
             
             self.productSectionArray.append(productSection)
         }

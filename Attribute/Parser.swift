@@ -7,9 +7,25 @@
 //
 
 import UIKit
+import CoreData
+
+
+enum ProductType: NSNumber {
+    case Pen
+    case Leather
+    case Watch
+    case Accessories
+    case Cufflinks
+    case Gifts
+}
+
+enum IsAvailable: NSNumber {
+    case Available
+    case NotAvailable
+}
 
 class Parser: NSObject {
-    
+
     private var totalPageNumber = ""
     private let qos = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
     private let kMainQueue = dispatch_get_main_queue()
@@ -24,6 +40,7 @@ class Parser: NSObject {
                 
                 let finalRange = (startRange.endIndex)..<(endRange.startIndex)
                 let info = page.substringWithRange(finalRange)
+                
                 return info
             }
             
@@ -52,13 +69,11 @@ class Parser: NSObject {
     
     // MARK: - Get Catalog products Method
     
-    func getProductsFromLink(link: String, completionHandler:(productArray: [Product]) -> ()) {
+    func getProductsFromLink(link: String, type: ProductType, completionHandler:(productArray: [Product]) -> ()) {
         
         dispatch_async(qos, {
             
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true;
-            
-            var productArray = [Product]()
             
             let dataMainPage = NSData(contentsOfURL: NSURL(string: link)!)
             
@@ -78,57 +93,79 @@ class Parser: NSObject {
                 startRange = totalPageNumberDescription.rangeOfString("<span>")!
                 self.totalPageNumber = totalPageNumberDescription.substringFromIndex(startRange.endIndex)
                 
+                var productArray = [Product]()
+                
                 while code.containsString("product-name\" href=\"") {
                     
-                    let product = Product()
-                    
-                    product.detailLink = self.searchInfo(code, start: "product-name\" href=\"", end: "\" title=")
-                    
-                    product.title = self.searchInfo(code, start: "\" itemprop=\"url\" > ", end: " </a>")
-                    
-                    self.removeUnicodeFromString(&product.title)
-                    
-                    product.imageUrlString = self.searchInfo(code, start: "src=\"", end: "\" alt=\"")
-                    product.article = "Артикул: " + self.searchInfo(code, start: "</span> <span>", end: "</sapn>")
-                    
-                    let stringPrice = self.searchInfo(code, start: "price\"> ", end: " </span><meta")
-                    
-                    var priceValueString = ""
-                    
-                    for letter in stringPrice.characters {
+                    if let product = NSEntityDescription.insertNewObjectForEntityForName(String(Product), inManagedObjectContext: DataManager.sharedInstance.managedObjectContext) as? Product {
                         
-                        if "0"..."9" ~= letter {
+                        product.detailLink = self.searchInfo(code, start: "product-name\" href=\"", end: "\" title=")
+                        
+                        product.setValue(self.searchInfo(code, start: "product-name\" href=\"", end: "\" title="), forKey: "detailLink")
+                        
+                        product.title = self.searchInfo(code, start: "\" itemprop=\"url\" > ", end: " </a>")
+                        
+                        self.removeUnicodeFromString(&product.title!)
+                        
+                        product.imageUrlString = self.searchInfo(code, start: "src=\"", end: "\" alt=\"")
+                        product.article = "Артикул: " + self.searchInfo(code, start: "</span> <span>", end: "</sapn>")
+                        
+                        let stringPrice = self.searchInfo(code, start: "price\"> ", end: " </span><meta")
+                        
+                        var priceValueString = ""
+                        
+                        for letter in stringPrice.characters {
                             
-                            priceValueString += String(letter)
+                            if "0"..."9" ~= letter {
+                                
+                                priceValueString += String(letter)
+                            }
+                            
                         }
                         
-                    }
-                    
-                    product.price = Int(priceValueString) ?? 0
-                    
-                    product.availability = self.searchInfo(code, start: "Stock\" />", end: " </span> </span><div")
-                    
-                    if product.availability.lowercaseString.hasPrefix("нет") {
+                        product.price = Int(priceValueString)
                         
-                        product.isAvailable = false
+                        product.availability = self.searchInfo(code, start: "Stock\" />", end: " </span> </span><div")
+                        
+                        if product.availability!.lowercaseString.hasPrefix("нет") {
+                            
+                            product.isAvailable = IsAvailable.NotAvailable.rawValue
+                        
+                        } else {
+                            
+                           product.isAvailable = IsAvailable.Available.rawValue
+                        }
+                        
+                        product.type = type.rawValue;
+                        
+                        let startRange = code.rangeOfString("/div></div></li>")!
+                        code = code.substringFromIndex(startRange.endIndex)
+                        
+                        productArray.append(product)
                     }
-                    
-                    let startRange = code.rangeOfString("/div></div></li>")!
-                    code = code.substringFromIndex(startRange.endIndex)
-                    
-                    productArray.append(product)
                 }
+                
+                dispatch_async(self.kMainQueue, { () in
+                    
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+                    
+                    DataManager.sharedInstance.saveContext()
+                    
+                    completionHandler(productArray: productArray)
+                })
+
             }
             
-            dispatch_async(self.kMainQueue, { () in
-                
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
-                
-                completionHandler(productArray: productArray)
-            })
             
         })
         
+//        dispatch_async(self.kMainQueue, { () in
+//            
+//            UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+//            
+//            completionHandler(productArray: [Product]())
+//        })
+
     }
     
     // MARK: - Get Product's Features Method
@@ -164,15 +201,16 @@ class Parser: NSObject {
                     
                     featureArray.append(feature)
                     
-                    dispatch_async(self.kMainQueue, { () in
-                        
-                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
-                        
-                        completionHandler(features: featureArray)
-                    })
-                    
                 }
             }
+            
+            dispatch_async(self.kMainQueue, { () in
+                
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+                
+                completionHandler(features: featureArray)
+            })
+
         })
     }
     

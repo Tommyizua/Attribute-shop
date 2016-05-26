@@ -132,7 +132,7 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
             
             let currentItem = Shopping.sharedInstance.itemsArray[indexPath.row]
             
-            buyCell.quantityField.text = currentItem.quantity.description
+            buyCell.quantityField.text = currentItem.quantity!.description
             buyCell.nameLabel.text = currentItem.title
             
             buyCell.quantityField.delegate = self
@@ -188,21 +188,25 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
             
             let item = Shopping.sharedInstance.itemsArray[indexPath!.row]
             
+            var quatity = (item.quantity?.integerValue)!
+            
             if sender.titleLabel?.text == "+" {
                 
-                item.quantity += 1
+                quatity += 1
                 
-            } else if sender.titleLabel?.text == "-" && item.quantity > 1 {
+            } else if sender.titleLabel?.text == "-" && quatity > 1 {
                 
-                item.quantity -= 1
+                quatity -= 1
             }
             
             Shopping.sharedInstance.changeFullPrice()
             
             if let countField = sender.superview!.viewWithTag(5) as? UITextField {
                 
-                countField.text = item.quantity.description
+                countField.text = quatity.description
             }
+            
+            item.quantity = NSNumber.init(integer: quatity)
             
         }
         
@@ -266,10 +270,10 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
         for product in Shopping.sharedInstance.itemsArray {
             
             orderDiscription += " " +
-                product.article + " " +
-                product.title + " "  +
-                product.priceFormatted + " " +
-                product.quantity.description;
+                product.article! + " " +
+                product.title! + " "  +
+                product.priceFormatted! + " " +
+                product.quantity!.description;
             
         }
         
@@ -367,7 +371,7 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
             
             if textField.text?.characters.count > 2 {
                 
-                textField.text? = item.quantity.description
+                textField.text? = item.quantity!.description
                 
             } else {
                 

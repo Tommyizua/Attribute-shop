@@ -20,7 +20,9 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     @IBOutlet weak var featureTable: UITableView!
     
     var contactsButton: UIBarButtonItem!
-    var product = Product()
+    var product: Product!
+    var image: UIImage!
+    private var features = [Feature]()
     
     
     override func viewDidLoad() {
@@ -32,8 +34,8 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         
         fillingLabels()
         
-        if self.product.features.count == 0 {
-            
+        if self.features.count == 0 {
+        
             let activityIdicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
             activityIdicator.center = CGPointMake(CGRectGetMidX(self.view.frame), CGRectGetMinY(self.featureTable.frame) - 150)
             
@@ -42,16 +44,18 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
             activityIdicator.startAnimating()
             
             let parser = Parser()
-            
-            parser.getFeature(self.product.detailLink, completionHandler:{(features: [Feature]) in
+        
+        if let detailLink = self.product.detailLink {
+        
+            parser.getFeature(detailLink, completionHandler:{(features: [Feature]) in
                 
-                self.product.features = features;
+                self.features = features;
                 
                 self.featureTable.reloadData()
                 
                 activityIdicator.stopAnimating()
             })
-            
+        }
         }
         
     }
@@ -66,13 +70,13 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     func fillingLabels() {
         
-        self.imageProduct.image = self.product.image
+        self.imageProduct.image = self.image
         self.titleProduct.text = self.product.title
         self.articleProduct.text = self.product.article
         self.availabilityProduct.text = self.product.availability
         self.priceProduct.text = self.product.priceFormatted
         
-        if !self.product.isAvailable {
+        if !((self.product.isAvailable?.boolValue) ?? false) {
             
             self.availabilityProduct.textColor = UIColor.redColor()
             self.buyButton.enabled = false;
@@ -91,16 +95,16 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return self.product.features.count
+        return self.features.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCellWithIdentifier("featureCell", forIndexPath: indexPath)
         
-        if !self.product.features.isEmpty {
+        if !self.features.isEmpty {
             
-            let feature = self.product.features[indexPath.row]
+            let feature = self.features[indexPath.row]
             
             cell.textLabel?.text = "\(feature.name):"
             cell.detailTextLabel?.text = feature.value
@@ -135,9 +139,14 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
             addNewProductWithItem(self.product)
         }
         
-        self.product.quantity += 1
-        
-        Shopping.sharedInstance.changeFullPrice()
+        if var quantityInt = self.product.quantity?.integerValue {
+            
+            quantityInt += 1
+            
+            self.product.quantity = NSNumber(integer: quantityInt)
+            
+            Shopping.sharedInstance.changeFullPrice()
+        }
         
     }
     

@@ -81,8 +81,9 @@ class StoreTVC:  UITableViewController {
             let store = storesInCityArea.storeObjectArray[indexPath.row]
             
             CachedDataManager.sharedInstance.getStoreImage(store.image, toImageView: cell.storeImage)
-            CachedDataManager.sharedInstance.getData(store.name, toDataView: cell.storeName)
-            CachedDataManager.sharedInstance.getData(store.address, toDataView: cell.address)
+            
+            cell.storeName.text = store.name
+            cell.address.text = store.address
             
             return cell
         }

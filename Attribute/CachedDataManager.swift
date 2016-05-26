@@ -16,23 +16,27 @@ class CachedDataManager: NSObject {
     static let sharedInstance = CachedDataManager()
     
     lazy var cachedImages = [String: UIImage]()
-    lazy var cachedData = [String: String]()
-    
-    lazy var cachedCatalog = [Product]()
     lazy var cachedStores = [StoresInCityArea]()
     
     
-    func getImageFromLink(link: String?, toImageView: UIImageView) -> UIImage? {
+    func getImageForProduct(product: Product, toImageView: UIImageView) {
         
         toImageView.image = nil
         
-        if let link = link {
+        if let link = product.imageUrlString {
             
             if let image = cachedImages[link] {
                 
                 toImageView.image = image
                 
-                return image
+            } else if (product.imagePath?.characters.count > 0) {
+                
+                let url = NSURL(fileURLWithPath: product.imagePath!)
+                
+                if let imageData = NSData(contentsOfURL: url) {
+                    
+                    toImageView.image = UIImage(data: imageData)
+                }
                 
             } else {
                 
@@ -42,65 +46,49 @@ class CachedDataManager: NSObject {
                     
                     if let data = NSData(contentsOfURL: url) {
                         
-                        var img = UIImage(data: data)
+                        var image = UIImage(data: data)
                         
-                        img = UIImage.imageScaled(img!, size:CGSizeMake(130, 130))
+                        image = UIImage.imageScaled(image!, size:CGSizeMake(130, 130))
                         
                         dispatch_async(self.kMainQueue, { () -> () in
                             
-                            self.cachedImages[link] = img
+                            self.cachedImages[link] = image
                             
-                            toImageView.image = img
+                            toImageView.image = image
                             toImageView.setNeedsLayout()
                             
+                            if let imageData = UIImageJPEGRepresentation(image!, 1.0) {
+                                
+                                let documentsURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0]
+                                
+                                let imageURL = documentsURL.URLByAppendingPathComponent("cached.png")
+                                
+                                if !imageData.writeToURL(imageURL, atomically: false) {
+                                    
+                                    print("image didn't save")
+                                    
+                                } else {
+                                    
+                                    product.imagePath = imageURL.path
+                                    
+                                }
+                            }
+                            
                         })
-                        
                     }
                 })
                 
             }
-            
         }
-        
-        return nil
     }
     
-    func getData(data: String, toDataView: UILabel) -> String? {
-        
-        if let text = cachedData[data] {
-            
-            toDataView.text = text
-            
-            return text
-            
-        } else {
-            
-            dispatch_async(qos, { () -> () in
-                
-                let text = String(data)
-                
-                dispatch_async(self.kMainQueue, { () -> () in
-                    
-                    self.cachedData[data] = text
-                    
-                    toDataView.text = text
-                    toDataView.setNeedsLayout()
-                })
-            })
-            
-        }
-        
-        return nil
-    }
-    
-    func getStoreImage(link: String, toImageView: UIImageView) -> UIImage? {
+    func getStoreImage(link: String, toImageView: UIImageView) {
         
         toImageView.image = nil
         
         if let image = cachedImages[link] {
             
             toImageView.image = image
-            return image
             
         } else {
             
@@ -120,7 +108,6 @@ class CachedDataManager: NSObject {
             
         }
         
-        return nil
     }
     
 }
