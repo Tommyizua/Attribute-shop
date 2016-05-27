@@ -29,14 +29,9 @@ class CachedDataManager: NSObject {
                 
                 toImageView.image = image
                 
-            } else if (product.imagePath?.characters.count > 0) {
+            } else if (product.imageData != nil) {
                 
-                let url = NSURL(fileURLWithPath: product.imagePath!)
-                
-                if let imageData = NSData(contentsOfURL: url) {
-                    
-                    toImageView.image = UIImage(data: imageData)
-                }
+                toImageView.image = UIImage(data: product.imageData!)
                 
             } else {
                 
@@ -59,19 +54,9 @@ class CachedDataManager: NSObject {
                             
                             if let imageData = UIImageJPEGRepresentation(image!, 1.0) {
                                 
-                                let documentsURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0]
+                                product.imageData = imageData
                                 
-                                let imageURL = documentsURL.URLByAppendingPathComponent("cached.png")
-                                
-                                if !imageData.writeToURL(imageURL, atomically: false) {
-                                    
-                                    print("image didn't save")
-                                    
-                                } else {
-                                    
-                                    product.imagePath = imageURL.path
-                                    
-                                }
+                                DataManager.sharedInstance.saveContext()
                             }
                             
                         })

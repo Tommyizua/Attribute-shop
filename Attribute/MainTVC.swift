@@ -47,7 +47,7 @@ class MainTVC: UITableViewController {
         if self.tableView.contentOffset.y == 0 {
             self.tableView.contentOffset = CGPoint(x: 0.0, y: CGRectGetHeight(self.searchBar.frame))
         }
-
+        
     }
     
     // MARK: - Help Methods
@@ -56,12 +56,12 @@ class MainTVC: UITableViewController {
         
         var pagesLinks = [String: String]()
         
-        pagesLinks["Ручки"] = "http://attribute.ua/3-pen/"
-        pagesLinks["Кожгалантерея"] = "http://attribute.ua/12-leather/"
-        pagesLinks["Часы"] = "http://attribute.ua/29-watch/"
-        pagesLinks["Аксессуары"] = "http://attribute.ua/35-accesories/"
-        pagesLinks["Запонки,зажимы"] = "http://attribute.ua/134-zaponki/"
-        pagesLinks["Подарочные наборы"] = "http://attribute.ua/140-podarochnie-nabori/"
+        pagesLinks["Ручки"] = "http://attribute.ua/3-pen"
+        pagesLinks["Кожгалантерея"] = "http://attribute.ua/12-leather"
+        pagesLinks["Часы"] = "http://attribute.ua/29-watch"
+        pagesLinks["Аксессуары"] = "http://attribute.ua/35-accesories"
+        pagesLinks["Запонки,зажимы"] = "http://attribute.ua/134-zaponki"
+        pagesLinks["Подарочные наборы"] = "http://attribute.ua/140-podarochnie-nabori"
         
         let sectionNameArray = ["Ручки", "Кожгалантерея", "Часы", "Аксессуары", "Запонки,зажимы", "Подарочные наборы", "Сеть бутиков", "Доставка и оплата", "Корпоративным клиентам"]
         
@@ -76,7 +76,7 @@ class MainTVC: UITableViewController {
             productSection.imageName = UIImage(named: productSection.name)
             
             if  0..<sectionTypeArray.count ~= i {
-               
+                
                 productSection.type = sectionTypeArray[i]
             }
             
@@ -150,15 +150,12 @@ class MainTVC: UITableViewController {
         
         if segue.identifier == "showCatalog" {
             
-            if let catalogTVC = segue.destinationViewController as? CatalogTVC {
+            if let catalogTVC = segue.destinationViewController as? CatalogTVC, indexPath = sender as? NSIndexPath {
                 
                 catalogTVC.contactsButton = self.contacts
                 
-                if let indexPath = sender as? NSIndexPath {
-                    
-                    catalogTVC.productSection = self.productSectionArray[indexPath.row]
-                    
-                }
+                catalogTVC.productSection = self.productSectionArray[indexPath.row]
+                
             }
             
         }

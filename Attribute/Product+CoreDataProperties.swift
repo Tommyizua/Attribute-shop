@@ -2,7 +2,7 @@
 //  Product+CoreDataProperties.swift
 //  Attribute
 //
-//  Created by Yaroslav Chyzh on 5/26/16.
+//  Created by Yaroslav Chyzh on 5/27/16.
 //  Copyright © 2016 Yaroslav Chyzh. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -17,7 +17,7 @@ extension Product {
     @NSManaged var article: String?
     @NSManaged var availability: String?
     @NSManaged var detailLink: String?
-    @NSManaged var imagePath: String?
+    @NSManaged var imageData: NSData?
     @NSManaged var imageUrlString: String?
     @NSManaged var isAvailable: NSNumber?
     @NSManaged var price: NSNumber?

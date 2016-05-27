@@ -17,6 +17,7 @@ class CatalogTVC: UITableViewController {
     var productSection: ProductSection!
     var activityIndicator: UIActivityIndicatorView!
     var products = [Product]()
+    var isListFetched = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,7 +59,7 @@ class CatalogTVC: UITableViewController {
         
         let fetchRequest = NSFetchRequest(entityName: String(Product))
         
-       fetchRequest.predicate = NSPredicate(format: "type == %@", self.productSection.type.rawValue)
+        fetchRequest.predicate = NSPredicate(format: "type == %@", self.productSection.type.rawValue)
         
         do {
             let results = try DataManager.sharedInstance.managedObjectContext.executeFetchRequest(fetchRequest)
@@ -73,6 +74,19 @@ class CatalogTVC: UITableViewController {
     
     func refreshProducts() {
         
+        for product in self.products {
+            
+            DataManager.sharedInstance.managedObjectContext.deleteObject(product)
+        }
+        
+        do {
+            try DataManager.sharedInstance.managedObjectContext.save()
+            self.products.removeAll()
+            
+        } catch _ {
+            
+        }
+        
         self.getProductsFromLink(self.productSection.link)
     }
     
@@ -80,7 +94,7 @@ class CatalogTVC: UITableViewController {
         
         parser.getProductsFromLink(link, type: self.productSection.type, completionHandler:{(productArray: [Product]) in
             
-            self.products = productArray;
+            self.products.appendContentsOf(productArray)
             
             self.tableView.reloadData()
             
@@ -94,6 +108,8 @@ class CatalogTVC: UITableViewController {
                 self.activityIndicator.stopAnimating()
                 
             }
+            
+            self.isListFetched = true
             
         })
         
@@ -121,24 +137,19 @@ class CatalogTVC: UITableViewController {
         
         let cell = tableView.dequeueReusableCellWithIdentifier("catalogCell", forIndexPath: indexPath)
         
-        if let catalogCell = cell as? CatalogCell {
+        if let catalogCell = cell as? CatalogCell where self.products.count > 0 {
             
             let currentProduct = self.products[indexPath.row]
             
             catalogCell.titleProduct.text = currentProduct.title
             catalogCell.articleProduct.text = currentProduct.article
             catalogCell.availabilityProduct.text = currentProduct.availability
-            catalogCell.articleProduct.text = currentProduct.valueForKey("article") as? String
+            
+            catalogCell.priceProduct.text = self.formattingPrice(currentProduct.price!.description)
             
             CachedDataManager.sharedInstance.getImageForProduct(currentProduct, toImageView: catalogCell.imageProduct)
             
-            let price = currentProduct.price as? Int
-            
-            catalogCell.priceProduct.text = self.formattingPrice(price!.description)
-            
-            let isAvailable = currentProduct.isAvailable?.boolValue
-            
-            if isAvailable! == IsAvailable.Available.rawValue {
+            if currentProduct.isAvailable! == IsAvailable.Available.rawValue {
                 
                 catalogCell.availabilityProduct.textColor = UIColor.greenColor()
                 
@@ -160,13 +171,17 @@ class CatalogTVC: UITableViewController {
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         
-        var pageNumber = 1
+        var pageNumber = Int(self.products.count/48)
         
-        if indexPath.row >= self.products.count/2 {
+        if indexPath.row >= self.products.count/2 && isListFetched == true && self.products.count > 10 {
+            
+            isListFetched = false
             
             pageNumber += 1
             
-            self.getProductsFromLink(self.productSection.link.stringByAppendingString("/page\(pageNumber)"))
+            let nextPage = self.productSection.link.stringByAppendingString("#/page-\(pageNumber)")
+            
+            self.getProductsFromLink(nextPage)
             
         }
         
@@ -178,20 +193,17 @@ class CatalogTVC: UITableViewController {
         
         if let cell = sender as? CatalogCell {
             
-            if let productVC = segue.destinationViewController as? ProductVC {
+            if let productVC = segue.destinationViewController as? ProductVC, indexPath = tableView.indexPathForCell(cell) {
                 
-                if let indexPath = tableView.indexPathForCell(cell) {
+                let selectedProduct = self.products[indexPath.row]
+                
+                if let image = cell.imageProduct?.image {
                     
-                    let selectedProduct = self.products[indexPath.row]
-                    
-                    if let image = cell.imageProduct?.image {
-                        
-                        productVC.image = image
-                    }
-                    
-                    productVC.product = selectedProduct
-                    productVC.contactsButton = self.contactsButton
+                    productVC.image = image
                 }
+                
+                productVC.product = selectedProduct
+                productVC.contactsButton = self.contactsButton
             }
         }
     }
