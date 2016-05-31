@@ -25,9 +25,9 @@ enum IsAvailable: NSNumber {
 }
 
 class Parser: NSObject {
-
+    
     private var totalPageNumber = ""
-    private let qos = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+    private let kGlobalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
     private let kMainQueue = dispatch_get_main_queue()
     
     // MARK: - Help Methods
@@ -71,7 +71,7 @@ class Parser: NSObject {
     
     func getProductsFromLink(link: String, type: ProductType, completionHandler:(productArray: [Product]) -> ()) {
         
-        dispatch_async(qos, {
+        dispatch_async(kGlobalQueue, {
             
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true;
             
@@ -130,10 +130,10 @@ class Parser: NSObject {
                         if product.availability!.lowercaseString.hasPrefix("нет") {
                             
                             product.isAvailable = IsAvailable.NotAvailable.rawValue
-                        
+                            
                         } else {
                             
-                           product.isAvailable = IsAvailable.Available.rawValue
+                            product.isAvailable = IsAvailable.Available.rawValue
                         }
                         
                         product.type = type.rawValue;
@@ -153,19 +153,19 @@ class Parser: NSObject {
                     
                     completionHandler(productArray: productArray)
                 })
-
+                
             }
             
             
         })
         
-//        dispatch_async(self.kMainQueue, { () in
-//            
-//            UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
-//            
-//            completionHandler(productArray: [Product]())
-//        })
-
+        //        dispatch_async(self.kMainQueue, { () in
+        //
+        //            UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+        //
+        //            completionHandler(productArray: [Product]())
+        //        })
+        
     }
     
     // MARK: - Get Product's Features Method
@@ -174,7 +174,7 @@ class Parser: NSObject {
         
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true;
         
-        dispatch_async(qos, {
+        dispatch_async(kGlobalQueue, {
             
             var featureArray = [Feature]()
             
@@ -210,7 +210,7 @@ class Parser: NSObject {
                 
                 completionHandler(features: featureArray)
             })
-
+            
         })
     }
     
@@ -220,7 +220,7 @@ class Parser: NSObject {
         
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true;
         
-        dispatch_async(qos, {
+        dispatch_async(kGlobalQueue, {
             
             let dataMainPage = NSData(contentsOfURL: NSURL(string: link)!)
             
@@ -230,6 +230,8 @@ class Parser: NSObject {
                 
                 let sourceHtmlCode = String(data: dataMainPage, encoding: NSUTF8StringEncoding)!
                 var code = self.searchInfo(sourceHtmlCode, start: "Сеть бутиков", end: "footer")
+                
+                var orderId = 0
                 
                 while code.containsString("city_name\">") {
                     
@@ -241,19 +243,25 @@ class Parser: NSObject {
                     
                     while codeBlock.containsString("\" src=\"") {
                         
-                        let storeObject = StoreObject()
-                        
-                        storeObject.image = self.searchInfo(codeBlock, start: "\" src=\"", end: "\" alt=\"\" /></div>")
-                        
-                        storeObject.name = self.searchInfo(codeBlock, start: "store_name\">", end: "</div><div class=\"store_address")
-                        self.removeUnicodeFromString(&storeObject.name)
-                        
-                        storeObject.address = self.searchInfo(codeBlock, start: "store_address\">", end: "</div><div class=\"clear")
-                        
-                        let startRange = codeBlock.rangeOfString("clear")!
-                        codeBlock = codeBlock.substringFromIndex(startRange.endIndex)
-                        
-                        storesInCityArea.storeObjectArray.append(storeObject)
+                        if let store = NSEntityDescription.insertNewObjectForEntityForName(String(Store), inManagedObjectContext: DataManager.sharedInstance.managedObjectContext) as? Store {
+                            
+                            store.imageUrlString = self.searchInfo(codeBlock, start: "\" src=\"", end: "\" alt=\"\" /></div>")
+                            
+                            store.name = self.searchInfo(codeBlock, start: "store_name\">", end: "</div><div class=\"store_address")
+                            self.removeUnicodeFromString(&store.name!)
+                            
+                            store.address = self.searchInfo(codeBlock, start: "store_address\">", end: "</div><div class=\"clear")
+                           
+                            store.cityName = storesInCityArea.cityName
+                            
+                            orderId += 1
+                            store.orderId = orderId
+                            
+                            let startRange = codeBlock.rangeOfString("clear")!
+                            codeBlock = codeBlock.substringFromIndex(startRange.endIndex)
+                            
+                            storesInCityArea.storeObjectArray.append(store)
+                        }
                     }
                     
                     storesInfoArray.append(storesInCityArea)
@@ -267,6 +275,8 @@ class Parser: NSObject {
             dispatch_async(self.kMainQueue, { () in
                 
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+                
+                DataManager.sharedInstance.saveContext()
                 
                 completionHandler(stores: storesInfoArray)
             })

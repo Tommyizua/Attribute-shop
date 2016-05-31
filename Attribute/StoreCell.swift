@@ -13,4 +13,5 @@ class StoreCell: UITableViewCell {
     @IBOutlet weak var storeImage: UIImageView!
     @IBOutlet weak var storeName: UILabel!
     @IBOutlet weak var address: UILabel!
+
 }

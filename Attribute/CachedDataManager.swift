@@ -10,89 +10,103 @@ import UIKit
 
 class CachedDataManager: NSObject {
     
-    let qos = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+    let kGlobalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
     let kMainQueue = dispatch_get_main_queue()
     
     static let sharedInstance = CachedDataManager()
     
     lazy var cachedImages = [String: UIImage]()
-    lazy var cachedStores = [StoresInCityArea]()
     
-    
-    func getImageForProduct(product: Product, toImageView: UIImageView) {
+    func getImageWithLink(link: String?, inout imageData: NSData?, size: CGSize, toImageView: UIImageView) {
         
         toImageView.image = nil
         
-        if let link = product.imageUrlString {
+        if let link = link {
             
             if let image = cachedImages[link] {
                 
                 toImageView.image = image
                 
-            } else if (product.imageData != nil) {
+            } else if let imageData = imageData {
                 
-                toImageView.image = UIImage(data: product.imageData!)
+                toImageView.image = UIImage(data: imageData)
+                
+                self.cachedImages[link] = toImageView.image
                 
             } else {
                 
-                dispatch_async(qos, { () -> () in
+                dispatch_async(kGlobalQueue, { () -> () in
+                    
+                    self.addActivityIndicatorToView(toImageView)
                     
                     let url = NSURL(string:link)!
                     
                     if let data = NSData(contentsOfURL: url) {
                         
-                        var image = UIImage(data: data)
-                        
-                        image = UIImage.imageScaled(image!, size:CGSizeMake(130, 130))
-                        
-                        dispatch_async(self.kMainQueue, { () -> () in
+                        if var image = UIImage(data: data) {
                             
-                            self.cachedImages[link] = image
+                            image = UIImage.imageScaled(image, size: size)
                             
-                            toImageView.image = image
-                            toImageView.setNeedsLayout()
-                            
-                            if let imageData = UIImageJPEGRepresentation(image!, 1.0) {
+                            dispatch_async(self.kMainQueue, { () -> () in
                                 
-                                product.imageData = imageData
+                                self.cachedImages[link] = image
                                 
-                                DataManager.sharedInstance.saveContext()
-                            }
-                            
-                        })
+                                toImageView.image = image
+                                toImageView.setNeedsLayout()
+                                
+                                self.removeActivityIndicatorFromView(toImageView)
+                                
+                                if let imageDataJpg = UIImageJPEGRepresentation(image, 1.0) {
+                                    
+                                    imageData = imageDataJpg
+                                    
+                                    DataManager.sharedInstance.saveContext()
+                                }
+                                
+                            })
+                        }
                     }
+                    
                 })
                 
             }
+            
         }
     }
     
-    func getStoreImage(link: String, toImageView: UIImageView) {
+    // MARK: - Activity indicator add/remove
+    
+    func addActivityIndicatorToView(view: UIView) {
         
-        toImageView.image = nil
-        
-        if let image = cachedImages[link] {
+        dispatch_async(self.kMainQueue, { () -> () in
             
-            toImageView.image = image
+            let activityIndicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
+            activityIndicator.center = view.center
+            activityIndicator.color = UIColor.orangeColor()
             
-        } else {
+            view.addSubview(activityIndicator)
             
-            dispatch_async(qos, { () -> () in
-                
-                var img = UIImage(data: NSData(contentsOfURL: NSURL(string:link)!)!)
-                img = UIImage.imageScaled(img!, size:CGSizeMake(480, 320))
-                
-                dispatch_async(self.kMainQueue, { () -> () in
-                    
-                    self.cachedImages[link] = img
-                    
-                    toImageView.image = img
-                    toImageView.setNeedsLayout()
-                })
-            })
+            activityIndicator.startAnimating()
             
-        }
-        
+        })
     }
     
+    func removeActivityIndicatorFromView(view: UIView) {
+        
+        dispatch_async(self.kMainQueue, { () -> () in
+            
+            for view in view.subviews {
+                
+                if let indicator = view as? UIActivityIndicatorView {
+                    
+                    indicator.stopAnimating()
+                    indicator.removeFromSuperview()
+                    
+                    return
+                }
+            }
+            
+            
+        })
+    }
 }

@@ -1,5 +1,5 @@
 //
-//  Product+CoreDataProperties.swift
+//  Store+CoreDataProperties.swift
 //  Attribute
 //
 //  Created by Yaroslav Chyzh on 5/31/16.
@@ -12,18 +12,13 @@
 import Foundation
 import CoreData
 
-extension Product {
+extension Store {
 
-    @NSManaged var article: String?
-    @NSManaged var availability: String?
-    @NSManaged var detailLink: String?
+    @NSManaged var address: String?
+    @NSManaged var cityName: String?
     @NSManaged var imageData: NSData?
     @NSManaged var imageUrlString: String?
-    @NSManaged var isAvailable: NSNumber?
-    @NSManaged var price: NSNumber?
-    @NSManaged var priceFormatted: String?
-    @NSManaged var quantity: NSNumber?
-    @NSManaged var title: String?
-    @NSManaged var type: NSNumber?
+    @NSManaged var name: String?
+    @NSManaged var orderId: NSNumber?
 
 }

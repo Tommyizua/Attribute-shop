@@ -14,6 +14,8 @@
 		BA11BF221CF6F0C300B9F1F7 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA11BF211CF6F0C300B9F1F7 /* Product.swift */; };
 		BA11BF241CF711FC00B9F1F7 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA11BF231CF711FC00B9F1F7 /* DataManager.swift */; };
 		BAD9452B1CB0482800E300FB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8B2B471C0DCA6C00FE007A /* MapKit.framework */; };
+		BAE5DD761CFC290D00938EFB /* Store+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE5DD741CFC290D00938EFB /* Store+CoreDataProperties.swift */; };
+		BAE5DD771CFC290D00938EFB /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE5DD751CFC290D00938EFB /* Store.swift */; };
 		CE19618A1C14985500BA1F70 /* OfficeAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1961891C14985500BA1F70 /* OfficeAnnotation.swift */; };
 		CE19618C1C1498B400BA1F70 /* ExtensionContactsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE19618B1C1498B400BA1F70 /* ExtensionContactsVC.swift */; };
 		CE1961901C14A12100BA1F70 /* StoreTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE19618F1C14A12100BA1F70 /* StoreTVC.swift */; };
@@ -32,7 +34,6 @@
 		CE91DC951C04AE960026BEAA /* ProductVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE91DC941C04AE960026BEAA /* ProductVC.swift */; };
 		CE9799791C6887E8006A9F23 /* Feature.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9799781C6887E8006A9F23 /* Feature.swift */; };
 		CEA042A01C67377E00C5C09F /* ProductSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA0429F1C67377E00C5C09F /* ProductSection.swift */; };
-		CEA042A21C6782D000C5C09F /* StoreObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA042A11C6782D000C5C09F /* StoreObject.swift */; };
 		CEA042A41C6784D000C5C09F /* StoresInCityArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA042A31C6784D000C5C09F /* StoresInCityArea.swift */; };
 		CEF0BBDB1C009B6500BBA1FD /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF0BBDA1C009B6500BBA1FD /* Parser.swift */; };
 /* End PBXBuildFile section */
@@ -44,6 +45,8 @@
 		BA11BF1F1CF6F05600B9F1F7 /* Product+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Product+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		BA11BF211CF6F0C300B9F1F7 /* Product.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		BA11BF231CF711FC00B9F1F7 /* DataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		BAE5DD741CFC290D00938EFB /* Store+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Store+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		BAE5DD751CFC290D00938EFB /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		CE1961891C14985500BA1F70 /* OfficeAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OfficeAnnotation.swift; sourceTree = "<group>"; };
 		CE19618B1C1498B400BA1F70 /* ExtensionContactsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtensionContactsVC.swift; sourceTree = "<group>"; };
 		CE19618F1C14A12100BA1F70 /* StoreTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreTVC.swift; sourceTree = "<group>"; };
@@ -65,7 +68,6 @@
 		CE91DC941C04AE960026BEAA /* ProductVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductVC.swift; sourceTree = "<group>"; };
 		CE9799781C6887E8006A9F23 /* Feature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Feature.swift; sourceTree = "<group>"; };
 		CEA0429F1C67377E00C5C09F /* ProductSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductSection.swift; sourceTree = "<group>"; };
-		CEA042A11C6782D000C5C09F /* StoreObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreObject.swift; sourceTree = "<group>"; };
 		CEA042A31C6784D000C5C09F /* StoresInCityArea.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoresInCityArea.swift; sourceTree = "<group>"; };
 		CEF0BBDA1C009B6500BBA1FD /* Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -89,6 +91,8 @@
 				BA11BF231CF711FC00B9F1F7 /* DataManager.swift */,
 				BA11BF211CF6F0C300B9F1F7 /* Product.swift */,
 				BA11BF1F1CF6F05600B9F1F7 /* Product+CoreDataProperties.swift */,
+				BAE5DD751CFC290D00938EFB /* Store.swift */,
+				BAE5DD741CFC290D00938EFB /* Store+CoreDataProperties.swift */,
 			);
 			name = DataBase;
 			sourceTree = "<group>";
@@ -116,7 +120,6 @@
 				CE8B2B491C0DD3DD00FE007A /* Shopping.swift */,
 				CE1961891C14985500BA1F70 /* OfficeAnnotation.swift */,
 				CEA0429F1C67377E00C5C09F /* ProductSection.swift */,
-				CEA042A11C6782D000C5C09F /* StoreObject.swift */,
 				CEA042A31C6784D000C5C09F /* StoresInCityArea.swift */,
 				CE9799781C6887E8006A9F23 /* Feature.swift */,
 			);
@@ -243,8 +246,8 @@
 				CE91DC951C04AE960026BEAA /* ProductVC.swift in Sources */,
 				CEA042A01C67377E00C5C09F /* ProductSection.swift in Sources */,
 				CE45CD031C05F3E100FE53A7 /* CatalogCell.swift in Sources */,
-				CEA042A21C6782D000C5C09F /* StoreObject.swift in Sources */,
 				4CB830261C0E138D0064A445 /* UIExtentions.swift in Sources */,
+				BAE5DD771CFC290D00938EFB /* Store.swift in Sources */,
 				CE8B2B441C0DAA8000FE007A /* ShoppingCartVC.swift in Sources */,
 				CE1961921C14A20F00BA1F70 /* StoreCell.swift in Sources */,
 				CE8B2B461C0DAB6500FE007A /* BuyTVC.swift in Sources */,
@@ -258,6 +261,7 @@
 				CE8B2B421C0CE65500FE007A /* ContactsTVC.swift in Sources */,
 				CEF0BBDB1C009B6500BBA1FD /* Parser.swift in Sources */,
 				CE9799791C6887E8006A9F23 /* Feature.swift in Sources */,
+				BAE5DD761CFC290D00938EFB /* Store+CoreDataProperties.swift in Sources */,
 				4CB830241C0E12DF0064A445 /* CachedDataManager.swift in Sources */,
 				CE7AE8081BFDDB5E00107F65 /* AppDelegate.swift in Sources */,
 				CE19618A1C14985500BA1F70 /* OfficeAnnotation.swift in Sources */,

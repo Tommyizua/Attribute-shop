@@ -11,7 +11,7 @@ import UIKit
 class StoresInCityArea: NSObject {
 
     var cityName: String
-    var storeObjectArray = [StoreObject]()
+    var storeObjectArray = [Store]()
     
     
     override init() {

@@ -10,7 +10,7 @@ import UIKit
 
 extension UIImage {
     
-    static func imageScaled(img:UIImage, size:CGSize) -> UIImage? {
+    static func imageScaled(img:UIImage, size:CGSize) -> UIImage {
         
         UIGraphicsBeginImageContext(size)
         

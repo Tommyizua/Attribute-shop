@@ -7,10 +7,12 @@
 //
 
 import UIKit
+import CoreData
 
 class StoreTVC:  UITableViewController {
     
     private var storesInfo = [StoresInCityArea]()
+    var activityIndicator: UIActivityIndicatorView!
     
     
     override func viewDidLoad() {
@@ -19,38 +21,53 @@ class StoreTVC:  UITableViewController {
         title = "Сеть бутиков"
         let storeLink = "http://attribute.ua/stores"
         
-        if CachedDataManager.sharedInstance.cachedStores.isEmpty {
+        let activityIndicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
+        activityIndicator.center = self.view.center
+        
+        self.activityIndicator = activityIndicator
+        
+        self.view.addSubview(activityIndicator)
+        
+        self.fetchDataFromDataBase()
+        
+        if self.storesInfo.isEmpty {
             
-            let parser = Parser()
+            self.activityIndicator.startAnimating()
             
-            let activityIdicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
-            activityIdicator.center = self.view.center
-            
-            self.view.addSubview(activityIdicator)
-            
-            activityIdicator.startAnimating()
-
-            
-            parser.getStoresInfo(storeLink, completionHandler:{(stores: [StoresInCityArea]) in
-                
-                CachedDataManager.sharedInstance.cachedStores = stores;
-                
-                self.storesInfo = CachedDataManager.sharedInstance.cachedStores;
-                
-                self.tableView.reloadData()
-                
-                activityIdicator.stopAnimating()
-            })
-
+            self.getProductsFromLink(storeLink)
         }
         
-        self.storesInfo = CachedDataManager.sharedInstance.cachedStores
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+    }
+    
+    func fetchDataFromDataBase() {
+        
+        self.storesInfo = DataManager.sharedInstance.getStoresFromDataBaseOrderedByOrderId()
+    }
+    
+    func getProductsFromLink(link: String) {
+        
+        let parser = Parser()
+        
+        parser.getStoresInfo(link, completionHandler:{(stores: [StoresInCityArea]) in
+            
+            self.storesInfo = stores;
+            
+            self.tableView.reloadData()
+            
+            if self.activityIndicator.isAnimating() {
+                
+                self.activityIndicator.stopAnimating()
+                
+            }
+            
+        })
+        
     }
     
     // MARK: - UITableViewDataSource
@@ -80,7 +97,10 @@ class StoreTVC:  UITableViewController {
             
             let store = storesInCityArea.storeObjectArray[indexPath.row]
             
-            CachedDataManager.sharedInstance.getStoreImage(store.image, toImageView: cell.storeImage)
+            CachedDataManager.sharedInstance.getImageWithLink(store.imageUrlString,
+                                                              imageData: &store.imageData,
+                                                              size: CGSizeMake(320, 240),
+                                                              toImageView: cell.storeImage)
             
             cell.storeName.text = store.name
             cell.address.text = store.address

@@ -34,11 +34,12 @@ class CatalogTVC: UITableViewController {
                                        forControlEvents: UIControlEvents.ValueChanged)
         
         navigationItem.rightBarButtonItem = contactsButton
+        
         title = self.productSection.name
         
         self.fetchDataFromDataBase()
         
-        if self.products.count == 0 {
+        if self.products.isEmpty {
             
             self.activityIndicator.startAnimating()
             
@@ -57,19 +58,7 @@ class CatalogTVC: UITableViewController {
     
     func fetchDataFromDataBase() {
         
-        let fetchRequest = NSFetchRequest(entityName: String(Product))
-        
-        fetchRequest.predicate = NSPredicate(format: "type == %@", self.productSection.type.rawValue)
-        
-        do {
-            let results = try DataManager.sharedInstance.managedObjectContext.executeFetchRequest(fetchRequest)
-            
-            self.products = results as! [Product]
-            
-        } catch let error as NSError {
-            print("Could not fetch \(error), \(error.userInfo)")
-        }
-        
+        self.products = DataManager.sharedInstance.getProductsFromDataBaseWithProductType(self.productSection.type)
     }
     
     func refreshProducts() {
@@ -81,6 +70,7 @@ class CatalogTVC: UITableViewController {
         
         do {
             try DataManager.sharedInstance.managedObjectContext.save()
+            
             self.products.removeAll()
             
         } catch _ {
@@ -137,7 +127,7 @@ class CatalogTVC: UITableViewController {
         
         let cell = tableView.dequeueReusableCellWithIdentifier("catalogCell", forIndexPath: indexPath)
         
-        if let catalogCell = cell as? CatalogCell where self.products.count > 0 {
+        if let catalogCell = cell as? CatalogCell where !self.products.isEmpty {
             
             let currentProduct = self.products[indexPath.row]
             
@@ -147,7 +137,10 @@ class CatalogTVC: UITableViewController {
             
             catalogCell.priceProduct.text = self.formattingPrice(currentProduct.price!.description)
             
-            CachedDataManager.sharedInstance.getImageForProduct(currentProduct, toImageView: catalogCell.imageProduct)
+            CachedDataManager.sharedInstance.getImageWithLink(currentProduct.imageUrlString,
+                                                              imageData: &currentProduct.imageData,
+                                                              size: CGSizeMake(130, 130),
+                                                              toImageView: catalogCell.imageProduct)
             
             if currentProduct.isAvailable! == IsAvailable.Available.rawValue {
                 
@@ -173,7 +166,7 @@ class CatalogTVC: UITableViewController {
         
         var pageNumber = Int(self.products.count/48)
         
-        if indexPath.row >= self.products.count/2 && isListFetched == true && self.products.count > 10 {
+        if indexPath.row >= self.products.count/2 && isListFetched == true && !self.products.isEmpty {
             
             isListFetched = false
             

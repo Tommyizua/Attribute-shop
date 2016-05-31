@@ -10,9 +10,77 @@ import UIKit
 import CoreData
 
 class DataManager: NSObject {
-
+    
     static let sharedInstance = DataManager()
     
+    
+    // MARK: - Requests
+    
+    func getProductsFromDataBaseWithProductType(productType: ProductType) -> [Product] {
+        
+        let fetchRequest = NSFetchRequest(entityName: String(Product))
+        
+        fetchRequest.predicate = NSPredicate(format: "type == %@", productType.rawValue)
+        
+        do {
+            let results = try DataManager.sharedInstance.managedObjectContext.executeFetchRequest(fetchRequest)
+            
+            return results as! [Product]
+            
+        } catch let error as NSError {
+            print("Could not fetch \(error), \(error.userInfo)")
+        }
+        
+        return [Product]()
+        
+    }
+    
+    func getStoresFromDataBaseOrderedByOrderId() -> [StoresInCityArea] {
+        
+        let fetchRequest = NSFetchRequest(entityName: String(Store))
+        
+        let sectionSortDescriptor = NSSortDescriptor(key: "orderId", ascending: true)
+        fetchRequest.sortDescriptors = [sectionSortDescriptor]
+        
+        do {
+            let results = try DataManager.sharedInstance.managedObjectContext.executeFetchRequest(fetchRequest)
+            
+            if let stores = results as? [Store] where !results.isEmpty {
+                
+                var cityName = (stores.first)!.cityName
+                
+                var arrayStores = [StoresInCityArea]()
+                
+                var orderedStores = StoresInCityArea()
+                
+                for store in stores {
+                    
+                    orderedStores.storeObjectArray.append(store)
+                    
+                    if cityName != store.cityName {
+                        
+                        orderedStores.cityName = cityName!
+                        
+                        arrayStores.append(orderedStores)
+                        
+                        cityName = store.cityName
+                        
+                        orderedStores = StoresInCityArea()
+                        
+                    }
+                    
+                }
+                
+                return arrayStores
+            }
+            
+        } catch let error as NSError {
+            print("Could not fetch \(error), \(error.userInfo)")
+        }
+        
+        return [StoresInCityArea]()
+        
+    }
     
     // MARK: - Core Data stack
     
@@ -76,5 +144,5 @@ class DataManager: NSObject {
             }
         }
     }
-
+    
 }

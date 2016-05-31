@@ -20,18 +20,6 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationController?.navigationBar.barStyle = UIBarStyle.Black
-        navigationController?.navigationBar.backgroundColor = UIColor.blackColor()
-        navigationController?.navigationBar.tintColor = UIColor.orangeColor()
-        tabBarController?.tabBar.tintColor = UIColor.blackColor()
-        
-        if let font = UIFont(name: "Helvetica", size: 14) {
-            
-            navigationController?.navigationBar.titleTextAttributes = [NSFontAttributeName: font]
-            
-            UIBarButtonItem.appearance().setTitleTextAttributes([NSFontAttributeName: font], forState: UIControlState.Normal)
-        }
-        
         shoppingTableView.dataSource = self
         
         NSNotificationCenter.defaultCenter().addObserver(
@@ -274,7 +262,6 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
                 product.title! + " "  +
                 product.priceFormatted! + " " +
                 product.quantity!.description;
-            
         }
         
         orderDiscription += formattingPrice(Shopping.sharedInstance.fullPrice.description)

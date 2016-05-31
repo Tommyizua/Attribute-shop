@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="EX6-54-4pC">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -25,6 +26,10 @@
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Camera" translatesAutoresizingMaskIntoConstraints="NO" id="mVY-pv-eGi">
                                             <rect key="frame" x="48" y="8" width="225" height="150"/>
+                                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" secondItem="mVY-pv-eGi" secondAttribute="height" multiplier="3:2" id="Km8-Zv-YcC"/>
+                                            </constraints>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t1Z-TI-R2x">
                                             <rect key="frame" x="0.0" y="166" width="320" height="21"/>
@@ -48,7 +53,6 @@
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="t1Z-TI-R2x" firstAttribute="leading" secondItem="PLr-Gw-N16" secondAttribute="leading" id="FRr-gn-sTv"/>
-                                        <constraint firstItem="mVY-pv-eGi" firstAttribute="leading" secondItem="PLr-Gw-N16" secondAttribute="leadingMargin" constant="40" id="L0F-Wg-tdj"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="80R-Q2-dTa" secondAttribute="bottom" constant="5" id="X4b-81-mUS"/>
                                         <constraint firstItem="t1Z-TI-R2x" firstAttribute="leading" secondItem="80R-Q2-dTa" secondAttribute="leading" id="dCp-oo-M9F"/>
                                         <constraint firstItem="mVY-pv-eGi" firstAttribute="top" secondItem="PLr-Gw-N16" secondAttribute="topMargin" id="eSa-Nz-A6a"/>
@@ -238,7 +242,7 @@
             </objects>
             <point key="canvasLocation" x="1324" y="468"/>
         </scene>
-        <!--View Controller-->
+        <!--Доставка и оплата-->
         <scene sceneID="hTt-dX-ClQ">
             <objects>
                 <viewController id="RW6-dS-UAn" sceneMemberID="viewController">
@@ -250,13 +254,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" pagingEnabled="YES" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D9h-Lp-u3R">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="2Ss-Dy-NvH">
                                 <rect key="frame" x="0.0" y="64" width="320" height="367"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <string key="text">                          Доставка и оплата
-
-Курьером по Киеву.
+                                <string key="text">Курьером по Киеву.
 
 Доставка по Киеву бесплатная при заказе на сумму от 400 грн. Стоимость доставки заказов до 400 грн составляет 30 грн.
 
@@ -287,19 +288,19 @@
 Безналичная
 
 Возможность и процедуру оплаты по безналичному расчету, Вы можете уточнить на любом из этапов формирования заказа.</string>
-                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="D9h-Lp-u3R" firstAttribute="centerX" secondItem="hr3-F2-k3A" secondAttribute="centerX" id="PAV-xM-iev"/>
-                            <constraint firstItem="D9h-Lp-u3R" firstAttribute="height" secondItem="hr3-F2-k3A" secondAttribute="height" constant="-113" id="jGs-uO-GUz"/>
-                            <constraint firstItem="D9h-Lp-u3R" firstAttribute="width" secondItem="hr3-F2-k3A" secondAttribute="width" id="yZh-r7-Sei"/>
-                            <constraint firstItem="D9h-Lp-u3R" firstAttribute="top" secondItem="yTI-22-lio" secondAttribute="bottom" id="zg2-Tv-dFT"/>
+                            <constraint firstItem="2Ss-Dy-NvH" firstAttribute="leading" secondItem="hr3-F2-k3A" secondAttribute="leading" id="2TI-CF-s8N"/>
+                            <constraint firstAttribute="trailing" secondItem="2Ss-Dy-NvH" secondAttribute="trailing" id="JLb-fa-GNb"/>
+                            <constraint firstItem="2Ss-Dy-NvH" firstAttribute="top" secondItem="yTI-22-lio" secondAttribute="bottom" id="Ufj-KT-Hcx"/>
+                            <constraint firstItem="Fvc-FY-e9j" firstAttribute="top" secondItem="2Ss-Dy-NvH" secondAttribute="bottom" id="guo-mV-Xwu"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="RTb-dz-grP"/>
+                    <navigationItem key="navigationItem" title="Доставка и оплата" id="RTb-dz-grP"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="G6X-C7-FA1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -411,7 +412,7 @@
             </objects>
             <point key="canvasLocation" x="1324" y="1103"/>
         </scene>
-        <!--View Controller-->
+        <!--Корпоративным клиентам-->
         <scene sceneID="b1G-lV-5QS">
             <objects>
                 <viewController id="RtM-t2-yhQ" sceneMemberID="viewController">
@@ -423,12 +424,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WeM-a4-902">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="5Cm-EV-zfS">
                                 <rect key="frame" x="0.0" y="64" width="320" height="367"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <string key="text">          Бизнес подарки и аксессуары оптом
-               Аttribute – для оптовых клиентов.
+                                <string key="text">Бизнес подарки и аксессуары оптом Аttribute – для оптовых клиентов.
 
 Сеть бутиков Attribute имеет очень большой пакет брендов, который Вы можете увидеть на нашем сайте и в розничных магазинах. Широкий ассортимент товаров, позволит Вам составить свой заказ, по тем позициям, которые Вы считаете актуальными и востребованными для развития и процветания Вашего бизнеса.
 
@@ -439,19 +438,19 @@
 Исходя из нашего большого опыта на рынке эксклюзивных аксессуаров и оригинальных подарков, сотрудники нашей компании могут помочь Вам в составлении ассортимента, учитывая Ваши пожелания.
 
 С нашей всесторонней поддержкой и взаимопониманием Вы будете развиваться быстрее и качественнее.</string>
-                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="WeM-a4-902" firstAttribute="top" secondItem="6AG-T6-cFb" secondAttribute="bottom" id="C3U-Ib-vdV"/>
-                            <constraint firstItem="WeM-a4-902" firstAttribute="centerX" secondItem="yBk-cS-3OE" secondAttribute="centerX" id="RdN-8F-Um7"/>
-                            <constraint firstItem="WeM-a4-902" firstAttribute="width" secondItem="yBk-cS-3OE" secondAttribute="width" id="jHQ-2M-m3y"/>
-                            <constraint firstItem="WeM-a4-902" firstAttribute="height" secondItem="yBk-cS-3OE" secondAttribute="height" constant="-113" id="k5b-cX-y1F"/>
+                            <constraint firstItem="5Cm-EV-zfS" firstAttribute="leading" secondItem="yBk-cS-3OE" secondAttribute="leading" id="CBY-is-F1H"/>
+                            <constraint firstAttribute="trailing" secondItem="5Cm-EV-zfS" secondAttribute="trailing" id="OKX-jJ-SZj"/>
+                            <constraint firstItem="cbh-jK-9Yc" firstAttribute="top" secondItem="5Cm-EV-zfS" secondAttribute="bottom" id="m5N-EY-fqN"/>
+                            <constraint firstItem="5Cm-EV-zfS" firstAttribute="top" secondItem="6AG-T6-cFb" secondAttribute="bottom" id="sTv-KL-UgM"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="WZ7-9F-6I5"/>
+                    <navigationItem key="navigationItem" title="Корпоративным клиентам" id="WZ7-9F-6I5"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vqg-jH-gCf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

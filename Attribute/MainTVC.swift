@@ -21,27 +21,13 @@ class MainTVC: UITableViewController {
         
         title = "Каталоги"
         
-        navigationController?.navigationBar.barStyle = UIBarStyle.Black
-        navigationController?.navigationBar.backgroundColor = UIColor.blackColor()
-        navigationController?.navigationBar.tintColor = UIColor.orangeColor()
-        tabBarController?.tabBar.tintColor = UIColor.blackColor()
-        
         contacts = UIBarButtonItem(title: "Контакты",
                                    style: .Plain,
                                    target: self,
                                    action: #selector(MainTVC.openContacts(_:)))
         
         navigationItem.rightBarButtonItem = contacts
-        
-        if let font = UIFont(name: "Helvetica", size: 14) {
-            
-            contacts.setTitleTextAttributes([NSFontAttributeName: font], forState: UIControlState.Normal)
-            
-            navigationController?.navigationBar.titleTextAttributes = [NSFontAttributeName: font]
-            
-            UIBarButtonItem.appearance().setTitleTextAttributes([NSFontAttributeName: font], forState: UIControlState.Normal)
-        }
-        
+
         fillingProductSectionArray()
         
         if self.tableView.contentOffset.y == 0 {
