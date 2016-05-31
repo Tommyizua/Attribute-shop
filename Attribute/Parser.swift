@@ -95,6 +95,8 @@ class Parser: NSObject {
                 
                 var productArray = [Product]()
                 
+                var orderId = DataManager.sharedInstance.getMaxIdWithProductType(type)
+                
                 while code.containsString("product-name\" href=\"") {
                     
                     if let product = NSEntityDescription.insertNewObjectForEntityForName(String(Product), inManagedObjectContext: DataManager.sharedInstance.managedObjectContext) as? Product {
@@ -137,6 +139,9 @@ class Parser: NSObject {
                         }
                         
                         product.type = type.rawValue;
+                        
+                        orderId += 1
+                        product.orderId = orderId
                         
                         let startRange = code.rangeOfString("/div></div></li>")!
                         code = code.substringFromIndex(startRange.endIndex)

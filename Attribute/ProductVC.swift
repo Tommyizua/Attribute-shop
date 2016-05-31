@@ -10,19 +10,22 @@ import UIKit
 
 class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
+    private let tableColor = UIColor(colorLiteralRed: 255/255, green: 204/255, blue: 102/255, alpha: 0.02)
+    
     @IBOutlet weak var titleProduct: UILabel!
     @IBOutlet weak var imageProduct: UIImageView!
     @IBOutlet weak var articleProduct: UILabel!
     @IBOutlet weak var availabilityProduct: UILabel!
     @IBOutlet weak var priceProduct: UILabel!
     @IBOutlet weak var buyButton: UIButton!
-    
     @IBOutlet weak var featureTable: UITableView!
+    
+    private var features = [Feature]()
+    private var activityIndicator: UIActivityIndicatorView!
     
     var contactsButton: UIBarButtonItem!
     var product: Product!
     var image: UIImage!
-    private var features = [Feature]()
     
     
     override func viewDidLoad() {
@@ -32,30 +35,38 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         featureTable.delegate = self
         navigationItem.rightBarButtonItem = contactsButton
         
+        self.featureTable.backgroundColor = tableColor
+        
         fillingLabels()
         
         if self.features.count == 0 {
-        
+            
             let activityIdicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
             activityIdicator.center = CGPointMake(CGRectGetMidX(self.view.frame), CGRectGetMinY(self.featureTable.frame) - 150)
             
             self.featureTable.addSubview(activityIdicator)
             
-            activityIdicator.startAnimating()
+            self.activityIndicator = activityIdicator
+            
+            self.activityIndicator.startAnimating()
             
             let parser = Parser()
-        
-        if let detailLink = self.product.detailLink {
-        
-            parser.getFeature(detailLink, completionHandler:{(features: [Feature]) in
+            
+            if let detailLink = self.product.detailLink {
                 
-                self.features = features;
-                
-                self.featureTable.reloadData()
-                
-                activityIdicator.stopAnimating()
-            })
-        }
+                parser.getFeature(detailLink, completionHandler:{(features: [Feature]) in
+                    
+                    self.features = features
+                    
+                    self.featureTable.reloadData()
+                    
+                    if self.activityIndicator.isAnimating() {
+                        
+                        self.activityIndicator.stopAnimating()
+                    }
+                    
+                })
+            }
         }
         
     }
@@ -95,12 +106,23 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return self.features.count
+        if self.features.count == 0 {
+            
+            return 1
+            
+        } else {
+            
+            return self.features.count
+        }
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCellWithIdentifier("featureCell", forIndexPath: indexPath)
+        
+        cell.backgroundColor = tableColor
+        cell.textLabel?.text = nil
+        cell.detailTextLabel?.text = nil
         
         if !self.features.isEmpty {
             
@@ -108,7 +130,11 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
             
             cell.textLabel?.text = "\(feature.name):"
             cell.detailTextLabel?.text = feature.value
-            cell.backgroundColor = UIColor(colorLiteralRed: 255/255, green: 204/255, blue: 102/255, alpha: 0.02)
+            
+        } else if self.activityIndicator.isAnimating() == false {
+            
+            cell.textLabel?.text = "Информация отсутствует."
+            cell.detailTextLabel?.text = nil
         }
         
         return cell

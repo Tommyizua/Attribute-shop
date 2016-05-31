@@ -1,5 +1,5 @@
 //
-//  Store+CoreDataProperties.swift
+//  Object+CoreDataProperties.swift
 //  Attribute
 //
 //  Created by Yaroslav Chyzh on 5/31/16.
@@ -12,10 +12,10 @@
 import Foundation
 import CoreData
 
-extension Store {
+extension Object {
 
-    @NSManaged var address: String?
-    @NSManaged var cityName: String?
-    @NSManaged var name: String?
+    @NSManaged var imageData: NSData?
+    @NSManaged var imageUrlString: String?
+    @NSManaged var orderId: NSNumber?
 
 }

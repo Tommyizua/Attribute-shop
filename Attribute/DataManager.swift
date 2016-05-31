@@ -22,12 +22,16 @@ class DataManager: NSObject {
         
         fetchRequest.predicate = NSPredicate(format: "type == %@", productType.rawValue)
         
+        let sectionSortDescriptor = NSSortDescriptor(key: "orderId", ascending: true)
+        fetchRequest.sortDescriptors = [sectionSortDescriptor]
+        
         do {
             let results = try DataManager.sharedInstance.managedObjectContext.executeFetchRequest(fetchRequest)
             
             return results as! [Product]
             
         } catch let error as NSError {
+            
             print("Could not fetch \(error), \(error.userInfo)")
         }
         
@@ -74,6 +78,7 @@ class DataManager: NSObject {
             }
             
         } catch let error as NSError {
+            
             print("Could not fetch \(error), \(error.userInfo)")
         }
         
@@ -94,6 +99,45 @@ class DataManager: NSObject {
             }
             
         } catch let error as NSError {
+            
+            print("Could not fetch \(error), \(error.userInfo)")
+        }
+        
+        return 0
+    }
+    
+    func getMaxIdWithProductType(productType: ProductType) -> Int {
+        
+        let fetchRequest = NSFetchRequest(entityName: String(Product))
+        
+        fetchRequest.predicate = NSPredicate(format: "orderId == max(orderId) AND type == %@", productType.rawValue)
+        
+        fetchRequest.resultType = .DictionaryResultType
+        
+        let keyPathExpression = NSExpression.init(forKeyPath: "orderId");
+        let maxExpression = NSExpression.init(forFunction: "max:", arguments: [keyPathExpression])
+        
+        let expression = NSExpressionDescription.init()
+        expression.name = "maxOrderId"
+        expression.expression = maxExpression
+        
+        expression.expressionResultType = .Integer32AttributeType
+        
+        fetchRequest.propertiesToFetch = [expression];
+        
+        do {
+            let results = try DataManager.sharedInstance.managedObjectContext.executeFetchRequest(fetchRequest)
+            
+            if !results.isEmpty {
+                
+                if let dictionary = results.first as? NSDictionary{
+                    
+                    return dictionary["maxOrderId"]!.integerValue
+                }
+            }
+            
+        } catch let error as NSError {
+            
             print("Could not fetch \(error), \(error.userInfo)")
         }
         

@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 
 
-class Store: NSManagedObject {
+class Store: Object {
 
 // Insert code here to add functionality to your managed object subclass
 

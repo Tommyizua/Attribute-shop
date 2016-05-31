@@ -73,8 +73,9 @@ class StoreTVC:  UITableViewController {
             
             self.storesInfo.removeAll()
             
-        } catch _ {
+        } catch let error as NSError {
             
+            print("Could not delete all \(error), \(error.userInfo)")
         }
         
     }
@@ -110,7 +111,7 @@ class StoreTVC:  UITableViewController {
                 
             } else {
                 
-                print("Compare store counts: \(countStores) and \(count) equal or 0")
+                print("Compare store counts: \(countStores) and \(count) - equal or 0")
             }
         }
         

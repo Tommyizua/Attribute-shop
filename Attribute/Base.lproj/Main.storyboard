@@ -255,7 +255,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="2Ss-Dy-NvH">
-                                <rect key="frame" x="0.0" y="64" width="320" height="367"/>
+                                <rect key="frame" x="8" y="64" width="304" height="367"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <string key="text">Курьером по Киеву.
 
@@ -294,8 +294,8 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="2Ss-Dy-NvH" firstAttribute="leading" secondItem="hr3-F2-k3A" secondAttribute="leading" id="2TI-CF-s8N"/>
-                            <constraint firstAttribute="trailing" secondItem="2Ss-Dy-NvH" secondAttribute="trailing" id="JLb-fa-GNb"/>
+                            <constraint firstItem="2Ss-Dy-NvH" firstAttribute="leading" secondItem="hr3-F2-k3A" secondAttribute="leading" constant="8" id="2TI-CF-s8N"/>
+                            <constraint firstAttribute="trailing" secondItem="2Ss-Dy-NvH" secondAttribute="trailing" constant="8" id="JLb-fa-GNb"/>
                             <constraint firstItem="2Ss-Dy-NvH" firstAttribute="top" secondItem="yTI-22-lio" secondAttribute="bottom" id="Ufj-KT-Hcx"/>
                             <constraint firstItem="Fvc-FY-e9j" firstAttribute="top" secondItem="2Ss-Dy-NvH" secondAttribute="bottom" id="guo-mV-Xwu"/>
                         </constraints>
@@ -425,7 +425,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="5Cm-EV-zfS">
-                                <rect key="frame" x="0.0" y="64" width="320" height="367"/>
+                                <rect key="frame" x="8" y="64" width="304" height="367"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <string key="text">Бизнес подарки и аксессуары оптом Аttribute – для оптовых клиентов.
 
@@ -444,8 +444,8 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="5Cm-EV-zfS" firstAttribute="leading" secondItem="yBk-cS-3OE" secondAttribute="leading" id="CBY-is-F1H"/>
-                            <constraint firstAttribute="trailing" secondItem="5Cm-EV-zfS" secondAttribute="trailing" id="OKX-jJ-SZj"/>
+                            <constraint firstItem="5Cm-EV-zfS" firstAttribute="leading" secondItem="yBk-cS-3OE" secondAttribute="leading" constant="8" id="CBY-is-F1H"/>
+                            <constraint firstAttribute="trailing" secondItem="5Cm-EV-zfS" secondAttribute="trailing" constant="8" id="OKX-jJ-SZj"/>
                             <constraint firstItem="cbh-jK-9Yc" firstAttribute="top" secondItem="5Cm-EV-zfS" secondAttribute="bottom" id="m5N-EY-fqN"/>
                             <constraint firstItem="5Cm-EV-zfS" firstAttribute="top" secondItem="6AG-T6-cFb" secondAttribute="bottom" id="sTv-KL-UgM"/>
                         </constraints>

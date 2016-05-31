@@ -106,7 +106,6 @@ class CachedDataManager: NSObject {
                 }
             }
             
-            
         })
     }
 }

@@ -26,6 +26,7 @@ class CatalogTVC: UITableViewController {
                                        action: #selector(CatalogTVC.refreshProducts),
                                        forControlEvents: UIControlEvents.ValueChanged)
         
+        self.refreshControl?.tintColor = UIColor.orangeColor()
         navigationItem.rightBarButtonItem = contactsButton
         
         title = self.productSection.name
@@ -41,7 +42,7 @@ class CatalogTVC: UITableViewController {
             self.view.addSubview(activityIndicator)
             
             self.activityIndicator = activityIndicator
-
+            
             self.activityIndicator.startAnimating()
             
             self.getProductsFromLink(self.productSection.link)
@@ -94,7 +95,7 @@ class CatalogTVC: UITableViewController {
                 self.refreshControl?.endRefreshing()
             }
             
-            if self.activityIndicator.isAnimating() {
+            if self.activityIndicator != nil && self.activityIndicator.isAnimating() {
                 
                 self.activityIndicator.stopAnimating()
                 

@@ -17,8 +17,6 @@ extension Product {
     @NSManaged var article: String?
     @NSManaged var availability: String?
     @NSManaged var detailLink: String?
-    @NSManaged var imageData: NSData?
-    @NSManaged var imageUrlString: String?
     @NSManaged var isAvailable: NSNumber?
     @NSManaged var price: NSNumber?
     @NSManaged var priceFormatted: String?

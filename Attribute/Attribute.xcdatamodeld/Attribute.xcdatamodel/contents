@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10174" systemVersion="15F34" minimumToolsVersion="Xcode 7.0">
-    <entity name="Product" representedClassName=".Product" syncable="YES">
+    <entity name="Object" representedClassName=".Object" syncable="YES">
+        <attribute name="imageData" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="imageUrlString" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="orderId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="Product" representedClassName=".Product" parentEntity="Object" syncable="YES">
         <attribute name="article" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="availability" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="detailLink" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="imageData" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
-        <attribute name="imageUrlString" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="isAvailable" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="price" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="priceFormatted" optional="YES" attributeType="String" syncable="YES"/>
@@ -13,16 +16,14 @@
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="type" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
     </entity>
-    <entity name="Store" representedClassName=".Store" syncable="YES">
+    <entity name="Store" representedClassName=".Store" parentEntity="Object" syncable="YES">
         <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="cityName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="imageData" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
-        <attribute name="imageUrlString" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="orderId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Product" positionX="-263" positionY="72" width="128" height="208"/>
-        <element name="Store" positionX="-63" positionY="69" width="128" height="135"/>
+        <element name="Product" positionX="-263" positionY="72" width="128" height="178"/>
+        <element name="Store" positionX="-63" positionY="69" width="128" height="88"/>
+        <element name="Object" positionX="-182" positionY="-135" width="128" height="88"/>
     </elements>
 </model>
