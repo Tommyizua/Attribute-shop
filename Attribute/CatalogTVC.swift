@@ -58,7 +58,7 @@ class CatalogTVC: UITableViewController {
     
     func fetchDataFromDataBase() {
         
-        self.products = DataManager.sharedInstance.getProductsFromDataBaseWithProductType(self.productSection.type)
+        self.products = DataManager.sharedInstance.getProductsWithProductType(self.productSection.type)
     }
     
     func refreshProducts() {

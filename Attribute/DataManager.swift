@@ -16,7 +16,7 @@ class DataManager: NSObject {
     
     // MARK: - Requests
     
-    func getProductsFromDataBaseWithProductType(productType: ProductType) -> [Product] {
+    func getProductsWithProductType(productType: ProductType) -> [Product] {
         
         let fetchRequest = NSFetchRequest(entityName: String(Product))
         
@@ -35,7 +35,7 @@ class DataManager: NSObject {
         
     }
     
-    func getStoresFromDataBaseOrderedByOrderId() -> [StoresInCityArea] {
+    func getStoresOrderedByOrderId() -> [StoresInCityArea] {
         
         let fetchRequest = NSFetchRequest(entityName: String(Store))
         
@@ -66,7 +66,6 @@ class DataManager: NSObject {
                         cityName = store.cityName
                         
                         orderedStores = StoresInCityArea()
-                        
                     }
                     
                 }
@@ -80,6 +79,25 @@ class DataManager: NSObject {
         
         return [StoresInCityArea]()
         
+    }
+    
+    func getCountStores() -> Int {
+        
+        let fetchRequest = NSFetchRequest(entityName: String(Store))
+        
+        do {
+            let results = try DataManager.sharedInstance.managedObjectContext.executeFetchRequest(fetchRequest)
+            
+            if let stores = results as? [Store] where !results.isEmpty {
+                
+                return stores.count
+            }
+            
+        } catch let error as NSError {
+            print("Could not fetch \(error), \(error.userInfo)")
+        }
+        
+        return 0
     }
     
     // MARK: - Core Data stack

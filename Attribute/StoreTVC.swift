@@ -35,8 +35,17 @@ class StoreTVC:  UITableViewController {
             self.activityIndicator.startAnimating()
             
             self.getProductsFromLink(storeLink)
+            
+        } else {
+            
+            let countStores = DataManager.sharedInstance.getCountStores()
+            
+            if countStores != self.storesInfo.count && countStores != 0 {
+                
+                self.getProductsFromLink(storeLink)
+            }
+            
         }
-        
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -47,7 +56,7 @@ class StoreTVC:  UITableViewController {
     
     func fetchDataFromDataBase() {
         
-        self.storesInfo = DataManager.sharedInstance.getStoresFromDataBaseOrderedByOrderId()
+        self.storesInfo = DataManager.sharedInstance.getStoresOrderedByOrderId()
     }
     
     func getProductsFromLink(link: String) {
