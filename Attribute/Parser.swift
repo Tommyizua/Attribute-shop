@@ -284,4 +284,47 @@ class Parser: NSObject {
         })
     }
     
+    func getCountStores(link: String, completionHandler:(count: Int) -> ()) {
+        
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true;
+        
+        dispatch_async(kGlobalQueue, {
+            
+            let dataMainPage = NSData(contentsOfURL: NSURL(string: link)!)
+            
+            var count = 0
+            
+            if let dataMainPage = dataMainPage {
+                
+                let sourceHtmlCode = String(data: dataMainPage, encoding: NSUTF8StringEncoding)!
+                var code = self.searchInfo(sourceHtmlCode, start: "Сеть бутиков", end: "footer")
+                
+                while code.containsString("city_name\">") {
+                    
+                    var codeBlock = self.searchInfo(code, start: "<div class=\"city\">", end: "\"></div></div></div>")
+                    
+                    while codeBlock.containsString("\" src=\"") {
+                        
+                        count += 1
+                        
+                        let startRange = codeBlock.rangeOfString("clear")!
+                        codeBlock = codeBlock.substringFromIndex(startRange.endIndex)
+                    }
+                    
+                    let startRange = code.rangeOfString("clear\"></div></div></div>")!
+                    code = code.substringFromIndex(startRange.endIndex)
+                }
+                
+            }
+            
+            dispatch_async(self.kMainQueue, { () in
+                
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+                
+                completionHandler(count: count)
+            })
+            
+        })
+    }
+    
 }

@@ -12,7 +12,8 @@ import CoreData
 class StoreTVC:  UITableViewController {
     
     private var storesInfo = [StoresInCityArea]()
-    var activityIndicator: UIActivityIndicatorView!
+    private let parser = Parser()
+    private var activityIndicator: UIActivityIndicatorView!
     
     
     override func viewDidLoad() {
@@ -21,16 +22,17 @@ class StoreTVC:  UITableViewController {
         title = "Сеть бутиков"
         let storeLink = "http://attribute.ua/stores"
         
-        let activityIndicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
-        activityIndicator.center = self.view.center
-        
-        self.activityIndicator = activityIndicator
-        
-        self.view.addSubview(activityIndicator)
-        
         self.fetchDataFromDataBase()
         
         if self.storesInfo.isEmpty {
+            
+            let activityIndicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
+            activityIndicator.center = self.view.center
+            activityIndicator.color = UIColor.orangeColor()
+            
+            self.view.addSubview(activityIndicator)
+            
+            self.activityIndicator = activityIndicator
             
             self.activityIndicator.startAnimating()
             
@@ -38,14 +40,9 @@ class StoreTVC:  UITableViewController {
             
         } else {
             
-            let countStores = DataManager.sharedInstance.getCountStores()
-            
-            if countStores != self.storesInfo.count && countStores != 0 {
-                
-                self.getProductsFromLink(storeLink)
-            }
-            
+            self.compareStoreCounts(storeLink)
         }
+        
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -54,20 +51,39 @@ class StoreTVC:  UITableViewController {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
     }
     
+    // MARK: - Help Methods
+    
     func fetchDataFromDataBase() {
         
         self.storesInfo = DataManager.sharedInstance.getStoresOrderedByOrderId()
     }
     
+    func removeAllStores() {
+        
+        for stores in self.storesInfo {
+            
+            for product in stores.storeObjectArray {
+                
+                DataManager.sharedInstance.managedObjectContext.deleteObject(product)
+            }
+        }
+        
+        do {
+            try DataManager.sharedInstance.managedObjectContext.save()
+            
+            self.storesInfo.removeAll()
+            
+        } catch _ {
+            
+        }
+        
+    }
+    
     func getProductsFromLink(link: String) {
         
-        let parser = Parser()
-        
-        parser.getStoresInfo(link, completionHandler:{(stores: [StoresInCityArea]) in
+        self.parser.getStoresInfo(link, completionHandler:{ (stores: [StoresInCityArea]) in
             
             self.storesInfo = stores;
-            
-            self.tableView.reloadData()
             
             if self.activityIndicator.isAnimating() {
                 
@@ -75,7 +91,28 @@ class StoreTVC:  UITableViewController {
                 
             }
             
+            self.tableView.reloadData()
         })
+        
+    }
+    
+    func compareStoreCounts(link: String) {
+        
+        self.parser.getCountStores(link) { (count) in
+            
+            let countStores = DataManager.sharedInstance.getCountStores()
+            
+            if countStores != count && countStores != 0 && count != 0 {
+                
+                self.removeAllStores()
+                
+                self.getProductsFromLink(link)
+                
+            } else {
+                
+                print("Compare store counts: \(countStores) and \(count) equal or 0")
+            }
+        }
         
     }
     

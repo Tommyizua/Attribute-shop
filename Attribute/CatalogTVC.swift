@@ -22,13 +22,6 @@ class CatalogTVC: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let activityIndicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
-        activityIndicator.center = self.view.center
-        
-        self.view.addSubview(activityIndicator)
-        
-        self.activityIndicator = activityIndicator
-        
         self.refreshControl?.addTarget(self,
                                        action: #selector(CatalogTVC.refreshProducts),
                                        forControlEvents: UIControlEvents.ValueChanged)
@@ -41,6 +34,14 @@ class CatalogTVC: UITableViewController {
         
         if self.products.isEmpty {
             
+            let activityIndicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
+            activityIndicator.center = self.view.center
+            activityIndicator.color = UIColor.orangeColor()
+            
+            self.view.addSubview(activityIndicator)
+            
+            self.activityIndicator = activityIndicator
+
             self.activityIndicator.startAnimating()
             
             self.getProductsFromLink(self.productSection.link)
