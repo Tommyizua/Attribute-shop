@@ -81,7 +81,7 @@ class CachedDataManager: NSObject {
         dispatch_async(self.kMainQueue, { () -> () in
             
             let activityIndicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
-            activityIndicator.center = view.center
+            activityIndicator.center = CGPointMake(view.center.x, view.center.y-30)
             activityIndicator.color = UIColor.orangeColor()
             
             view.addSubview(activityIndicator)

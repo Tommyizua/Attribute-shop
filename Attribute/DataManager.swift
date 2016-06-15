@@ -14,7 +14,7 @@ class DataManager: NSObject {
     static let sharedInstance = DataManager()
     
     
-    // MARK: - Requests
+    // MARK: - Fetch Requests
     
     func getProductsWithProductType(productType: ProductType) -> [Product] {
         
@@ -39,7 +39,26 @@ class DataManager: NSObject {
         
     }
     
-    func getStoresOrderedByOrderId() -> [StoresInCityArea] {
+    func getProductWithArticle(article: String) -> Product? {
+        
+        let fetchRequest = NSFetchRequest(entityName: String(Product))
+        
+        fetchRequest.predicate = NSPredicate(format: "article == %@", article)
+        
+        do {
+            let results = try DataManager.sharedInstance.managedObjectContext.executeFetchRequest(fetchRequest)
+            
+            return results.first as? Product
+            
+        } catch let error as NSError {
+            
+            print("Could not fetch \(error), \(error.userInfo)")
+        }
+        
+        return nil
+    }
+    
+    func getOrderedStores() -> [StoresInCityArea] {
         
         let fetchRequest = NSFetchRequest(entityName: String(Store))
         
@@ -83,27 +102,27 @@ class DataManager: NSObject {
         }
         
         return [StoresInCityArea]()
-        
     }
     
     func getCountStores() -> Int {
         
         let fetchRequest = NSFetchRequest(entityName: String(Store))
         
-        do {
-            let results = try DataManager.sharedInstance.managedObjectContext.executeFetchRequest(fetchRequest)
-            
-            if let stores = results as? [Store] where !results.isEmpty {
-                
-                return stores.count
-            }
-            
-        } catch let error as NSError {
+        var error: NSError? = nil
+        
+        let count = DataManager.sharedInstance.managedObjectContext.countForFetchRequest(fetchRequest, error: &error)
+        
+        if let error = error {
             
             print("Could not fetch \(error), \(error.userInfo)")
+            
+            return 0
+            
+        } else {
+            
+            return count
         }
         
-        return 0
     }
     
     func getMaxIdWithProductType(productType: ProductType) -> Int {

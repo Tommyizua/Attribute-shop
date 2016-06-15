@@ -8,6 +8,16 @@
 
 import UIKit
 
+enum ProductType: NSNumber {
+    case Pen
+    case Leather
+    case Watch
+    case Accessories
+    case Cufflinks
+    case Gifts
+    case Search
+}
+
 class ProductSection: NSObject {
 
     var name: String

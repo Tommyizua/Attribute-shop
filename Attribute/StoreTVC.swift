@@ -36,7 +36,7 @@ class StoreTVC:  UITableViewController {
             
             self.activityIndicator.startAnimating()
             
-            self.getProductsFromLink(storeLink)
+            self.getStoresFromLink(storeLink)
             
         } else {
             
@@ -55,7 +55,7 @@ class StoreTVC:  UITableViewController {
     
     func fetchDataFromDataBase() {
         
-        self.storesInfo = DataManager.sharedInstance.getStoresOrderedByOrderId()
+        self.storesInfo = DataManager.sharedInstance.getOrderedStores()
     }
     
     func removeAllStores() {
@@ -80,7 +80,7 @@ class StoreTVC:  UITableViewController {
         
     }
     
-    func getProductsFromLink(link: String) {
+    func getStoresFromLink(link: String) {
         
         self.parser.getStoresInfo(link, completionHandler:{ (stores: [StoresInCityArea]) in
             
@@ -107,7 +107,7 @@ class StoreTVC:  UITableViewController {
                 
                 self.removeAllStores()
                 
-                self.getProductsFromLink(link)
+                self.getStoresFromLink(link)
                 
             } else {
                 

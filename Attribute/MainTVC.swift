@@ -8,10 +8,11 @@
 
 import UIKit
 
-class MainTVC: UITableViewController {
+class MainTVC: UITableViewController, UISearchBarDelegate {
     
     private var productSectionArray = [ProductSection]()
     private var contacts: UIBarButtonItem!
+    private let showCatalogIdentifier = "showCatalog"
     
     @IBOutlet weak var searchBar: UISearchBar!
     
@@ -27,7 +28,10 @@ class MainTVC: UITableViewController {
                                    action: #selector(MainTVC.openContacts(_:)))
         
         navigationItem.rightBarButtonItem = contacts
-
+        
+        searchBar.delegate = self;
+        self.searchBar.keyboardAppearance = .Dark
+        
         fillingProductSectionArray()
         
         if self.tableView.contentOffset.y == 0 {
@@ -74,7 +78,33 @@ class MainTVC: UITableViewController {
     // MARK: - Actions
     
     func openContacts(sender: UIBarButtonItem) {
+       
         performSegueWithIdentifier("toContacts", sender: sender)
+    }
+    
+    // MARK: - UISearchBarDelegate
+    
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        
+        let searchLink = "http://attribute.ua/search?controller=search&orderby=position&orderway=desc&search_query=\(searchBar.text!)"
+        
+        let productSection = ProductSection()
+        
+        productSection.name = searchBar.placeholder ?? "Поиск"
+        productSection.link = searchLink
+        productSection.type = .Search
+        
+        self.productSectionArray.append(productSection)
+        
+        let searchIndexPath = NSIndexPath(forRow: self.productSectionArray.count - 1, inSection: 0)
+        
+        self.performSegueWithIdentifier(self.showCatalogIdentifier, sender: searchIndexPath)
+        
+    }
+    
+    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+        
+        searchBar.resignFirstResponder()
     }
     
     // MARK: - UITableViewDataSource
@@ -108,7 +138,7 @@ class MainTVC: UITableViewController {
             
         case 0...5:
             
-            identifier = "showCatalog"
+            identifier = self.showCatalogIdentifier
             
         case 6:
             
@@ -134,7 +164,7 @@ class MainTVC: UITableViewController {
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
-        if segue.identifier == "showCatalog" {
+        if segue.identifier == self.showCatalogIdentifier {
             
             if let catalogTVC = segue.destinationViewController as? CatalogTVC, indexPath = sender as? NSIndexPath {
                 

@@ -22,16 +22,23 @@ class CatalogTVC: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.refreshControl?.addTarget(self,
-                                       action: #selector(CatalogTVC.refreshProducts),
-                                       forControlEvents: UIControlEvents.ValueChanged)
-        
-        self.refreshControl?.tintColor = UIColor.orangeColor()
         navigationItem.rightBarButtonItem = contactsButton
         
         title = self.productSection.name
         
-        self.fetchDataFromDataBase()
+        if self.productSection.type != .Search {
+            
+            self.refreshControl?.tintColor = UIColor.orangeColor()
+            self.refreshControl?.addTarget(self,
+                                           action: #selector(CatalogTVC.refreshProducts),
+                                           forControlEvents: UIControlEvents.ValueChanged)
+            
+            self.fetchDataFromDataBase()
+            
+        } else {
+            
+            self.refreshControl = nil
+        }
         
         if self.products.isEmpty {
             
@@ -84,11 +91,14 @@ class CatalogTVC: UITableViewController {
     
     func getProductsFromLink(link: String) {
         
-        parser.getProductsFromLink(link, type: self.productSection.type, completionHandler:{(productArray: [Product]) in
+        parser.getProductsFromLink(link, type: self.productSection.type, completionHandler:{(productArray: [Product]?) in
             
-            self.products.appendContentsOf(productArray)
-            
-            self.tableView.reloadData()
+            if let array = productArray {
+                
+                self.products.appendContentsOf(array)
+                
+                self.tableView.reloadData()
+            }
             
             if self.refreshControl?.refreshing == true {
                 
@@ -98,7 +108,6 @@ class CatalogTVC: UITableViewController {
             if self.activityIndicator != nil && self.activityIndicator.isAnimating() {
                 
                 self.activityIndicator.stopAnimating()
-                
             }
             
             self.isListFetched = true
@@ -164,21 +173,25 @@ class CatalogTVC: UITableViewController {
         tableView.deselectRowAtIndexPath(indexPath, animated: true);
     }
     
+    // TODO: Find way to get data from other pages
+    
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         
-        var pageNumber = Int(self.products.count/48)
-        
-        if indexPath.row >= self.products.count/2 && isListFetched == true && !self.products.isEmpty {
-            
-            isListFetched = false
-            
-            pageNumber += 1
-            
-            let nextPage = self.productSection.link.stringByAppendingString("#/page-\(pageNumber)")
-            
-            self.getProductsFromLink(nextPage)
-            
-        }
+        /*
+         var currentPageNumber = Int(self.products.count/48) // maybe it won't work for situation if quintity less than 48
+         
+         if indexPath.row >= self.products.count/2 && isListFetched == true && !self.products.isEmpty {
+         
+         self.isListFetched = false
+         
+         currentPageNumber += 1
+         
+         let nextPage = self.productSection.link.stringByAppendingString("#/page-\(currentPageNumber)")
+         
+         self.getProductsFromLink(nextPage)
+         
+         }
+         */
         
     }
     
