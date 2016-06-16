@@ -261,7 +261,7 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
                 product.article! + " " +
                 product.title! + " "  +
                 product.priceFormatted! + " " +
-                product.quantity!.description;
+                product.quantity!.description + "\n";
         }
         
         orderDiscription += formattingPrice(Shopping.sharedInstance.fullPrice.description)

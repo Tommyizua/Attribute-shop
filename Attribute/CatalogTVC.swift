@@ -133,18 +133,7 @@ class CatalogTVC: UITableViewController {
         
         self.presentViewController(alertController, animated: true, completion: nil)
     }
-    
-    func formattingPrice(price: String) -> String {
         
-        var formattedPrice = "Цена: " + price
-        let index = formattedPrice.characters.endIndex.predecessor().predecessor()
-        
-        formattedPrice.insert(",", atIndex: index)
-        formattedPrice.appendContentsOf(" грн.")
-        
-        return formattedPrice
-    }
-    
     // MARK: - UITableViewDataSource
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -164,7 +153,7 @@ class CatalogTVC: UITableViewController {
             catalogCell.articleProduct.text = currentProduct.article
             catalogCell.availabilityProduct.text = currentProduct.availability
             
-            catalogCell.priceProduct.text = self.formattingPrice(currentProduct.price!.description)
+            catalogCell.priceProduct.text = currentProduct.priceFormatted
             
             CachedDataManager.sharedInstance.getImageWithLink(currentProduct.imageUrlString,
                                                               imageData: &currentProduct.imageData,

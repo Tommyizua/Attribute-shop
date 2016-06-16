@@ -162,7 +162,7 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         
         if !Shopping.sharedInstance.itemsArray.contains(self.product) {
             
-            addNewProductWithItem(self.product)
+            self.addNewProductWithItem(self.product)
         }
         
         if var quantityInt = self.product.quantity?.integerValue {

@@ -57,6 +57,17 @@ class Parser: NSObject {
         
     }
     
+    func formattingPrice(price: String) -> String {
+        
+        var formattedPrice = "Цена: " + price
+        let index = formattedPrice.characters.endIndex.predecessor().predecessor()
+        
+        formattedPrice.insert(",", atIndex: index)
+        formattedPrice.appendContentsOf(" грн.")
+        
+        return formattedPrice
+    }
+    
     // MARK: - Get Catalog products Method
     
     func getProductsFromLink(link: String, type: ProductType, completionHandler:(productArray: [Product]?) -> ()) {
@@ -159,6 +170,8 @@ class Parser: NSObject {
                                 }
                                 
                                 product.price = Int(priceValueString)
+                                
+                                product.priceFormatted = self.formattingPrice(priceValueString)
                                 
                                 product.availability = self.searchInfo(code, start: "Stock\" />", end: " </span> </span><div")
                                 
