@@ -39,11 +39,11 @@ class DataManager: NSObject {
         
     }
     
-    func getProductWithArticle(article: String) -> Product? {
+    func getProductWithDetailLink(detailLink: String) -> Product? {
         
         let fetchRequest = NSFetchRequest(entityName: String(Product))
         
-        fetchRequest.predicate = NSPredicate(format: "article == %@", article)
+        fetchRequest.predicate = NSPredicate(format: "detailLink == %@", detailLink)
         
         do {
             let results = try DataManager.sharedInstance.managedObjectContext.executeFetchRequest(fetchRequest)

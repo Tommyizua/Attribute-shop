@@ -160,7 +160,7 @@ class CatalogTVC: UITableViewController {
                                                               size: CGSizeMake(130, 130),
                                                               toImageView: catalogCell.imageProduct)
             
-            if currentProduct.isAvailable! == IsAvailable.Available.rawValue {
+            if let available = currentProduct.isAvailable where available == IsAvailable.Available.rawValue {
                 
                 catalogCell.availabilityProduct.textColor = UIColor.greenColor()
                 

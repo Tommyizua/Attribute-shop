@@ -139,15 +139,21 @@ class Parser: NSObject {
                         
                         if var product = NSEntityDescription.insertNewObjectForEntityForName(String(Product), inManagedObjectContext: DataManager.sharedInstance.managedObjectContext) as? Product {
                             
-                            let article = "Артикул: " + self.searchInfo(code, start: "</span> <span>", end: "</sapn>")
+                            let detailLink = self.searchInfo(code, start: "product-name\" href=\"", end: "\" title=")
                             
-                            let fetchedProduct = DataManager.sharedInstance.getProductWithArticle(article)
+                            let fetchedProduct = DataManager.sharedInstance.getProductWithDetailLink(detailLink)
                             
-                            if fetchedProduct == nil {
+                            if let storedProduct = fetchedProduct {
                                 
-                                product.article = article
+                                DataManager.sharedInstance.managedObjectContext.deleteObject(product)
                                 
-                                product.detailLink = self.searchInfo(code, start: "product-name\" href=\"", end: "\" title=")
+                                product = storedProduct
+                                
+                            } else {
+                                
+                                product.article = "Артикул: " + self.searchInfo(code, start: "</span> <span>", end: "</sapn>")
+                                
+                                product.detailLink = detailLink
                                 
                                 product.title = self.searchInfo(code, start: "\" itemprop=\"url\" > ", end: " </a>")
                                 
@@ -188,11 +194,9 @@ class Parser: NSObject {
                                 
                                 orderId += 1
                                 product.orderId = orderId
-                                
-                            } else {
-                                
-                                product = fetchedProduct!
                             }
+                            
+                            print(product)
                             
                             let startRange = code.rangeOfString("/div></div></li>")!
                             code = code.substringFromIndex(startRange.endIndex)

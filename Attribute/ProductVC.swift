@@ -87,7 +87,7 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         self.availabilityProduct.text = self.product.availability
         self.priceProduct.text = self.product.priceFormatted
         
-        if (self.product.isAvailable?.integerValue)! == IsAvailable.NotAvailable.rawValue {
+        if let available = self.product.isAvailable where available == IsAvailable.NotAvailable.rawValue {
             
             self.availabilityProduct.textColor = UIColor.redColor()
             self.buyButton.enabled = false;
