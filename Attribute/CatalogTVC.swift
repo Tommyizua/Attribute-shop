@@ -15,7 +15,7 @@ class CatalogTVC: UITableViewController {
     
     var contactsButton: UIBarButtonItem!
     var productSection: ProductSection!
-    var activityIndicator: UIActivityIndicatorView!
+    var activityIndicator: UIActivityIndicatorView?
     var products = [Product]()
     var isListFetched = true
     
@@ -50,7 +50,7 @@ class CatalogTVC: UITableViewController {
             
             self.activityIndicator = activityIndicator
             
-            self.activityIndicator.startAnimating()
+            self.activityIndicator!.startAnimating()
             
             self.getProductsFromLink(self.productSection.link)
         }
@@ -98,6 +98,10 @@ class CatalogTVC: UITableViewController {
                 self.products.appendContentsOf(array)
                 
                 self.tableView.reloadData()
+                
+            } else {
+                
+                self.showSearchAlert()
             }
             
             if self.refreshControl?.refreshing == true {
@@ -105,15 +109,29 @@ class CatalogTVC: UITableViewController {
                 self.refreshControl?.endRefreshing()
             }
             
-            if self.activityIndicator != nil && self.activityIndicator.isAnimating() {
+            if let activityIndicator = self.activityIndicator where activityIndicator.isAnimating() {
                 
-                self.activityIndicator.stopAnimating()
+                activityIndicator.stopAnimating()
             }
             
             self.isListFetched = true
             
         })
         
+    }
+    
+    func showSearchAlert() {
+        
+        let alertController = UIAlertController(title: "Ошибка", message: "Поиск не дал результатов, попробуйте другой ввод.", preferredStyle: .Alert)
+        
+        let alertAction = UIAlertAction(title: "OK", style: .Default, handler: { (alertAction: UIAlertAction) in
+            
+            self.navigationController?.popToRootViewControllerAnimated(true)
+        })
+        
+        alertController.addAction(alertAction)
+        
+        self.presentViewController(alertController, animated: true, completion: nil)
     }
     
     func formattingPrice(price: String) -> String {

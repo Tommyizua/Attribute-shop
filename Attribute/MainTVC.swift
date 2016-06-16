@@ -78,7 +78,7 @@ class MainTVC: UITableViewController, UISearchBarDelegate {
     // MARK: - Actions
     
     func openContacts(sender: UIBarButtonItem) {
-       
+        
         performSegueWithIdentifier("toContacts", sender: sender)
     }
     
@@ -104,6 +104,7 @@ class MainTVC: UITableViewController, UISearchBarDelegate {
     
     func searchBarCancelButtonClicked(searchBar: UISearchBar) {
         
+        searchBar.text = nil
         searchBar.resignFirstResponder()
     }
     
@@ -137,19 +138,15 @@ class MainTVC: UITableViewController, UISearchBarDelegate {
         switch (indexPath.row) {
             
         case 0...5:
-            
             identifier = self.showCatalogIdentifier
             
         case 6:
-            
             identifier = "showShops"
             
         case 7:
-            
             identifier = "showRuls"
             
         case 8:
-            
             identifier = "toBusiness"
             
         default:

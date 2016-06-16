@@ -61,9 +61,9 @@ class Parser: NSObject {
     
     func getProductsFromLink(link: String, type: ProductType, completionHandler:(productArray: [Product]?) -> ()) {
         
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true;
+        
         dispatch_async(kGlobalQueue, {
-            
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = true;
             
             let encodedPath = link.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
             
@@ -88,10 +88,14 @@ class Parser: NSObject {
                         let resultsCount = self.searchInfo(sourceHtmlCode, start: "heading-counter\"> ", end: " results")
                         
                         if resultsCount == "0" {
-                        
-                            completionHandler(productArray: nil)
                             
-                            UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+                            dispatch_async(self.kMainQueue, { () in
+                                
+                                completionHandler(productArray: nil)
+                                
+                                UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+                            })
+                            
                             return
                         }
                         
@@ -111,9 +115,10 @@ class Parser: NSObject {
                         totalPageNumberDescription = totalPageNumberDescription.substringFromIndex(startRange.endIndex)
                     }
                     
-                    range = totalPageNumberDescription.rangeOfString("<span>")!
-                    
-                    self.totalPageNumber = totalPageNumberDescription.substringFromIndex(range.endIndex)
+                    if let range = totalPageNumberDescription.rangeOfString("<span>") {
+                        
+                        self.totalPageNumber = totalPageNumberDescription.substringFromIndex(range.endIndex)
+                    }
                     
                     var productArray = [Product]()
                     
