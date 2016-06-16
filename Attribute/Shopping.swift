@@ -24,7 +24,7 @@ class Shopping: NSObject {
         
         for object in self.itemsArray {
             
-            self.fullPrice += (object.price?.integerValue)! * (object.quantity?.integerValue)!
+            self.fullPrice += (object.price?.integerValue ?? 1) * (object.quantity?.integerValue ?? 1)
         }
         
         NSNotificationCenter.defaultCenter().postNotificationName(

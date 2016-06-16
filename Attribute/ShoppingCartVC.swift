@@ -120,7 +120,7 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
             
             let currentItem = Shopping.sharedInstance.itemsArray[indexPath.row]
             
-            buyCell.quantityField.text = currentItem.quantity!.description
+            buyCell.quantityField.text = currentItem.quantity?.description
             buyCell.nameLabel.text = currentItem.title
             
             buyCell.quantityField.delegate = self
@@ -134,6 +134,9 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
                    forRowAtIndexPath indexPath: NSIndexPath) {
         
         if editingStyle == .Delete {
+            
+            let item = Shopping.sharedInstance.itemsArray[indexPath.row]
+            item.quantity = 0
             
             Shopping.sharedInstance.itemsArray.removeAtIndex(indexPath.row)
             
@@ -176,7 +179,7 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
             
             let item = Shopping.sharedInstance.itemsArray[indexPath!.row]
             
-            var quatity = (item.quantity?.integerValue)!
+            var quatity = (item.quantity?.integerValue) ?? 1
             
             if sender.titleLabel?.text == "+" {
                 
@@ -186,15 +189,15 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
                 
                 quatity -= 1
             }
-            
+
+            item.quantity = NSNumber(integer: quatity)
+
             Shopping.sharedInstance.changeFullPrice()
             
             if let countField = sender.superview!.viewWithTag(5) as? UITextField {
                 
                 countField.text = quatity.description
             }
-            
-            item.quantity = NSNumber.init(integer: quatity)
             
         }
         
