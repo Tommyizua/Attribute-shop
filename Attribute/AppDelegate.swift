@@ -8,6 +8,8 @@
 
 import UIKit
 import CoreData
+import Fabric
+import Crashlytics
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -42,7 +44,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UIBarButtonItem.appearance().setTitleTextAttributes([NSFontAttributeName: font], forState: UIControlState.Normal)
         }
         
-        
+        Fabric.with([Crashlytics.self])
+
         return true
     }
     

@@ -42,7 +42,7 @@ class CatalogTVC: UITableViewController {
         
         if self.products.isEmpty {
             
-            let activityIndicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
+            let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
             activityIndicator.center = self.view.center
             activityIndicator.color = UIColor.orangeColor()
             

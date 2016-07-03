@@ -16,6 +16,8 @@
 		BA5D6D4F1CFD940700E56808 /* Object+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5D6D4D1CFD940700E56808 /* Object+CoreDataProperties.swift */; };
 		BA5D6D501CFD940700E56808 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5D6D4E1CFD940700E56808 /* Object.swift */; };
 		BAD9452B1CB0482800E300FB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8B2B471C0DCA6C00FE007A /* MapKit.framework */; };
+		BADF07861D28FAA100758651 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BADF07841D28FAA100758651 /* Fabric.framework */; };
+		BADF07871D28FAA100758651 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BADF07851D28FAA100758651 /* Crashlytics.framework */; };
 		BAE5DD761CFC290D00938EFB /* Store+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE5DD741CFC290D00938EFB /* Store+CoreDataProperties.swift */; };
 		BAE5DD771CFC290D00938EFB /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE5DD751CFC290D00938EFB /* Store.swift */; };
 		CE19618A1C14985500BA1F70 /* OfficeAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1961891C14985500BA1F70 /* OfficeAnnotation.swift */; };
@@ -49,6 +51,8 @@
 		BA11BF231CF711FC00B9F1F7 /* DataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		BA5D6D4D1CFD940700E56808 /* Object+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Object+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		BA5D6D4E1CFD940700E56808 /* Object.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
+		BADF07841D28FAA100758651 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = Attribute/Fabric.framework; sourceTree = "<group>"; };
+		BADF07851D28FAA100758651 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = Attribute/Crashlytics.framework; sourceTree = "<group>"; };
 		BAE5DD741CFC290D00938EFB /* Store+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Store+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		BAE5DD751CFC290D00938EFB /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		CE1961891C14985500BA1F70 /* OfficeAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OfficeAnnotation.swift; sourceTree = "<group>"; };
@@ -82,6 +86,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				BAD9452B1CB0482800E300FB /* MapKit.framework in Frameworks */,
+				BADF07871D28FAA100758651 /* Crashlytics.framework in Frameworks */,
+				BADF07861D28FAA100758651 /* Fabric.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -106,6 +112,8 @@
 		BA5D6D4C1CFD8A3700E56808 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BADF07841D28FAA100758651 /* Fabric.framework */,
+				BADF07851D28FAA100758651 /* Crashlytics.framework */,
 				CE8B2B471C0DCA6C00FE007A /* MapKit.framework */,
 			);
 			name = Frameworks;
@@ -194,6 +202,7 @@
 				CE7AE8001BFDDB5E00107F65 /* Sources */,
 				CE7AE8011BFDDB5E00107F65 /* Frameworks */,
 				CE7AE8021BFDDB5E00107F65 /* Resources */,
+				BADF07831D28FA6D00758651 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -250,6 +259,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		BADF07831D28FA6D00758651 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Fabric.framework/run 3d7ff5171e2199821bc177c1364d92ba32b846bf 5e70986f866ae09ae14ffc845a0a5268e54cc74525d828a7cfa5053de8695ec8";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		CE7AE8001BFDDB5E00107F65 /* Sources */ = {
@@ -394,6 +419,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Attribute",
+				);
 				INFOPLIST_FILE = Attribute/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Chyzh.Attribute;
@@ -407,6 +436,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Attribute",
+				);
 				INFOPLIST_FILE = Attribute/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Chyzh.Attribute;
