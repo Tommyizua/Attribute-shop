@@ -15,6 +15,7 @@
 		BA11BF241CF711FC00B9F1F7 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA11BF231CF711FC00B9F1F7 /* DataManager.swift */; };
 		BA5D6D4F1CFD940700E56808 /* Object+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5D6D4D1CFD940700E56808 /* Object+CoreDataProperties.swift */; };
 		BA5D6D501CFD940700E56808 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5D6D4E1CFD940700E56808 /* Object.swift */; };
+		BAC50E801D3648B700E30FC0 /* WebSiteModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC50E7F1D3648B700E30FC0 /* WebSiteModel.swift */; };
 		BAD9452B1CB0482800E300FB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8B2B471C0DCA6C00FE007A /* MapKit.framework */; };
 		BADF07861D28FAA100758651 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BADF07841D28FAA100758651 /* Fabric.framework */; };
 		BADF07871D28FAA100758651 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BADF07851D28FAA100758651 /* Crashlytics.framework */; };
@@ -49,8 +50,11 @@
 		BA11BF1F1CF6F05600B9F1F7 /* Product+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Product+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		BA11BF211CF6F0C300B9F1F7 /* Product.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		BA11BF231CF711FC00B9F1F7 /* DataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		BA45E9171D38E0EF0022C410 /* ru-UA */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ru-UA"; path = "ru-UA.lproj/Main.strings"; sourceTree = "<group>"; };
+		BA45E9181D38E0EF0022C410 /* ru-UA */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ru-UA"; path = "ru-UA.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		BA5D6D4D1CFD940700E56808 /* Object+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Object+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		BA5D6D4E1CFD940700E56808 /* Object.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
+		BAC50E7F1D3648B700E30FC0 /* WebSiteModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebSiteModel.swift; sourceTree = "<group>"; };
 		BADF07841D28FAA100758651 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = Attribute/Fabric.framework; sourceTree = "<group>"; };
 		BADF07851D28FAA100758651 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = Attribute/Crashlytics.framework; sourceTree = "<group>"; };
 		BAE5DD741CFC290D00938EFB /* Store+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Store+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -145,6 +149,7 @@
 				CEA0429F1C67377E00C5C09F /* ProductSection.swift */,
 				CEA042A31C6784D000C5C09F /* StoresInCityArea.swift */,
 				CE9799781C6887E8006A9F23 /* Feature.swift */,
+				BAC50E7F1D3648B700E30FC0 /* WebSiteModel.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -298,6 +303,7 @@
 				BA11BF221CF6F0C300B9F1F7 /* Product.swift in Sources */,
 				BA5D6D4F1CFD940700E56808 /* Object+CoreDataProperties.swift in Sources */,
 				CE8B2B4A1C0DD3DD00FE007A /* Shopping.swift in Sources */,
+				BAC50E801D3648B700E30FC0 /* WebSiteModel.swift in Sources */,
 				CE1961901C14A12100BA1F70 /* StoreTVC.swift in Sources */,
 				CE19618C1C1498B400BA1F70 /* ExtensionContactsVC.swift in Sources */,
 				CE8B2B421C0CE65500FE007A /* ContactsTVC.swift in Sources */,
@@ -318,6 +324,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				CE7AE80C1BFDDB5E00107F65 /* Base */,
+				BA45E9171D38E0EF0022C410 /* ru-UA */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -326,6 +333,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				CE7AE8111BFDDB5E00107F65 /* Base */,
+				BA45E9181D38E0EF0022C410 /* ru-UA */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -352,7 +360,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -418,6 +426,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -427,6 +436,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Chyzh.Attribute;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -435,6 +445,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -444,6 +455,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Chyzh.Attribute;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

@@ -86,133 +86,12 @@ class Parser: NSObject {
                     
                     let sourceHtmlCode = String(data: dataMainPage, encoding: NSUTF8StringEncoding)!
                     
-                    var range = " ".startIndex..." ".startIndex
-                    
-                    if let startRange = sourceHtmlCode.rangeOfString("</div><h1> Каталог") {
-                        
-                        range = startRange
-                        
-                    } else if let startRange = sourceHtmlCode.rangeOfString("heading-counter\">") {
-                        
-                        range = startRange
-                        
-                        let resultsCount = self.searchInfo(sourceHtmlCode, start: "heading-counter\"> ", end: " results")
-                        
-                        if resultsCount == "0" {
-                            
-                            dispatch_async(self.kMainQueue, { () in
-                                
-                                completionHandler(productArray: nil)
-                                
-                                UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
-                            })
-                            
-                            return
-                        }
-                        
-                    } else {
-                        
-                        print("no range")
-                    }
-                    
-                    var code = sourceHtmlCode.substringFromIndex(range.endIndex)
-                    
-                    var totalPageNumberDescription = self.searchInfo(code, start: "</span> </span></li><li> <a href=\"/", end: "</span> </a></li><li id=")
-                    
-                    if totalPageNumberDescription.characters.count > 40 {
-                        
-                        let startRange = totalPageNumberDescription.rangeOfString("</span> </span></li><li> <a href=\"/")!
-                        
-                        totalPageNumberDescription = totalPageNumberDescription.substringFromIndex(startRange.endIndex)
-                    }
-                    
-                    if let range = totalPageNumberDescription.rangeOfString("<span>") {
-                        
-                        self.totalPageNumber = totalPageNumberDescription.substringFromIndex(range.endIndex)
-                    }
-                    
-                    var productArray = [Product]()
-                    
-                    var orderId = DataManager.sharedInstance.getMaxIdWithProductType(type)
-                    
-                    while code.containsString("product-name\" href=\"") {
-                        
-                        if var product = NSEntityDescription.insertNewObjectForEntityForName(String(Product), inManagedObjectContext: DataManager.sharedInstance.managedObjectContext) as? Product {
-                            
-                            let detailLink = self.searchInfo(code, start: "product-name\" href=\"", end: "\" title=")
-                            
-                            let fetchedProduct = DataManager.sharedInstance.getProductWithDetailLink(detailLink)
-                            
-                            if let storedProduct = fetchedProduct {
-                                
-                                DataManager.sharedInstance.managedObjectContext.deleteObject(product)
-                                
-                                product = storedProduct
-                                
-                            } else {
-                                
-                                product.article = "Артикул: " + self.searchInfo(code, start: "</span> <span>", end: "</sapn>")
-                                
-                                product.detailLink = detailLink
-                                
-                                product.title = self.searchInfo(code, start: "\" itemprop=\"url\" > ", end: " </a>")
-                                
-                                self.removeUnicodeFromString(&product.title!)
-                                
-                                product.imageUrlString = self.searchInfo(code, start: "src=\"", end: "\" alt=\"")
-                                
-                                
-                                let stringPrice = self.searchInfo(code, start: "price\"> ", end: " </span><meta")
-                                
-                                var priceValueString = ""
-                                
-                                for letter in stringPrice.characters {
-                                    
-                                    if "0"..."9" ~= letter {
-                                        
-                                        priceValueString += String(letter)
-                                    }
-                                    
-                                }
-                                
-                                product.price = Int(priceValueString)
-                                
-                                product.priceFormatted = self.formattingPrice(priceValueString)
-                                
-                                product.availability = self.searchInfo(code, start: "Stock\" />", end: " </span> </span><div")
-                                
-                                if product.availability!.lowercaseString.hasPrefix("нет") {
-                                    
-                                    product.isAvailable = IsAvailable.NotAvailable.rawValue
-                                    
-                                } else {
-                                    
-                                    product.isAvailable = IsAvailable.Available.rawValue
-                                }
-                                
-                                product.type = type.rawValue;
-                                
-                                orderId += 1
-                                product.orderId = orderId
-                            }
-                            
-                            print(product)
-                            
-                            let startRange = code.rangeOfString("/div></div></li>")!
-                            code = code.substringFromIndex(startRange.endIndex)
-                            
-                            productArray.append(product)
-                        }
-                    }
-                    
-                    dispatch_async(self.kMainQueue, { () in
-                        
-                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
-                        
-                        DataManager.sharedInstance.saveContext()
+                    self.getProductsFromSourceCode(sourceHtmlCode, type: type, completionHandler: { (productArray) in
                         
                         completionHandler(productArray: productArray)
+                        
                     })
+                    
                 }
             }
         })
@@ -224,6 +103,139 @@ class Parser: NSObject {
         //            completionHandler(productArray: [Product]())
         //        })
         
+    }
+    
+    func getProductsFromSourceCode(sourceHtmlCode: String, type: ProductType, completionHandler:(productArray: [Product]?) -> ()) {
+        
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        
+        var range = " ".startIndex..." ".startIndex
+        
+        if let startRange = sourceHtmlCode.rangeOfString("</div><h1> Каталог") {
+            
+            range = startRange
+            
+        } else if let startRange = sourceHtmlCode.rangeOfString("heading-counter\">") {
+            
+            range = startRange
+            
+            let resultsCount = self.searchInfo(sourceHtmlCode, start: "heading-counter\"> ", end: " results")
+            
+            if resultsCount == "0" {
+                
+                dispatch_async(self.kMainQueue, { () in
+                    
+                    completionHandler(productArray: nil)
+                    
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+                })
+                
+                return
+            }
+            
+        } else {
+            
+            print("no range")
+        }
+        
+        var code = sourceHtmlCode.substringFromIndex(range.endIndex)
+        
+        var totalPageNumberDescription = self.searchInfo(code, start: "</span> </span></li><li> <a href=\"/", end: "</span> </a></li><li id=")
+        
+        if totalPageNumberDescription.characters.count > 40 {
+            
+            let startRange = totalPageNumberDescription.rangeOfString("</span> </span></li><li> <a href=\"/")!
+            
+            totalPageNumberDescription = totalPageNumberDescription.substringFromIndex(startRange.endIndex)
+        }
+        
+        if let range = totalPageNumberDescription.rangeOfString("<span>") {
+            
+            self.totalPageNumber = totalPageNumberDescription.substringFromIndex(range.endIndex)
+        }
+        
+        var productArray = [Product]()
+        
+        var orderId = DataManager.sharedInstance.getMaxIdWithProductType(type)
+        
+        while code.containsString("product-name\" href=\"") {
+            
+            if var product = NSEntityDescription.insertNewObjectForEntityForName(String(Product), inManagedObjectContext: DataManager.sharedInstance.managedObjectContext) as? Product {
+                
+                let detailLink = self.searchInfo(code, start: "product-name\" href=\"", end: "\" title=")
+                
+                let fetchedProduct = DataManager.sharedInstance.getProductWithDetailLink(detailLink)
+                
+                if let storedProduct = fetchedProduct {
+                    
+                    DataManager.sharedInstance.managedObjectContext.deleteObject(product)
+                    
+                    product = storedProduct
+                    
+                } else {
+                    
+                    product.article = "Артикул: " + self.searchInfo(code, start: "</span> <span>", end: "</sapn>")
+                    
+                    product.detailLink = detailLink
+                    
+                    product.title = self.searchInfo(code, start: "\" itemprop=\"url\" > ", end: " </a>")
+                    
+                    self.removeUnicodeFromString(&product.title!)
+                    
+                    product.imageUrlString = self.searchInfo(code, start: "src=\"", end: "\" alt=\"")
+                    
+                    
+                    let stringPrice = self.searchInfo(code, start: "price\"> ", end: " </span><meta")
+                    
+                    var priceValueString = ""
+                    
+                    for letter in stringPrice.characters {
+                        
+                        if "0"..."9" ~= letter {
+                            
+                            priceValueString += String(letter)
+                        }
+                        
+                    }
+                    
+                    product.price = Int(priceValueString)
+                    
+                    product.priceFormatted = self.formattingPrice(priceValueString)
+                    
+                    product.availability = self.searchInfo(code, start: "Stock\" />", end: " </span> </span><div")
+                    
+                    if product.availability!.lowercaseString.hasPrefix("нет") {
+                        
+                        product.isAvailable = IsAvailable.NotAvailable.rawValue
+                        
+                    } else {
+                        
+                        product.isAvailable = IsAvailable.Available.rawValue
+                    }
+                    
+                    product.type = type.rawValue;
+                    
+                    orderId += 1
+                    product.orderId = orderId
+                }
+                
+                print(product)
+                
+                let startRange = code.rangeOfString("/div></div></li>")!
+                code = code.substringFromIndex(startRange.endIndex)
+                
+                productArray.append(product)
+            }
+        }
+        
+        dispatch_async(self.kMainQueue, { () in
+            
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+            
+            DataManager.sharedInstance.saveContext()
+            
+            completionHandler(productArray: productArray)
+        })
     }
     
     // MARK: - Get Product's Features Method

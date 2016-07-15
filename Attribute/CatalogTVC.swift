@@ -30,7 +30,7 @@ class CatalogTVC: UITableViewController {
             
             self.refreshControl?.tintColor = UIColor.orangeColor()
             self.refreshControl?.addTarget(self,
-                                           action: #selector(CatalogTVC.refreshProducts),
+                                           action: #selector(clearProducts),
                                            forControlEvents: UIControlEvents.ValueChanged)
             
             self.fetchDataFromDataBase()
@@ -55,6 +55,19 @@ class CatalogTVC: UITableViewController {
             self.getProductsFromLink(self.productSection.link)
         }
         
+        let notificationCenter = NSNotificationCenter.defaultCenter()
+        
+        notificationCenter.addObserver(self,
+                                       selector: #selector(getProductsWithSourceCode),
+                                       name: dataDidFinishLoadNotification,
+                                       object: nil)
+        
+        notificationCenter.addObserver(self,
+                                       selector: #selector(failLoadHandler),
+                                       name: dataDidFailLoadNotification,
+                                       object: nil)
+        
+        
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -70,7 +83,7 @@ class CatalogTVC: UITableViewController {
         self.products = DataManager.sharedInstance.getProductsWithProductType(self.productSection.type)
     }
     
-    func refreshProducts() {
+    func clearProducts() {
         
         for product in self.products {
             
@@ -91,7 +104,7 @@ class CatalogTVC: UITableViewController {
     
     func getProductsFromLink(link: String) {
         
-        parser.getProductsFromLink(link, type: self.productSection.type, completionHandler:{(productArray: [Product]?) in
+        self.parser.getProductsFromLink(link, type: self.productSection.type, completionHandler:{(productArray: [Product]?) in
             
             if let array = productArray {
                 
@@ -133,7 +146,53 @@ class CatalogTVC: UITableViewController {
         
         self.presentViewController(alertController, animated: true, completion: nil)
     }
+    
+    // MARK: - dataDidFinishLoadNotification
+    
+    func getProductsWithSourceCode() {
         
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(5 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+            
+            let sourceCode = WebSiteModel.sharedInstance.getSourceCode()
+            
+            if let sourceCode = sourceCode {
+                
+                self.getProductsFromSourceCode(sourceCode)
+                
+            }
+        }
+    }
+    
+    func getProductsFromSourceCode(sourceCode: String) {
+        
+        self.parser.getProductsFromSourceCode(sourceCode, type: self.productSection.type, completionHandler:{(productArray: [Product]?) in
+            
+            if let array = productArray {
+                
+                self.products.appendContentsOf(array)
+                
+                self.tableView.reloadData()
+                
+            }
+            
+            if let activityIndicator = self.activityIndicator where activityIndicator.isAnimating() {
+                
+                activityIndicator.stopAnimating()
+            }
+            
+            self.isListFetched = true
+            
+        })
+        
+    }
+    
+    // MARK: - dataDidFailLoadNotification
+    
+    func failLoadHandler() {
+        
+        self.isListFetched = true
+    }
+    
     // MARK: - UITableViewDataSource
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -184,21 +243,17 @@ class CatalogTVC: UITableViewController {
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         
-        /*
-         var currentPageNumber = Int(self.products.count/48) // maybe it won't work for situation if quintity less than 48
-         
-         if indexPath.row >= self.products.count/2 && isListFetched == true && !self.products.isEmpty {
-         
-         self.isListFetched = false
-         
-         currentPageNumber += 1
-         
-         let nextPage = self.productSection.link.stringByAppendingString("#/page-\(currentPageNumber)")
-         
-         self.getProductsFromLink(nextPage)
-         
-         }
-         */
+        if indexPath.row >= self.products.count/2 && self.isListFetched == true && !self.products.isEmpty {
+            
+            self.isListFetched = false
+            
+            let nextPageNumber = Int(self.products.count/48) + 1 // maybe it won't work for situation if quintity less than 48
+            
+            let nextPageLink = self.productSection.link.stringByAppendingString("#/page-\(nextPageNumber)")
+            
+            WebSiteModel.sharedInstance.openWebSiteWithLink(nextPageLink)
+            
+        }
         
     }
     
