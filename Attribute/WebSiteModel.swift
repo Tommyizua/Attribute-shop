@@ -18,15 +18,21 @@ class WebSiteModel: NSObject, UIWebViewDelegate {
     private var isLoaded = false
     
     
+    // MARK: - Public Methods
+    
     func openWebSiteWithLink(link: String) {
         
         let url = NSURL(string: link)
         
         if let url = url {
             
+            if self.webView.delegate == nil {
+                
+                webView.delegate = self
+            }
+            
             self.isLoaded = false
             
-            self.webView.delegate = self
             let urlRequest = NSURLRequest(URL: url)
             
             self.webView.loadRequest(urlRequest)
@@ -34,6 +40,8 @@ class WebSiteModel: NSObject, UIWebViewDelegate {
         } else {
             
             print("wrong link")
+            
+            NSNotificationCenter.defaultCenter().postNotificationName(dataDidFailLoadNotification, object: nil)
         }
         
     }
@@ -61,7 +69,6 @@ class WebSiteModel: NSObject, UIWebViewDelegate {
             self.isLoaded = true
             
             NSNotificationCenter.defaultCenter().postNotificationName(dataDidFinishLoadNotification, object: nil)
-            
         }
         
         UIApplication.sharedApplication().networkActivityIndicatorVisible = false

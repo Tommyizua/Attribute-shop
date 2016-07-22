@@ -66,14 +66,6 @@ class CatalogTVC: UITableViewController {
                                        selector: #selector(failLoadHandler),
                                        name: dataDidFailLoadNotification,
                                        object: nil)
-        
-        
-    }
-    
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
     }
     
     // MARK: - Help Methods
@@ -110,12 +102,12 @@ class CatalogTVC: UITableViewController {
                 
                 self.products.appendContentsOf(array)
                 
-                self.tableView.reloadData()
-                
             } else {
                 
-                self.showSearchAlert()
+                self.showSearchErrorAlert()
             }
+            
+            self.tableView.reloadData()
             
             if self.refreshControl?.refreshing == true {
                 
@@ -128,12 +120,11 @@ class CatalogTVC: UITableViewController {
             }
             
             self.isListFetched = true
-            
         })
         
     }
     
-    func showSearchAlert() {
+    func showSearchErrorAlert() {
         
         let alertController = UIAlertController(title: "Ошибка", message: "Поиск не дал результатов, попробуйте другой ввод.", preferredStyle: .Alert)
         
@@ -157,15 +148,14 @@ class CatalogTVC: UITableViewController {
             
             if let sourceCode = sourceCode {
                 
-                self.getProductsFromSourceCode(sourceCode)
-                
+                self.getProductsFromSourceCode(sourceCode, firstPage: false)
             }
         }
     }
     
-    func getProductsFromSourceCode(sourceCode: String) {
+    func getProductsFromSourceCode(sourceCode: String, firstPage: Bool) {
         
-        self.parser.getProductsFromSourceCode(sourceCode, type: self.productSection.type, completionHandler:{(productArray: [Product]?) in
+        self.parser.getProductsFromSourceCode(sourceCode, type: self.productSection.type, firstPage: firstPage, completionHandler:{(productArray: [Product]?) in
             
             if let array = productArray {
                 
@@ -181,7 +171,6 @@ class CatalogTVC: UITableViewController {
             }
             
             self.isListFetched = true
-            
         })
         
     }
@@ -239,8 +228,6 @@ class CatalogTVC: UITableViewController {
         tableView.deselectRowAtIndexPath(indexPath, animated: true);
     }
     
-    // TODO: Find way to get data from other pages
-    
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         
         if indexPath.row >= self.products.count/2 && self.isListFetched == true && !self.products.isEmpty {
@@ -252,7 +239,6 @@ class CatalogTVC: UITableViewController {
             let nextPageLink = self.productSection.link.stringByAppendingString("#/page-\(nextPageNumber)")
             
             WebSiteModel.sharedInstance.openWebSiteWithLink(nextPageLink)
-            
         }
         
     }

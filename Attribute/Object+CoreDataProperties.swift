@@ -17,5 +17,5 @@ extension Object {
     @NSManaged var imageData: NSData?
     @NSManaged var imageUrlString: String?
     @NSManaged var orderId: NSNumber?
-
+    
 }

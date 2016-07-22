@@ -19,6 +19,7 @@ extension ContactsTVC: MKMapViewDelegate {
           
             if let dequeuedView = mapView.dequeueReusableAnnotationViewWithIdentifier(identifier)
                 as? MKPinAnnotationView {
+                
                     dequeuedView.annotation = annotation
                     view = dequeuedView
           

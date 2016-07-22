@@ -86,7 +86,7 @@ class Parser: NSObject {
                     
                     let sourceHtmlCode = String(data: dataMainPage, encoding: NSUTF8StringEncoding)!
                     
-                    self.getProductsFromSourceCode(sourceHtmlCode, type: type, completionHandler: { (productArray) in
+                    self.getProductsFromSourceCode(sourceHtmlCode, type: type, firstPage: true, completionHandler: { (productArray) in
                         
                         completionHandler(productArray: productArray)
                         
@@ -105,7 +105,7 @@ class Parser: NSObject {
         
     }
     
-    func getProductsFromSourceCode(sourceHtmlCode: String, type: ProductType, completionHandler:(productArray: [Product]?) -> ()) {
+    func getProductsFromSourceCode(sourceHtmlCode: String, type: ProductType, firstPage: Bool, completionHandler:(productArray: [Product]?) -> ()) {
         
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         
@@ -174,11 +174,35 @@ class Parser: NSObject {
                     
                 } else {
                     
-                    product.article = "Артикул: " + self.searchInfo(code, start: "</span> <span>", end: "</sapn>")
+                    let end: String
+                    
+                    if firstPage == true {
+                        
+                        end = "</sapn>"
+                        
+                    } else {
+                        
+                        end = "</span></div><div class=\"content_price"
+                    }
+                    
+                    let article = self.searchInfo(code, start: "</span> <span>", end: end)
+                    
+                    product.article = "Артикул: " + article
                     
                     product.detailLink = detailLink
                     
-                    product.title = self.searchInfo(code, start: "\" itemprop=\"url\" > ", end: " </a>")
+                    var start: String
+                    
+                    if firstPage == true {
+                        
+                        start = "\" itemprop=\"url\" >"
+                        
+                    } else {
+                        
+                        start = "\" itemprop=\"url\">"
+                    }
+                    
+                    product.title = self.searchInfo(code, start: start, end: " </a>")
                     
                     self.removeUnicodeFromString(&product.title!)
                     
@@ -195,14 +219,23 @@ class Parser: NSObject {
                             
                             priceValueString += String(letter)
                         }
-                        
                     }
                     
                     product.price = Int(priceValueString)
                     
                     product.priceFormatted = self.formattingPrice(priceValueString)
                     
-                    product.availability = self.searchInfo(code, start: "Stock\" />", end: " </span> </span><div")
+                    
+                    if firstPage == true {
+                        
+                        start = "Stock\" />"
+                        
+                    } else {
+                        
+                        start = "Stock\">"
+                    }
+                    
+                    product.availability = self.searchInfo(code, start: start, end: " </span> </span><div")
                     
                     if product.availability!.lowercaseString.hasPrefix("нет") {
                         
