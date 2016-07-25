@@ -67,11 +67,9 @@ class WebSiteModel: NSObject, UIWebViewDelegate {
         if self.isLoaded == false {
             
             self.isLoaded = true
-            
+//            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             NSNotificationCenter.defaultCenter().postNotificationName(dataDidFinishLoadNotification, object: nil)
         }
-        
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
     }
     
     func webView(webView: UIWebView, didFailLoadWithError error: NSError?) {

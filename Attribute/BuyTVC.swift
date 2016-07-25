@@ -9,8 +9,23 @@
 import UIKit
 
 class BuyCell: UITableViewCell {
-
+    
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var quantityField: UITextField!
-
+    
+    @IBOutlet var minusPlusButtons: [UIButton]!
+    
+    
+    override func drawRect(rect: CGRect) {
+        
+        for button in self.minusPlusButtons {
+            
+            button.layer.cornerRadius = 4
+            button.layer.borderWidth = 1
+            button.layer.borderColor = UIColor.lightGrayColor().CGColor
+            
+        }
+        
+    }
+    
 }

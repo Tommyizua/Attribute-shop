@@ -99,9 +99,22 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     // MARK: - UITableViewDataSource
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
-        return "Характеристики"
+        let identifier = "header"
+        
+        var header = tableView.dequeueReusableHeaderFooterViewWithIdentifier(identifier)
+        
+        if header == nil {
+            
+            header = UITableViewHeaderFooterView.init(reuseIdentifier: identifier)
+
+            header?.contentView.backgroundColor = UIColor.orangeColor()
+        }
+        
+        header?.textLabel?.text = "Характеристики"
+        
+        return header
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -144,12 +157,14 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         
-        return 20
+        return 30
     }
     
     func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         
         if let header = view as? UITableViewHeaderFooterView {
+            
+            header.textLabel?.textColor = UIColor.whiteColor()
             
             header.textLabel?.font = UIFont.boldSystemFontOfSize(15)
         }

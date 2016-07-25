@@ -15,9 +15,10 @@ class CatalogTVC: UITableViewController {
     
     var contactsButton: UIBarButtonItem!
     var productSection: ProductSection!
-    var activityIndicator: UIActivityIndicatorView?
+    var reloadingIndicator: UIActivityIndicatorView?
     var products = [Product]()
     var isListFetched = true
+    var pagingSpinner: UIActivityIndicatorView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,9 +49,9 @@ class CatalogTVC: UITableViewController {
             
             self.view.addSubview(activityIndicator)
             
-            self.activityIndicator = activityIndicator
+            self.reloadingIndicator = activityIndicator
             
-            self.activityIndicator!.startAnimating()
+            self.reloadingIndicator!.startAnimating()
             
             self.getProductsFromLink(self.productSection.link)
         }
@@ -114,7 +115,7 @@ class CatalogTVC: UITableViewController {
                 self.refreshControl?.endRefreshing()
             }
             
-            if let activityIndicator = self.activityIndicator where activityIndicator.isAnimating() {
+            if let activityIndicator = self.reloadingIndicator where activityIndicator.isAnimating() {
                 
                 activityIndicator.stopAnimating()
             }
@@ -138,9 +139,22 @@ class CatalogTVC: UITableViewController {
         self.presentViewController(alertController, animated: true, completion: nil)
     }
     
+    func initLoadingIndicatorOnFooter() {
+        
+        let pagingSpinner = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+        
+        pagingSpinner.color = UIColor.orangeColor()
+        
+        self.tableView.tableFooterView = pagingSpinner
+        
+        self.pagingSpinner = pagingSpinner;
+    }
+    
     // MARK: - dataDidFinishLoadNotification
     
     func getProductsWithSourceCode() {
+        
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true;
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(5 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
             
@@ -150,6 +164,8 @@ class CatalogTVC: UITableViewController {
                 
                 self.getProductsFromSourceCode(sourceCode, firstPage: false)
             }
+            
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
         }
     }
     
@@ -162,12 +178,16 @@ class CatalogTVC: UITableViewController {
                 self.products.appendContentsOf(array)
                 
                 self.tableView.reloadData()
-                
             }
             
-            if let activityIndicator = self.activityIndicator where activityIndicator.isAnimating() {
+            if self.reloadingIndicator?.isAnimating() == true {
                 
-                activityIndicator.stopAnimating()
+                self.reloadingIndicator?.stopAnimating()
+            }
+            
+            if self.pagingSpinner?.isAnimating() == true {
+                
+                self.pagingSpinner?.stopAnimating()
             }
             
             self.isListFetched = true
@@ -239,6 +259,13 @@ class CatalogTVC: UITableViewController {
             let nextPageLink = self.productSection.link.stringByAppendingString("#/page-\(nextPageNumber)")
             
             WebSiteModel.sharedInstance.openWebSiteWithLink(nextPageLink)
+            
+            if self.pagingSpinner == nil {
+                
+                self.initLoadingIndicatorOnFooter()
+            }
+            
+            self.pagingSpinner?.startAnimating()
         }
         
     }

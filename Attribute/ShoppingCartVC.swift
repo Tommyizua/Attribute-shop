@@ -14,6 +14,7 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
     @IBOutlet weak var shoppingTableView: UITableView!
     @IBOutlet weak var totalPrice: UILabel!
     
+    @IBOutlet weak var makeOrderButton: UIButton!
     var animateDistance = CGFloat()
     
     
@@ -36,15 +37,26 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
             totalPrice.text! = formattingPrice(Shopping.sharedInstance.fullPrice.description)
         }
         
+        self.shoppingTableView.reloadData()
+        
+        if Shopping.sharedInstance.itemsArray.count == 0 {
+            
+            self.makeOrderButton.enabled = false
+            
+        } else {
+            
+            self.makeOrderButton.enabled = true
+        }
+        
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        dispatch_async(dispatch_get_main_queue(), { () -> () in
-            self.shoppingTableView.reloadData()
-        })
-    }
+    //    override func viewDidAppear(animated: Bool) {
+    //        super.viewDidAppear(animated)
+    //
+    //        dispatch_async(dispatch_get_main_queue(), { () -> () in
+    //            self.shoppingTableView.reloadData()
+    //        })
+    //    }
     
     // MARK: - Deinitialization
     
@@ -73,7 +85,7 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
         return formattedPrice
     }
     
-    // MARK: - NSNotification Method
+    // MARK: - cartItemDidChangeNotification
     
     func updateCellWithNewQuantity(notification: NSNotification) {
         
@@ -124,14 +136,12 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
             buyCell.nameLabel.text = currentItem.title
             
             buyCell.quantityField.delegate = self
-            
         }
         
         return cell
     }
     
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle,
-                   forRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         
         if editingStyle == .Delete {
             
@@ -176,27 +186,56 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
             
             let indexPath = self.shoppingTableView.indexPathForCell(currentCell)
             
-            
-            let item = Shopping.sharedInstance.itemsArray[indexPath!.row]
-            
-            var quatity = (item.quantity?.integerValue) ?? 1
-            
-            if sender.titleLabel?.text == "+" {
+            if let indexPath = indexPath {
                 
-                quatity += 1
+                let item = Shopping.sharedInstance.itemsArray[indexPath.row]
                 
-            } else if sender.titleLabel?.text == "-" && quatity > 1 {
+                var quatity = (item.quantity?.integerValue) ?? 1
                 
-                quatity -= 1
+                if sender.titleLabel?.text == "+" {
+                    
+                    quatity += 1
+                    
+                } else if sender.titleLabel?.text == "-" && quatity > 1 {
+                    
+                    quatity -= 1
+                }
+                
+                item.quantity = NSNumber(integer: quatity)
+                
+                Shopping.sharedInstance.changeFullPrice()
+                
+                if let countField = sender.superview!.viewWithTag(5) as? UITextField {
+                    
+                    countField.text = quatity.description
+                }
+                
             }
-
-            item.quantity = NSNumber(integer: quatity)
-
-            Shopping.sharedInstance.changeFullPrice()
             
-            if let countField = sender.superview!.viewWithTag(5) as? UITextField {
+        }
+        
+    }
+    
+    @IBAction func valueDidChange(sender: UITextField) {
+        
+        if let currentCell = sender.superview!.superview as? UITableViewCell {
+            
+            if let indexPath = self.shoppingTableView.indexPathForCell(currentCell) {
                 
-                countField.text = quatity.description
+                let item = Shopping.sharedInstance.itemsArray[indexPath.row]
+                
+                if sender.text?.characters.count > 2 {
+                    
+                    sender.text? = item.quantity!.description
+                    
+                } else {
+                    
+                    item.quantity = Int(sender.text!) ?? item.quantity
+                    
+                    Shopping.sharedInstance.changeFullPrice()
+                    
+                }
+                
             }
             
         }
@@ -207,20 +246,15 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
     
     @IBAction func sendOrderViaEmail(sender: UIButton) {
         
-        if Shopping.sharedInstance.itemsArray.count > 0 {
+        let mailComposeViewController = configuredMailComposeViewController()
+        
+        if MFMailComposeViewController.canSendMail() {
             
-            let mailComposeViewController = configuredMailComposeViewController()
+            self.presentViewController(mailComposeViewController, animated: true, completion: nil)
             
-            if MFMailComposeViewController.canSendMail() {
-                
-                self.presentViewController(mailComposeViewController, animated: true, completion: nil)
-                
-                
-            } else {
-                
-                self.showSendMailErrorAlert()
-            }
+        } else {
             
+            self.showSendMailErrorAlert()
         }
     }
     
@@ -261,10 +295,10 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
         for product in Shopping.sharedInstance.itemsArray {
             
             orderDiscription += " " +
-                product.article! + " " +
-                product.title! + " "  +
-                product.priceFormatted! + " " +
-                product.quantity!.description + "\n";
+                product.title! + ";\n"  +
+                product.article! + ";\n" +
+                product.priceFormatted! + ", Кол-во: " +
+                product.quantity!.description + ";\n\n";
         }
         
         orderDiscription += formattingPrice(Shopping.sharedInstance.fullPrice.description)
@@ -330,7 +364,7 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
             animateDistance = floor(MoveKeyboard.LANDSCAPE_KEYBOARD_HEIGHT * heightFraction)
         }
         
-        var viewFrame : CGRect = view.frame
+        var viewFrame = view.frame
         viewFrame.origin.y -= animateDistance
         
         UIView.beginAnimations(nil, context: nil)
@@ -353,26 +387,39 @@ class ShoppingCartVC: UIViewController, UITableViewDataSource, UITextFieldDelega
         view.frame = viewFrame
         UIView.commitAnimations()
         
-        let currentCell = textField.superview?.superview as! UITableViewCell
+    }
+    
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
         
-        if let indexPath = self.shoppingTableView.indexPathForCell(currentCell) {
+        if let currentCell = textField.superview!.superview as? UITableViewCell {
             
-            let item = Shopping.sharedInstance.itemsArray[indexPath.row]
-            
-            if textField.text?.characters.count > 2 {
+            if let indexPath = self.shoppingTableView.indexPathForCell(currentCell) {
                 
-                textField.text? = item.quantity!.description
+                let item = Shopping.sharedInstance.itemsArray[indexPath.row]
                 
-            } else {
-                
-                item.quantity = Int(textField.text!) ?? item.quantity
-                
-                Shopping.sharedInstance.changeFullPrice()
+                if string.characters.count > 2 {
+                    
+                    textField.text = item.quantity!.description
+                    
+                } else if string == "0" {
+                    
+                    item.quantity = 1
+                    
+                    Shopping.sharedInstance.changeFullPrice()
+                    
+                } else {
+                    
+                    item.quantity = Int(string) ?? item.quantity
+                    
+                    Shopping.sharedInstance.changeFullPrice()
+                    
+                }
                 
             }
             
         }
         
+        return true
     }
     
 }
