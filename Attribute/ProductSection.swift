@@ -9,13 +9,13 @@
 import UIKit
 
 enum ProductType: NSNumber {
-    case Pen
-    case Leather
-    case Watch
-    case Accessories
-    case Cufflinks
-    case Gifts
-    case Search
+    case pen
+    case leather
+    case watch
+    case accessories
+    case cufflinks
+    case gifts
+    case search
 }
 
 class ProductSection: NSObject {
@@ -30,7 +30,7 @@ class ProductSection: NSObject {
         self.name = ""
         self.link = ""
         self.imageName = nil
-        self.type = ProductType.Pen
+        self.type = ProductType.pen
     }
     
 }

@@ -10,7 +10,7 @@ import UIKit
 
 class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
-    private let tableColor = UIColor(colorLiteralRed: 255/255, green: 204/255, blue: 102/255, alpha: 0.02)
+    fileprivate let tableColor = UIColor(colorLiteralRed: 255/255, green: 204/255, blue: 102/255, alpha: 0.02)
     
     @IBOutlet weak var titleProduct: UILabel!
     @IBOutlet weak var imageProduct: UIImageView!
@@ -20,8 +20,8 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     @IBOutlet weak var buyButton: UIButton!
     @IBOutlet weak var featureTable: UITableView!
     
-    private var features = [Feature]()
-    private var activityIndicator: UIActivityIndicatorView!
+    fileprivate var features = [Feature]()
+    fileprivate var activityIndicator: UIActivityIndicatorView!
     
     var contactsButton: UIBarButtonItem!
     var product: Product!
@@ -41,8 +41,8 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         
         if self.features.count == 0 {
             
-            let activityIdicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
-            activityIdicator.center = CGPointMake(CGRectGetMidX(self.view.frame), CGRectGetMinY(self.featureTable.frame) - 150)
+            let activityIdicator = UIActivityIndicatorView.init(activityIndicatorStyle: .gray)
+            activityIdicator.center = CGPoint(x: self.view.frame.midX, y: self.featureTable.frame.minY - 150)
             
             self.featureTable.addSubview(activityIdicator)
             
@@ -60,7 +60,7 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
                     
                     self.featureTable.reloadData()
                     
-                    if self.activityIndicator.isAnimating() {
+                    if self.activityIndicator.isAnimating {
                         
                         self.activityIndicator.stopAnimating()
                     }
@@ -71,10 +71,10 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+        UIApplication.shared.isNetworkActivityIndicatorVisible = false
     }
     
     // MARK: - Help Methods
@@ -87,29 +87,29 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         self.availabilityProduct.text = self.product.availability
         self.priceProduct.text = self.product.priceFormatted
         
-        if let available = self.product.isAvailable where available == IsAvailable.NotAvailable.rawValue {
+        if let available = self.product.isAvailable, available == IsAvailable.notAvailable.rawValue {
             
-            self.availabilityProduct.textColor = UIColor.redColor()
-            self.buyButton.enabled = false;
-            self.buyButton.setTitle("Не доступен", forState: UIControlState.Normal)
-            self.buyButton.backgroundColor = UIColor.lightGrayColor()
+            self.availabilityProduct.textColor = UIColor.red
+            self.buyButton.isEnabled = false;
+            self.buyButton.setTitle("Не доступен", for: UIControlState())
+            self.buyButton.backgroundColor = UIColor.lightGray
         }
         
     }
     
     // MARK: - UITableViewDataSource
     
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         let identifier = "header"
         
-        var header = tableView.dequeueReusableHeaderFooterViewWithIdentifier(identifier)
+        var header = tableView.dequeueReusableHeaderFooterView(withIdentifier: identifier)
         
         if header == nil {
             
             header = UITableViewHeaderFooterView.init(reuseIdentifier: identifier)
 
-            header?.contentView.backgroundColor = UIColor.orangeColor()
+            header?.contentView.backgroundColor = UIColor.orange
         }
         
         header?.textLabel?.text = "Характеристики"
@@ -117,7 +117,7 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         return header
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         if self.features.count == 0 {
             
@@ -129,9 +129,9 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         }
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("featureCell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "featureCell", for: indexPath)
         
         cell.backgroundColor = tableColor
         cell.textLabel?.text = nil
@@ -144,7 +144,7 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
             cell.textLabel?.text = "\(feature.name):"
             cell.detailTextLabel?.text = feature.value
             
-        } else if self.activityIndicator.isAnimating() == false {
+        } else if self.activityIndicator.isAnimating == false {
             
             cell.textLabel?.text = "Информация отсутствует."
             cell.detailTextLabel?.text = nil
@@ -155,43 +155,43 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     // MARK: - UITableViewDelegate
     
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         
         return 30
     }
     
-    func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         
         if let header = view as? UITableViewHeaderFooterView {
             
-            header.textLabel?.textColor = UIColor.whiteColor()
+            header.textLabel?.textColor = UIColor.white
             
-            header.textLabel?.font = UIFont.boldSystemFontOfSize(15)
+            header.textLabel?.font = UIFont.boldSystemFont(ofSize: 15)
         }
         
     }
     
     // MARK: - Actions
     
-    @IBAction func buyProduct(sender: UIButton) {
+    @IBAction func buyProduct(_ sender: UIButton) {
         
         if !Shopping.sharedInstance.itemsArray.contains(self.product) {
             
             self.addNewProductWithItem(self.product)
         }
         
-        if var quantityInt = self.product.quantity?.integerValue {
+        if var quantityInt = self.product.quantity?.intValue {
             
             quantityInt += 1
             
-            self.product.quantity = NSNumber(integer: quantityInt)
+            self.product.quantity = NSNumber(value: quantityInt as Int)
             
             Shopping.sharedInstance.changeFullPrice()
         }
         
     }
     
-    func addNewProductWithItem(item: Product) {
+    func addNewProductWithItem(_ item: Product) {
         
         Shopping.sharedInstance.itemsArray.append(self.product)
         
@@ -199,7 +199,7 @@ class ProductVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         
         let tabArray = tabBarController?.tabBar.items as NSArray!
         
-        if let shoppingCartTab = tabArray.objectAtIndex(1) as? UITabBarItem {
+        if let shoppingCartTab = tabArray?.object(at: 1) as? UITabBarItem {
             
             shoppingCartTab.badgeValue = number.description
         }

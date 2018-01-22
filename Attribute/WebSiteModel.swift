@@ -14,15 +14,15 @@ let dataDidFailLoadNotification = "dataDidFailLoadNotification"
 class WebSiteModel: NSObject, UIWebViewDelegate {
     
     static let sharedInstance = WebSiteModel()
-    private var webView = UIWebView()
-    private var isLoaded = false
+    fileprivate var webView = UIWebView()
+    fileprivate var isLoaded = false
     
     
     // MARK: - Public Methods
     
-    func openWebSiteWithLink(link: String) {
+    func openWebSiteWithLink(_ link: String) {
         
-        let url = NSURL(string: link)
+        let url = URL(string: link)
         
         if let url = url {
             
@@ -33,7 +33,7 @@ class WebSiteModel: NSObject, UIWebViewDelegate {
             
             self.isLoaded = false
             
-            let urlRequest = NSURLRequest(URL: url)
+            let urlRequest = URLRequest(url: url)
             
             self.webView.loadRequest(urlRequest)
             
@@ -41,14 +41,14 @@ class WebSiteModel: NSObject, UIWebViewDelegate {
             
             print("wrong link")
             
-            NSNotificationCenter.defaultCenter().postNotificationName(dataDidFailLoadNotification, object: nil)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: dataDidFailLoadNotification), object: nil)
         }
         
     }
     
     func getSourceCode() -> String? {
         
-        let html = self.webView.stringByEvaluatingJavaScriptFromString("document.documentElement.outerHTML")
+        let html = self.webView.stringByEvaluatingJavaScript(from: "document.documentElement.outerHTML")
         
         self.webView = UIWebView()
         
@@ -57,28 +57,28 @@ class WebSiteModel: NSObject, UIWebViewDelegate {
     
     // MARK: - UIWebViewDelegate
     
-    func webViewDidStartLoad(webView: UIWebView) {
+    func webViewDidStartLoad(_ webView: UIWebView) {
         
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
     }
     
-    func webViewDidFinishLoad(webView: UIWebView) {
+    func webViewDidFinishLoad(_ webView: UIWebView) {
         
         if self.isLoaded == false {
             
             self.isLoaded = true
 //            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-            NSNotificationCenter.defaultCenter().postNotificationName(dataDidFinishLoadNotification, object: nil)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: dataDidFinishLoadNotification), object: nil)
         }
     }
     
-    func webView(webView: UIWebView, didFailLoadWithError error: NSError?) {
+    func webView(_ webView: UIWebView, didFailLoadWithError error: Error) {
         
-        print("error load:", error?.localizedDescription)
+        print("error load:", error.localizedDescription)
         
-        NSNotificationCenter.defaultCenter().postNotificationName(dataDidFailLoadNotification, object: nil)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: dataDidFailLoadNotification), object: nil)
         
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+        UIApplication.shared.isNetworkActivityIndicatorVisible = false
     }
     
 }

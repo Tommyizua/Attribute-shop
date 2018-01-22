@@ -10,14 +10,14 @@ import UIKit
 
 class CachedDataManager: NSObject {
     
-    let kGlobalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-    let kMainQueue = dispatch_get_main_queue()
+    let kGlobalQueue = DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default)
+    let kMainQueue = DispatchQueue.main
     
     static let sharedInstance = CachedDataManager()
     
     lazy var cachedImages = [String: UIImage]()
     
-    func getImageWithLink(link: String?, inout imageData: NSData?, size: CGSize, toImageView: UIImageView) {
+    func getImageWithLink(_ link: String?, imageData: inout Data?, size: CGSize, toImageView: UIImageView) {
         
         toImageView.image = nil
         
@@ -35,19 +35,19 @@ class CachedDataManager: NSObject {
                 
             } else {
                 
-                dispatch_async(kGlobalQueue, { () -> () in
+                kGlobalQueue.async(execute: { () -> () in
                     
                     self.addActivityIndicatorToView(toImageView)
                     
-                    let url = NSURL(string:link)!
+                    let url = URL(string:link)!
                     
-                    if let data = NSData(contentsOfURL: url) {
+                    if let data = try? Data(contentsOf: url) {
                         
                         if var image = UIImage(data: data) {
                             
                             image = UIImage.imageScaled(image, size: size)
                             
-                            dispatch_async(self.kMainQueue, { () -> () in
+                            self.kMainQueue.async(execute: { () -> () in
                                 
                                 self.cachedImages[link] = image
                                 
@@ -76,13 +76,13 @@ class CachedDataManager: NSObject {
     
     // MARK: - Activity indicator add/remove
     
-    func addActivityIndicatorToView(view: UIView) {
+    func addActivityIndicatorToView(_ view: UIView) {
         
-        dispatch_async(self.kMainQueue, { () -> () in
+        self.kMainQueue.async(execute: { () -> () in
             
-            let activityIndicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
-            activityIndicator.center = CGPointMake(view.center.x, view.center.y-30)
-            activityIndicator.color = UIColor.orangeColor()
+            let activityIndicator = UIActivityIndicatorView.init(activityIndicatorStyle: .gray)
+            activityIndicator.center = CGPoint(x: view.center.x, y: view.center.y-30)
+            activityIndicator.color = UIColor.orange
             
             view.addSubview(activityIndicator)
             
@@ -91,9 +91,9 @@ class CachedDataManager: NSObject {
         })
     }
     
-    func removeActivityIndicatorFromView(view: UIView) {
+    func removeActivityIndicatorFromView(_ view: UIView) {
         
-        dispatch_async(self.kMainQueue, { () -> () in
+        self.kMainQueue.async(execute: { () -> () in
             
             for view in view.subviews {
                 

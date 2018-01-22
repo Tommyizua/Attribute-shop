@@ -16,13 +16,13 @@ class BuyCell: UITableViewCell {
     @IBOutlet var minusPlusButtons: [UIButton]!
     
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         
         for button in self.minusPlusButtons {
             
             button.layer.cornerRadius = 4
             button.layer.borderWidth = 1
-            button.layer.borderColor = UIColor.lightGrayColor().CGColor
+            button.layer.borderColor = UIColor.lightGray.cgColor
             
         }
         

@@ -11,9 +11,9 @@ import CoreData
 
 class StoreTVC:  UITableViewController {
     
-    private var storesInfo = [StoresInCityArea]()
-    private let parser = Parser()
-    private var activityIndicator: UIActivityIndicatorView!
+    fileprivate var storesInfo = [StoresInCityArea]()
+    fileprivate let parser = Parser()
+    fileprivate var activityIndicator: UIActivityIndicatorView!
     
     
     override func viewDidLoad() {
@@ -26,9 +26,9 @@ class StoreTVC:  UITableViewController {
         
         if self.storesInfo.isEmpty {
             
-            let activityIndicator = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
+            let activityIndicator = UIActivityIndicatorView.init(activityIndicatorStyle: .gray)
             activityIndicator.center = self.view.center
-            activityIndicator.color = UIColor.orangeColor()
+            activityIndicator.color = UIColor.orange
             
             self.view.addSubview(activityIndicator)
             
@@ -45,10 +45,10 @@ class StoreTVC:  UITableViewController {
         
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+        UIApplication.shared.isNetworkActivityIndicatorVisible = false
     }
     
     // MARK: - Help Methods
@@ -64,7 +64,7 @@ class StoreTVC:  UITableViewController {
             
             for product in stores.storeObjectArray {
                 
-                DataManager.sharedInstance.managedObjectContext.deleteObject(product)
+                DataManager.sharedInstance.managedObjectContext.delete(product)
             }
         }
         
@@ -80,13 +80,13 @@ class StoreTVC:  UITableViewController {
         
     }
     
-    func getStoresFromLink(link: String) {
+    func getStoresFromLink(_ link: String) {
         
         self.parser.getStoresInfo(link, completionHandler:{ (stores: [StoresInCityArea]) in
             
             self.storesInfo = stores;
             
-            if self.activityIndicator.isAnimating() {
+            if self.activityIndicator.isAnimating {
                 
                 self.activityIndicator.stopAnimating()
                 
@@ -97,7 +97,7 @@ class StoreTVC:  UITableViewController {
         
     }
     
-    func compareStoreCounts(link: String) {
+    func compareStoreCounts(_ link: String) {
         
         self.parser.getCountStores(link) { (count) in
             
@@ -119,26 +119,26 @@ class StoreTVC:  UITableViewController {
     
     // MARK: - UITableViewDataSource
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         
         return self.storesInfo.count
     }
     
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         
         return self.storesInfo[section].cityName
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         let storesInCityArea = self.storesInfo[section]
         
         return storesInCityArea.storeObjectArray.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        if let cell = tableView.dequeueReusableCellWithIdentifier("storeCell", forIndexPath: indexPath) as? StoreCell {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "storeCell", for: indexPath) as? StoreCell {
             
             let storesInCityArea = self.storesInfo[indexPath.section]
             
@@ -146,7 +146,7 @@ class StoreTVC:  UITableViewController {
             
             CachedDataManager.sharedInstance.getImageWithLink(store.imageUrlString,
                                                               imageData: &store.imageData,
-                                                              size: CGSizeMake(320, 240),
+                                                              size: CGSize(width: 320, height: 240),
                                                               toImageView: cell.storeImage)
             
             cell.storeName.text = store.name
@@ -160,13 +160,13 @@ class StoreTVC:  UITableViewController {
     
     // MARK: - UITableViewDelegate
     
-    override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         
         if let header = view as? UITableViewHeaderFooterView {
-            header.contentView.backgroundColor = UIColor.blackColor()
-            header.textLabel!.textColor = UIColor.orangeColor()
+            header.contentView.backgroundColor = UIColor.black
+            header.textLabel!.textColor = UIColor.orange
             header.alpha = 0.9
-            header.textLabel?.textAlignment = NSTextAlignment.Center
+            header.textLabel?.textAlignment = NSTextAlignment.center
         }
     }
     

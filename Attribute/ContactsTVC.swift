@@ -13,21 +13,21 @@ import MapKit
 class ContactsTVC: UITableViewController {
     
     enum RowName: Int {
-        case Phone = 0
-        case Email = 1
-        case Address = 2
-        case Map = 3
+        case phone = 0
+        case email = 1
+        case address = 2
+        case map = 3
     }
     
-    private let rowPhotoHeight: CGFloat = 50;
-    private let rowAddressHeight: CGFloat = 80;
+    fileprivate let rowPhotoHeight: CGFloat = 50;
+    fileprivate let rowAddressHeight: CGFloat = 80;
     
     @IBOutlet weak var mapView: MKMapView!
     
     var locationManager = CLLocationManager()
     
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         checkLocationAuthorizationStatus()
@@ -61,7 +61,7 @@ class ContactsTVC: UITableViewController {
     
     func checkLocationAuthorizationStatus() {
         
-        if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse {
+        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
             
             mapView.showsUserLocation = true
             
@@ -72,7 +72,7 @@ class ContactsTVC: UITableViewController {
         }
     }
     
-    func centerMapOnLocation(location: CLLocation, regionRadius: CLLocationDistance) {
+    func centerMapOnLocation(_ location: CLLocation, regionRadius: CLLocationDistance) {
         
         let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate,
                                                                   regionRadius * 2.0, regionRadius * 2.0)
@@ -82,18 +82,18 @@ class ContactsTVC: UITableViewController {
     
     // MARK: - UITableViewDelegate
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
         switch indexPath.row {
             
-        case RowName.Phone.rawValue, RowName.Email.rawValue:
+        case RowName.phone.rawValue, RowName.email.rawValue:
             return self.rowPhotoHeight
             
-        case RowName.Address.rawValue:
+        case RowName.address.rawValue:
             return self.rowAddressHeight
             
-        case RowName.Map.rawValue:
-            return CGRectGetHeight(self.view.bounds) - self.rowPhotoHeight * 2 - self.rowAddressHeight
+        case RowName.map.rawValue:
+            return self.view.bounds.height - self.rowPhotoHeight * 2 - self.rowAddressHeight
             
         default:
             return 50

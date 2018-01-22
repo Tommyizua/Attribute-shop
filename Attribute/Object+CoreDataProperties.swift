@@ -14,7 +14,7 @@ import CoreData
 
 extension Object {
 
-    @NSManaged var imageData: NSData?
+    @NSManaged var imageData: Data?
     @NSManaged var imageUrlString: String?
     @NSManaged var orderId: NSNumber?
     

@@ -10,17 +10,17 @@ import UIKit
 
 extension UIImage {
     
-    static func imageScaled(img:UIImage, size:CGSize) -> UIImage {
+    static func imageScaled(_ img:UIImage, size:CGSize) -> UIImage {
         
         UIGraphicsBeginImageContext(size)
         
-        img.drawInRect(CGRectMake(0, 0, size.width, size.height))
+        img.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
         
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         
         UIGraphicsEndImageContext();
         
-        return newImage;
+        return newImage!;
     }
     
 }

@@ -11,7 +11,7 @@ import CoreData
 
 class CatalogTVC: UITableViewController {
     
-    private let parser = Parser()
+    fileprivate let parser = Parser()
     
     var contactsButton: UIBarButtonItem!
     var productSection: ProductSection!
@@ -27,12 +27,12 @@ class CatalogTVC: UITableViewController {
         
         title = self.productSection.name
         
-        if self.productSection.type != .Search {
+        if self.productSection.type != .search {
             
-            self.refreshControl?.tintColor = UIColor.orangeColor()
+            self.refreshControl?.tintColor = UIColor.orange
             self.refreshControl?.addTarget(self,
                                            action: #selector(clearProducts),
-                                           forControlEvents: UIControlEvents.ValueChanged)
+                                           for: UIControlEvents.valueChanged)
             
             self.fetchDataFromDataBase()
             
@@ -43,9 +43,9 @@ class CatalogTVC: UITableViewController {
         
         if self.products.isEmpty {
             
-            let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+            let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
             activityIndicator.center = self.view.center
-            activityIndicator.color = UIColor.orangeColor()
+            activityIndicator.color = UIColor.orange
             
             self.view.addSubview(activityIndicator)
             
@@ -56,16 +56,16 @@ class CatalogTVC: UITableViewController {
             self.getProductsFromLink(self.productSection.link)
         }
         
-        let notificationCenter = NSNotificationCenter.defaultCenter()
+        let notificationCenter = NotificationCenter.default
         
         notificationCenter.addObserver(self,
                                        selector: #selector(getProductsWithSourceCode),
-                                       name: dataDidFinishLoadNotification,
+                                       name: NSNotification.Name(rawValue: dataDidFinishLoadNotification),
                                        object: nil)
         
         notificationCenter.addObserver(self,
                                        selector: #selector(failLoadHandler),
-                                       name: dataDidFailLoadNotification,
+                                       name: NSNotification.Name(rawValue: dataDidFailLoadNotification),
                                        object: nil)
     }
     
@@ -80,7 +80,7 @@ class CatalogTVC: UITableViewController {
         
         for product in self.products {
             
-            DataManager.sharedInstance.managedObjectContext.deleteObject(product)
+            DataManager.sharedInstance.managedObjectContext.delete(product)
         }
         
         do {
@@ -95,13 +95,13 @@ class CatalogTVC: UITableViewController {
         self.getProductsFromLink(self.productSection.link)
     }
     
-    func getProductsFromLink(link: String) {
+    func getProductsFromLink(_ link: String) {
         
         self.parser.getProductsFromLink(link, type: self.productSection.type, completionHandler:{(productArray: [Product]?) in
             
             if let array = productArray {
                 
-                self.products.appendContentsOf(array)
+                self.products.append(contentsOf: array)
                 
             } else {
                 
@@ -110,12 +110,12 @@ class CatalogTVC: UITableViewController {
             
             self.tableView.reloadData()
             
-            if self.refreshControl?.refreshing == true {
+            if self.refreshControl?.isRefreshing == true {
                 
                 self.refreshControl?.endRefreshing()
             }
             
-            if let activityIndicator = self.reloadingIndicator where activityIndicator.isAnimating() {
+            if let activityIndicator = self.reloadingIndicator, activityIndicator.isAnimating {
                 
                 activityIndicator.stopAnimating()
             }
@@ -127,23 +127,23 @@ class CatalogTVC: UITableViewController {
     
     func showSearchErrorAlert() {
         
-        let alertController = UIAlertController(title: "Ошибка", message: "Поиск не дал результатов, попробуйте другой ввод.", preferredStyle: .Alert)
+        let alertController = UIAlertController(title: "Ошибка", message: "Поиск не дал результатов, попробуйте другой ввод.", preferredStyle: .alert)
         
-        let alertAction = UIAlertAction(title: "OK", style: .Default, handler: { (alertAction: UIAlertAction) in
+        let alertAction = UIAlertAction(title: "OK", style: .default, handler: { (alertAction: UIAlertAction) in
             
-            self.navigationController?.popToRootViewControllerAnimated(true)
+            self.navigationController?.popToRootViewController(animated: true)
         })
         
         alertController.addAction(alertAction)
         
-        self.presentViewController(alertController, animated: true, completion: nil)
+        self.present(alertController, animated: true, completion: nil)
     }
     
     func initLoadingIndicatorOnFooter() {
         
-        let pagingSpinner = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+        let pagingSpinner = UIActivityIndicatorView(activityIndicatorStyle: .gray)
         
-        pagingSpinner.color = UIColor.orangeColor()
+        pagingSpinner.color = UIColor.orange
         
         self.tableView.tableFooterView = pagingSpinner
         
@@ -154,9 +154,9 @@ class CatalogTVC: UITableViewController {
     
     func getProductsWithSourceCode() {
         
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true;
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true;
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(5 * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double((Int64)(5 * NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) {
             
             let sourceCode = WebSiteModel.sharedInstance.getSourceCode()
             
@@ -165,27 +165,27 @@ class CatalogTVC: UITableViewController {
                 self.getProductsFromSourceCode(sourceCode, firstPage: false)
             }
             
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false;
         }
     }
     
-    func getProductsFromSourceCode(sourceCode: String, firstPage: Bool) {
+    func getProductsFromSourceCode(_ sourceCode: String, firstPage: Bool) {
         
         self.parser.getProductsFromSourceCode(sourceCode, type: self.productSection.type, firstPage: firstPage, completionHandler:{(productArray: [Product]?) in
             
             if let array = productArray {
                 
-                self.products.appendContentsOf(array)
+                self.products.append(contentsOf: array)
                 
                 self.tableView.reloadData()
             }
             
-            if self.reloadingIndicator?.isAnimating() == true {
+            if self.reloadingIndicator?.isAnimating == true {
                 
                 self.reloadingIndicator?.stopAnimating()
             }
             
-            if self.pagingSpinner?.isAnimating() == true {
+            if self.pagingSpinner?.isAnimating == true {
                 
                 self.pagingSpinner?.stopAnimating()
             }
@@ -204,16 +204,16 @@ class CatalogTVC: UITableViewController {
     
     // MARK: - UITableViewDataSource
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return products.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("catalogCell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "catalogCell", for: indexPath)
         
-        if let catalogCell = cell as? CatalogCell where !self.products.isEmpty {
+        if let catalogCell = cell as? CatalogCell, !self.products.isEmpty {
             
             let currentProduct = self.products[indexPath.row]
             
@@ -225,16 +225,16 @@ class CatalogTVC: UITableViewController {
             
             CachedDataManager.sharedInstance.getImageWithLink(currentProduct.imageUrlString,
                                                               imageData: &currentProduct.imageData,
-                                                              size: CGSizeMake(130, 130),
+                                                              size: CGSize(width: 130, height: 130),
                                                               toImageView: catalogCell.imageProduct)
             
-            if let available = currentProduct.isAvailable where available == IsAvailable.Available.rawValue {
+            if let available = currentProduct.isAvailable, available == IsAvailable.available.rawValue {
                 
-                catalogCell.availabilityProduct.textColor = UIColor.greenColor()
+                catalogCell.availabilityProduct.textColor = UIColor.green
                 
             } else {
                 
-                catalogCell.availabilityProduct.textColor = UIColor.redColor()
+                catalogCell.availabilityProduct.textColor = UIColor.red
             }
         }
         
@@ -243,12 +243,12 @@ class CatalogTVC: UITableViewController {
     
     // MARK: - UITableViewDelegate
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        tableView.deselectRowAtIndexPath(indexPath, animated: true);
+        tableView.deselectRow(at: indexPath, animated: true);
     }
     
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
         if indexPath.row >= self.products.count/2 && self.isListFetched == true && !self.products.isEmpty {
             
@@ -256,7 +256,7 @@ class CatalogTVC: UITableViewController {
             
             let nextPageNumber = Int(self.products.count/48) + 1 // maybe it won't work for situation if quintity less than 48
             
-            let nextPageLink = self.productSection.link.stringByAppendingString("#/page-\(nextPageNumber)")
+            let nextPageLink = self.productSection.link + "#/page-\(nextPageNumber)"
             
             WebSiteModel.sharedInstance.openWebSiteWithLink(nextPageLink)
             
@@ -272,11 +272,11 @@ class CatalogTVC: UITableViewController {
     
     // MARK: - Segue
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if let cell = sender as? CatalogCell {
             
-            if let productVC = segue.destinationViewController as? ProductVC, indexPath = tableView.indexPathForCell(cell) {
+            if let productVC = segue.destination as? ProductVC, let indexPath = tableView.indexPath(for: cell) {
                 
                 let selectedProduct = self.products[indexPath.row]
                 

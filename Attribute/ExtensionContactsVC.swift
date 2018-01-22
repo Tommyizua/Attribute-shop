@@ -10,14 +10,14 @@ import MapKit
 
 extension ContactsTVC: MKMapViewDelegate {
     
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
       
         if let annotation = annotation as? OfficeAnnotation {
            
             let identifier = "pin"
             var view: MKPinAnnotationView
           
-            if let dequeuedView = mapView.dequeueReusableAnnotationViewWithIdentifier(identifier)
+            if let dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
                 as? MKPinAnnotationView {
                 
                     dequeuedView.annotation = annotation
@@ -28,10 +28,10 @@ extension ContactsTVC: MKMapViewDelegate {
                 view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
                 view.canShowCallout = true
                 view.calloutOffset = CGPoint(x: -5, y: 5)
-                view.rightCalloutAccessoryView = UIButton(type: UIButtonType.DetailDisclosure) as UIView
+                view.rightCalloutAccessoryView = UIButton(type: UIButtonType.detailDisclosure) as UIView
             }
             
-            view.pinTintColor = UIColor.orangeColor()
+            view.pinTintColor = UIColor.orange
             
             return view
         }
@@ -39,14 +39,14 @@ extension ContactsTVC: MKMapViewDelegate {
         return nil
     }
     
-    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView,
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView,
         calloutAccessoryControlTapped control: UIControl) {
             
             let location = view.annotation as! OfficeAnnotation
           
             let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
             
-            location.mapItem().openInMapsWithLaunchOptions(launchOptions)
+            location.mapItem().openInMaps(launchOptions: launchOptions)
     }
     
 }

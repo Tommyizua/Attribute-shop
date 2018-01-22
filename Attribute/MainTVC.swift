@@ -10,9 +10,9 @@ import UIKit
 
 class MainTVC: UITableViewController, UISearchBarDelegate {
     
-    private var productSectionArray = [ProductSection]()
-    private var contacts: UIBarButtonItem!
-    private let showCatalogIdentifier = "showCatalog"
+    fileprivate var productSectionArray = [ProductSection]()
+    fileprivate var contacts: UIBarButtonItem!
+    fileprivate let showCatalogIdentifier = "showCatalog"
     
     @IBOutlet weak var searchBar: UISearchBar!
     
@@ -23,19 +23,19 @@ class MainTVC: UITableViewController, UISearchBarDelegate {
         title = "Каталоги"
         
         contacts = UIBarButtonItem(title: "Контакты",
-                                   style: .Plain,
+                                   style: .plain,
                                    target: self,
                                    action: #selector(MainTVC.openContacts(_:)))
         
         navigationItem.rightBarButtonItem = contacts
         
         searchBar.delegate = self;
-        self.searchBar.keyboardAppearance = .Dark
+        self.searchBar.keyboardAppearance = .dark
         
         fillingProductSectionArray()
         
         if self.tableView.contentOffset.y == 0 {
-            self.tableView.contentOffset = CGPoint(x: 0.0, y: CGRectGetHeight(self.searchBar.frame))
+            self.tableView.contentOffset = CGPoint(x: 0.0, y: self.searchBar.frame.height)
         }
         
     }
@@ -55,7 +55,7 @@ class MainTVC: UITableViewController, UISearchBarDelegate {
         
         let sectionNameArray = ["Ручки", "Кожгалантерея", "Часы", "Аксессуары", "Запонки,зажимы", "Подарочные наборы", "Сеть бутиков", "Доставка и оплата", "Корпоративным клиентам"]
         
-        let sectionTypeArray = [ProductType.Pen, ProductType.Leather, ProductType.Watch, ProductType.Accessories, ProductType.Cufflinks, ProductType.Gifts]
+        let sectionTypeArray = [ProductType.pen, ProductType.leather, ProductType.watch, ProductType.accessories, ProductType.cufflinks, ProductType.gifts]
         
         for i in 0..<sectionNameArray.count {
             
@@ -77,14 +77,14 @@ class MainTVC: UITableViewController, UISearchBarDelegate {
     
     // MARK: - Actions
     
-    func openContacts(sender: UIBarButtonItem) {
+    func openContacts(_ sender: UIBarButtonItem) {
         
-        performSegueWithIdentifier("toContacts", sender: sender)
+        performSegue(withIdentifier: "toContacts", sender: sender)
     }
     
     // MARK: - UISearchBarDelegate
     
-    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
         let searchLink = "http://attribute.ua/search?controller=search&orderby=position&orderway=desc&search_query=\(searchBar.text!)"
         
@@ -92,17 +92,17 @@ class MainTVC: UITableViewController, UISearchBarDelegate {
         
         productSection.name = searchBar.placeholder ?? "Поиск"
         productSection.link = searchLink
-        productSection.type = .Search
+        productSection.type = .search
         
         self.productSectionArray.append(productSection)
         
-        let searchIndexPath = NSIndexPath(forRow: self.productSectionArray.count - 1, inSection: 0)
+        let searchIndexPath = IndexPath(row: self.productSectionArray.count - 1, section: 0)
         
-        self.performSegueWithIdentifier(self.showCatalogIdentifier, sender: searchIndexPath)
+        self.performSegue(withIdentifier: self.showCatalogIdentifier, sender: searchIndexPath)
         
     }
     
-    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         
         searchBar.text = nil
         searchBar.resignFirstResponder()
@@ -110,14 +110,14 @@ class MainTVC: UITableViewController, UISearchBarDelegate {
     
     // MARK: - UITableViewDataSource
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return self.productSectionArray.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("mainCell")! as UITableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "mainCell")! as UITableViewCell
         
         let productSection = self.productSectionArray[indexPath.row]
         
@@ -129,9 +129,9 @@ class MainTVC: UITableViewController, UISearchBarDelegate {
     
     // MARK: - UITableViewDelegate
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        tableView.deselectRowAtIndexPath(indexPath, animated: true);
+        tableView.deselectRow(at: indexPath, animated: true);
         
         var identifier = ""
         
@@ -153,17 +153,17 @@ class MainTVC: UITableViewController, UISearchBarDelegate {
             break
         }
         
-        self.performSegueWithIdentifier(identifier, sender: indexPath)
+        self.performSegue(withIdentifier: identifier, sender: indexPath)
         
     }
     
     // MARK: - Segue
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == self.showCatalogIdentifier {
             
-            if let catalogTVC = segue.destinationViewController as? CatalogTVC, indexPath = sender as? NSIndexPath {
+            if let catalogTVC = segue.destination as? CatalogTVC, let indexPath = sender as? IndexPath {
                 
                 catalogTVC.contactsButton = self.contacts
                 
